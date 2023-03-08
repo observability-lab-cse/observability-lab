@@ -2,7 +2,6 @@ services:
   devices-api:
     container_name: devices-api
     build:
-      #e.g. /home/user/RegistrationService/launcher
       context: devices-api
     ports:
       - "8080:8080"
