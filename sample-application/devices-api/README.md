@@ -1,10 +1,10 @@
 # Sample Java App
 
-Execute the below commands from [sample-application/devices-api](./) folder.
-
 ## Run locally from Gradle
 
 ```bash
+cd sample-application/devices-api
+
 ./gradlew bootRun
 ```
 
@@ -13,6 +13,8 @@ Execute the below commands from [sample-application/devices-api](./) folder.
 Build project and run docker:
 
 ```bash
+cd sample-application/devices-api
+
 docker build -t devices-api .
 docker run -p 8080:8080 devices-api .
 ```
