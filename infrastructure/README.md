@@ -18,7 +18,7 @@ Validate deployment by [connecting to the cluster](https://learn.microsoft.com/e
 ## Connect AKS to ACR
 
 ```bash
-az aks update --name <aks-cluster-name> --resource-group <resource-group-name> --attach-acr <acr-name>
+az aks update --name aks-<project-name> --resource-group <resource-group-name> --attach-acr acr<project-name>
 ```
 
 ## Cleanup
