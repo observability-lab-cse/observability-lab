@@ -1,0 +1,7 @@
+services:
+  devices-api:
+    container_name: devices-api
+    build:
+      context: devices-api
+    ports:
+      - "8080:8080"
