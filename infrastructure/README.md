@@ -15,12 +15,6 @@ az deployment group create --resource-group <resource-group-name> --template-fil
 
 Validate deployment by [connecting to the cluster](https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-deploy-bicep?tabs=azure-cli%2CCLI#connect-to-the-cluster).
 
-## Connect AKS to ACR
-
-```bash
-az aks update --name aks-<project-name> --resource-group <resource-group-name> --attach-acr acr<project-name>
-```
-
 ## Cleanup
 
 ```bash
