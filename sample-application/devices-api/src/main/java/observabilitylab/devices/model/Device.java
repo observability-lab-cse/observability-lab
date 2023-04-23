@@ -1,16 +1,31 @@
 package observabilitylab.devices.model;
 
-import com.azure.spring.data.cosmos.core.mapping.Container;
-import com.azure.spring.data.cosmos.core.mapping.PartitionKey;
 import org.springframework.data.annotation.Id;
 
-@Container(containerName = "devicesContainer")
+import com.azure.spring.data.cosmos.core.mapping.Container;
+import com.azure.spring.data.cosmos.core.mapping.PartitionKey;
+
+@Container(containerName = "devicesContainer", ru = "400")
 public class Device {
+
     @PartitionKey
     @Id
-    private final String id;
+    private String id;
 
     public Device(String id) {
         this.id = id;
     }
+
+    public Device() {
+    }
+
+    public String getId() {
+        return id;
+    }
+    
+    @Override
+    public String toString() {
+        return "Device [id=" + id + "]";
+    }
+
 }

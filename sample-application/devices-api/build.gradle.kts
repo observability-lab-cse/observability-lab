@@ -13,10 +13,7 @@ repositories {
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
-	implementation("org.springframework.boot:spring-boot-autoconfigure")
-	// https://mvnrepository.com/artifact/com.azure.spring/spring-cloud-azure-starter-data-cosmos
-	implementation("com.azure.spring:spring-cloud-azure-starter-data-cosmos:4.6.0")
-
+	implementation("com.azure:azure-spring-data-cosmos:3.33.0")
 }
 
 tasks.withType<Test> {
