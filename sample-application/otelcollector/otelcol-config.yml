@@ -1,0 +1,25 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+      http:
+processors:
+exporters:
+  azuremonitor:
+    instrumentation_key: INSTRUMENTATION_KEY_PLACEHOLDER
+  logging:
+    verbosity: normal
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: []
+      exporters: [azuremonitor, logging]
+    metrics:
+      receivers: [otlp]
+      processors: []
+      exporters: [azuremonitor, logging]
+    logs:
+      receivers: [otlp]
+      processors: []
+      exporters: [azuremonitor, logging]

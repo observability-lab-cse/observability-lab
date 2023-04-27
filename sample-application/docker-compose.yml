@@ -5,3 +5,12 @@ services:
       context: devices-api
     ports:
       - "8080:8080"
+
+  otelcol:
+    image: otel/opentelemetry-collector-contrib:0.75.0
+    container_name: otel-col
+    command: [ "--config=/etc/otelcol-config.yml" ]
+    volumes:
+      - ./otelcollector/otelcol-config.yml:/etc/otelcol-config.yml
+    ports:
+      - "4317" # OTLP over gRPC receiver
