@@ -6,11 +6,12 @@ services:
     ports:
       - "8080:8080"
 
-  otelcol:
+  otel-collector:
     image: otel/opentelemetry-collector-contrib:0.75.0
-    container_name: otel-col
+    container_name: otel-collector
     command: [ "--config=/etc/otelcol-config.yml" ]
     volumes:
-      - ./otelcollector/otelcol-config.yml:/etc/otelcol-config.yml
+      - ./otel-collector/otelcol-config.yml:/etc/otelcol-config.yml
     ports:
-      - "4317" # OTLP over gRPC receiver
+      - "4317:4317" # OTLP over gRPC receiver
+      - "4318:4318" # OTLP http receiver
