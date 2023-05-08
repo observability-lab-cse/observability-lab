@@ -5,3 +5,11 @@ services:
       context: devices-api
     ports:
       - "8080:8080"
+
+  dotnet-module:
+    container_name: dotnet-module
+    build:
+      context: dotnet-module/SampleApp
+      dockerfile: SampleApp/Dockerfile
+    ports:
+      - "8090:8090"
