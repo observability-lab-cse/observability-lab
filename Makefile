@@ -19,8 +19,8 @@ push:
 
 run:
 	@echo "Run application localy"
-	@bash ./sample-application/image.sh --push
+	@bash ./sample-application/image.sh --run
 
 deploy:
 	@echo "Deploy application to AKS"
-	# @bash ./sample-application/image.sh --push
+	@bash ./sample-application/image.sh --deploy

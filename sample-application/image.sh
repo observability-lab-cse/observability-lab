@@ -1,22 +1,25 @@
-IMAGE_NAME="module1"
+#!/bin/bash
+IMAGE_NAME="devices-api"
 TAG="latest"
 
 
 # For project-name use only alphanumeric characters
 build_image() {
-    echo "- Build module images"
-    cd ./sample-application/devices-api
+    echo "- BUILD module images"
+    cd ./sample-application/devices-api || { echo "Directory not found" && exit "2"; }
+    echo "Image Tag: $IMAGE_NAME:$TAG"
     docker build -t "$IMAGE_NAME":"$TAG" .
     echo ""
 }
 
 push_image(){
-    echo "- Push module images to ACR"
+    echo "- PUSH module images to ACR"
     ACR_NAME=$(az acr list -g "$ENV_RESOURCE_GROUP_NAME" --query "[0].name" -o tsv)
     TOKEN=$(az acr login --name "$ACR_NAME"  --expose-token --output tsv --query accessToken)
     
     docker login "$ACR_NAME".azurecr.io --username 00000000-0000-0000-0000-000000000000 --password-stdin <<< $TOKEN
-    docker push "$ACR_NAME".azurecr.io/"$IMAGE_NAME":"$TAG"
+    docker tag "$IMAGE_NAME" "$ACR_NAME".azurecr.io/"$IMAGE_NAME"
+    docker push "$ACR_NAME".azurecr.io/"$IMAGE_NAME":"$TAG" 
     echo ""
 }
 
@@ -27,6 +30,15 @@ run_container(){
     
     docker login "$ACR_NAME".azurecr.io --username 00000000-0000-0000-0000-000000000000 --password-stdin <<< $TOKEN
     docker run "$ACR_NAME".azurecr.io/"$IMAGE_NAME":"$TAG"
+    echo ""
+}
+
+deploy(){
+    echo "- DEPLOY module image"
+    AKS_NAME=$(az aks list -g "$ENV_RESOURCE_GROUP_NAME" --query "[0].name" -o tsv)
+    az aks get-credentials --resource-group "$ENV_RESOURCE_GROUP_NAME" --name "$AKS_NAME"
+    kubectl apply -f k8s-files/devices-api-deployment.yaml
+    echo ""
 }
 
 run_main() {
@@ -35,16 +47,20 @@ run_main() {
     # shellcheck disable=SC1091
     source .env
     
-    if [[ "$1" == "--push" ]] || [[ "$1" == "-c" ]]; then
-        echo "--- Creating infrastructure ---"
+    if [[ "$1" == "--push" ]] || [[ "$1" == "-p" ]]; then
+        echo "--- Build and Push Image ---"
         build_image
         push_image
         exit 0
         
-        elif [[ "$1" == "--run" ]] || [[ "$1" == "-d" ]]; then
-        echo "--- Deleting infrastructure ---"
+        elif [[ "$1" == "--run" ]] || [[ "$1" == "-r" ]]; then
+        echo "--- Build and Run Image  ---"
         build_image
         run_container
+        exit 0
+        elif [[ "$1" == "--deploy" ]] || [[ "$1" == "-d" ]]; then
+        echo "--- Deploy to AKS Image  ---"
+        deploy
         exit 0
         
     else
