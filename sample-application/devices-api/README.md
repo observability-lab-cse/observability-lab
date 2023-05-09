@@ -1,5 +1,20 @@
 # Sample Java App
 
+## Prerequisites
+
+* CosmosDB account
+* Docker
+
+## Set up
+
+Open the project in VS Code using dev containers [configuration file](../../.devcontainer/devcontainer.json).
+
+Replace the properties values from [application.properties](src/main/resources/application.properties) with the CosmosDB properties:
+
+* azure.cosmosdb.uri - uri 
+* azure.cosmosdb.key - primary key
+* azure.cosmosdb.database - database name
+
 ## Run locally from Gradle
 
 ```bash

@@ -24,8 +24,6 @@ public class AppConfiguration extends AbstractCosmosConfiguration {
     @Value("${azure.cosmosdb.database}")
     private String dbName;
 
-    private AzureKeyCredential azureKeyCredential;
-
     @Override
     protected String getDatabaseName() {
         return dbName;    
@@ -33,9 +31,9 @@ public class AppConfiguration extends AbstractCosmosConfiguration {
 
     @Bean
     public CosmosClientBuilder getCosmosClientBuilder() {
-        this.azureKeyCredential = new AzureKeyCredential(key);
-        DirectConnectionConfig directConnectionConfig = new DirectConnectionConfig();
-        GatewayConnectionConfig gatewayConnectionConfig = new GatewayConnectionConfig();
+        var azureKeyCredential = new AzureKeyCredential(key);
+        var directConnectionConfig = new DirectConnectionConfig();
+        var gatewayConnectionConfig = new GatewayConnectionConfig();
         return new CosmosClientBuilder()
             .endpoint(uri)
             .credential(azureKeyCredential)
