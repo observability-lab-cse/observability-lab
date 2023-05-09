@@ -42,3 +42,4 @@ resource aks 'Microsoft.ContainerService/managedClusters@2022-05-02-preview' = {
 }
 
 output clusterName string = aks.name
+output kubeletIdentityId string = aks.properties.identityProfile.kubeletidentity.objectId
