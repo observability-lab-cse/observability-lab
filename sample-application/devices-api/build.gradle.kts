@@ -1,6 +1,6 @@
 plugins {
 	java
-	id("org.springframework.boot") version "2.7.8"
+	id("org.springframework.boot") version "2.7.10"
 	id("io.spring.dependency-management") version "1.1.0"
 }
 
@@ -13,6 +13,7 @@ repositories {
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("com.azure:azure-spring-data-cosmos:3.33.0")
 }
 
 tasks.withType<Test> {
