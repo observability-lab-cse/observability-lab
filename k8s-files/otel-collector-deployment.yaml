@@ -35,6 +35,6 @@ spec:
         - configMap:
             items:
               - key: collector.yaml
-                path: otel-collector.yaml
+                path: collector.yaml
             name: otel-collector-config
           name: otel-collector-config
