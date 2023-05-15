@@ -7,7 +7,7 @@ services:
       - "8080:8080"
 
   otel-collector:
-    image: otel/opentelemetry-collector-contrib:0.75.0
+    image: otel/opentelemetry-collector-contrib:0.77.0
     container_name: otel-collector
     command: [ "--config=/etc/otelcol-config.yml" ]
     volumes:
