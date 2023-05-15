@@ -27,7 +27,7 @@ connect_cluster(){
     echo "- Connect cluster $AKS_NAME"
     SUBSCRIPTION_ID=$(az account subscription list --query "[0].subscriptionId" -o tsv)
     
-    echo "- Remove $AKS_NAME context from local .kubeconfig"
+    echo "- Add $AKS_NAME context to local .kubeconfig"
     az account set --subscription "$SUBSCRIPTION_ID"
     az aks get-credentials \
     --resource-group "$ENV_RESOURCE_GROUP_NAME" \

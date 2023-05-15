@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: devices-api
-          image: acr<project-name>.azurecr.io/devices-api:latest
+          image: acr${project-name}.azurecr.io/devices-api:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8080

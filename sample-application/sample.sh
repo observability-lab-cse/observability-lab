@@ -15,9 +15,8 @@ build_image() {
 push_image(){
     echo "- PUSH module images to ACR"
     ACR_NAME=$(az acr list -g "$ENV_RESOURCE_GROUP_NAME" --query "[0].name" -o tsv)
-    TOKEN=$(az acr login --name "$ACR_NAME"  --expose-token --output tsv --query accessToken)
     
-    docker login "$ACR_NAME".azurecr.io --username 00000000-0000-0000-0000-000000000000 --password-stdin <<< $TOKEN
+    az acr login --name  "$ACR_NAME".azurecr.io 
     docker tag "$IMAGE_NAME" "$ACR_NAME".azurecr.io/"$IMAGE_NAME"
     docker push "$ACR_NAME".azurecr.io/"$IMAGE_NAME":"$TAG" 
     echo ""
@@ -26,9 +25,8 @@ push_image(){
 run_container(){
     echo "- RUN module image"
     ACR_NAME=$(az acr list -g "$ENV_RESOURCE_GROUP_NAME" --query "[0].name" -o tsv)
-    TOKEN=$(az acr login --name "$ACR_NAME"  --expose-token --output tsv --query accessToken)
     
-    docker login "$ACR_NAME".azurecr.io --username 00000000-0000-0000-0000-000000000000 --password-stdin <<< $TOKEN
+    az acr login --name  "$ACR_NAME".azurecr.io 
     docker run "$ACR_NAME".azurecr.io/"$IMAGE_NAME":"$TAG"
     echo ""
 }
@@ -36,8 +34,12 @@ run_container(){
 deploy(){
     echo "- DEPLOY module image"
     AKS_NAME=$(az aks list -g "$ENV_RESOURCE_GROUP_NAME" --query "[0].name" -o tsv)
-    az aks get-credentials --resource-group "$ENV_RESOURCE_GROUP_NAME" --name "$AKS_NAME"
-    kubectl apply -f k8s-files/devices-api-deployment.yaml
+    az aks get-credentials \
+    --resource-group "$ENV_RESOURCE_GROUP_NAME" \
+    --name "$AKS_NAME" \
+    --overwrite-existing
+    
+    cat k8s-files/devices-api-deployment.yaml | sed -e "s/\${project-name}/$ENV_PROJECT_NAME/" | kubectl apply -f  -
     echo ""
 }
 

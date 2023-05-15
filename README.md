@@ -37,10 +37,10 @@
 ## `Makefile`
 
 The `Makefile` automates a few of the above tasks with in a single command.
-To use it creat a `.env` in the root of the porject and add the fllowing content to it.
+To use it create a `.env` in the root of the project and add the following content to it.
 
 ```text
 ENV_RESOURCE_GROUP_NAME=<rg-name>
 ENV_LOCATION="westeurope"
-ENV_PROJECT_NAME=<project-name> // should just be lowercase letters
+ENV_PROJECT_NAME=<project-name> # should just be letters or numbers
 ```
