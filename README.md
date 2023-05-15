@@ -17,6 +17,13 @@
     ```bash
     kubectl apply -f k8s-files/devices-api-deployment.yaml
     ```
+  
+* Deploy the OpenTelemetry collector
+
+    ```bash
+    kubectl apply -f k8s-files/collector.yaml
+    kubectl apply -f k8s-files/otel-collector-deployment.yaml
+    ```
 
 * To test the devices-api:
   * find the name of the pod:
