@@ -14,3 +14,6 @@ services:
     command: [ "--config=/etc/otelcol-config.yml" ]
     volumes:
       - ./otel-collector/otelcol-config.yml:/etc/otelcol-config.yml
+    ports:
+      - "4317:4317" # OTLP over gRPC receiver
+      - "4318:4318" # OTLP http receiver
