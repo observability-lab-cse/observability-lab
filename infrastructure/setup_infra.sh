@@ -14,11 +14,6 @@ create_infrastructure(){
     --resource-group "$ENV_RESOURCE_GROUP_NAME" \
     --template-file ./infrastructure/main.bicep \
     --parameters projectName="$ENV_PROJECT_NAME"
-    
-    az aks update --name aks-"$ENV_PROJECT_NAME" \
-    --resource-group "$ENV_RESOURCE_GROUP_NAME" \
-    --attach-acr acr"$ENV_PROJECT_NAME" \
-    --yes
 
     echo ""
 }
