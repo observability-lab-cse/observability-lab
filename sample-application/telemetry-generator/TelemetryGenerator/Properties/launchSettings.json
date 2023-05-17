@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "TelemetryGenerator": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}

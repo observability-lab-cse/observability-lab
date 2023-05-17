@@ -10,11 +10,11 @@ services:
       # according to the doc otlp is default value but after testing this env var seems to be necessary
       OTEL_LOGS_EXPORTER: otlp
 
-  dotnet-module:
-    container_name: dotnet-module
+  telemetry-generator:
+    container_name: telemetry-generator
     build:
-      context: dotnet-module/SampleApp
-      dockerfile: SampleApp/Dockerfile
+      context: telemetry-generator/TelemetryGenerator
+      dockerfile: Dockerfile
     ports:
       - "8090:8090"
 

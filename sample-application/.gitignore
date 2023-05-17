@@ -39,6 +39,7 @@ out/
 ### Visual Studio ###
 **/obj/*
 **/bin/*
+**/.vs
 *_i.c
 *_p.c
 *_h.h
