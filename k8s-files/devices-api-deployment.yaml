@@ -23,10 +23,16 @@ spec:
           resources:
             requests:
               cpu: 50m
-              memory: 50Mi
+              memory: 128Mi
             limits:
               cpu: 100m
-              memory: 100Mi
+              memory: 512Mi
+          env:
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: "http://opentelemetrycollector:4317"
+            - name: OTEL_LOGS_EXPORTER
+              value: otlp
+
 ---
 
 apiVersion: v1
