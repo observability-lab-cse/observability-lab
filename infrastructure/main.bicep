@@ -37,6 +37,9 @@ module appInsights './app_insights.bicep' = {
     location: location
     workspaceResourceId: logAnalyticsWorkspace.outputs.id
   }
+  dependsOn:[
+    logAnalyticsWorkspace
+  ]
 }
 
 module cosmosDb './cosmos_db.bicep' = {

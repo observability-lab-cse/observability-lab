@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: devices-api
-          image: acr<project-name>.azurecr.io/devices-api:v1
+          image: acr${project-name}.azurecr.io/devices-api:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
@@ -27,3 +27,16 @@ spec:
             limits:
               cpu: 100m
               memory: 100Mi
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: devices-api-service
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 8080 
+    targetPort: 8080
+  selector:
+    app: devices-api
