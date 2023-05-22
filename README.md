@@ -18,9 +18,16 @@
   kubectl apply -f k8s-files/devices-api-deployment.yaml
   ```
 
-- To test the devices-api:
+* Modify the Azure Monitor instrumentation key (`INSTRUMENTATION_KEY_PLACEHOLDER`) in the [`collector.yaml`](./k8s-files/collector.yaml) file.
+* Deploy the OpenTelemetry collector
 
-  - find the name of the pod:
+    ```bash
+    kubectl apply -f k8s-files/collector.yaml
+    kubectl apply -f k8s-files/otel-collector-deployment.yaml
+    ```
+
+* To test the devices-api:
+  * find the name of the pod:
 
     ```bash
     `kubectl get pods -l app=devices-api`
