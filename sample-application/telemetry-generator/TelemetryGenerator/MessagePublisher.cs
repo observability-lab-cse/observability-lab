@@ -7,7 +7,7 @@ namespace TelemetryGenerator
     /// <summary>
     /// Class with the functionality of publishing messages with MQTT.
     /// </summary>
-    public class MessagePublisher
+    public class MessagePublisher : IMessagePublisher
     {
         private readonly ILogger<MessagePublisher> _logger;
 
@@ -17,6 +17,7 @@ namespace TelemetryGenerator
         public MessagePublisher(ILogger<MessagePublisher> logger)
         {
             _logger = logger;
+            _logger.LogDebug("MessagePublisher initialized.");
         }
 
         /// <inheritdoc />
