@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,5 +24,12 @@ public class DevicesController {
     @GetMapping
     public List<Device> getDevices() {
         return repository.findAll();
+    }
+
+    @PostMapping
+    public ResponseEntity<Device> addDevice(@RequestBody Device device) {
+        var newDevice = new Device(device.getId());
+        repository.save(newDevice);
+        return new ResponseEntity<>(newDevice, HttpStatus.CREATED);
     }
 }
