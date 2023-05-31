@@ -35,3 +35,19 @@ spec:
             path: collector.yaml
           name: config
         name: config
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: opentelemetrycollector
+spec:
+  ports:
+  - name: grpc-otlp
+    port: 4317
+    protocol: TCP
+    targetPort: 4317
+  selector:
+    app.kubernetes.io/name: opentelemetrycollector
+  type: ClusterIP
