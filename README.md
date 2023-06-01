@@ -30,7 +30,7 @@
   * find the name of the pod:
 
     ```bash
-    `kubectl get pods -l app=devices-api`
+    kubectl get pods -l app=devices-api
     ```
 
   * use it in the following command
