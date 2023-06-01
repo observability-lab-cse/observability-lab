@@ -1,4 +1,4 @@
-﻿namespace TelemetryGenerator
+﻿namespace SensorDataGenerator
 {
     /// <summary>
     /// Exposes the functionality of publishing messages with MQTT.

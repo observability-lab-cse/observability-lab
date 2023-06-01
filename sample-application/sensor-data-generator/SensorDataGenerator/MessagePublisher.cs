@@ -2,7 +2,7 @@
 using MQTTnet;
 using MQTTnet.Client;
 
-namespace TelemetryGenerator
+namespace SensorDataGenerator
 {
     /// <summary>
     /// Class with the functionality of publishing messages with MQTT.

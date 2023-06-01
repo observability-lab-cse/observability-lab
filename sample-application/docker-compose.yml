@@ -10,16 +10,16 @@ services:
       # according to the doc otlp is default value but after testing this env var seems to be necessary
       OTEL_LOGS_EXPORTER: otlp
 
-  telemetry-generator:
-    container_name: telemetry-generator
+  sensor-data-generator:
+    container_name: sensor-data-generator
     build:
-      context: telemetry-generator/TelemetryGenerator
+      context: sensor-data-generator/SensorDataGenerator
       dockerfile: Dockerfile
     ports:
       - "8090:8090"
 
   otel-collector:
-    image: otel/opentelemetry-collector-contrib:0.77.0
+    image: otel/opentelemetry-collector-contrib:latest
     container_name: otel-collector
     command: [ "--config=/etc/otelcol-config.yml" ]
     volumes:

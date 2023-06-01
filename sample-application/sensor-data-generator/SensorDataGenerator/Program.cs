@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace TelemetryGenerator
+namespace SensorDataGenerator
 {
     internal class Program
     {
