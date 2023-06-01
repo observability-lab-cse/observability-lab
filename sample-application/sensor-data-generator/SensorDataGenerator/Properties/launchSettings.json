@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "SensorDataGenerator": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}
