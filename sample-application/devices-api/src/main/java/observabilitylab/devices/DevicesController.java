@@ -29,7 +29,7 @@ public class DevicesController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Device addDevice(@RequestBody Device device) {
-        var newDevice = new Device(device.getId());
+        var newDevice = new Device(device.getName());
         return repository.save(newDevice);
     }
 }
