@@ -58,7 +58,7 @@ public class Device {
     
     @Override
     public String toString() {
-        return id;
+        return "Device [id=" + id + ", name=" + name + "]";
     }
 
     enum Status {
