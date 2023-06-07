@@ -10,10 +10,10 @@ services:
       # according to the doc otlp is default value but after testing this env var seems to be necessary
       OTEL_LOGS_EXPORTER: otlp
 
-  sensor-data-generator:
-    container_name: sensor-data-generator
+  device-manager:
+    container_name: device-manager
     build:
-      context: sensor-data-generator/SensorDataGenerator
+      context: device-manager/DeviceManager
       dockerfile: Dockerfile
     ports:
       - "8090:8090"

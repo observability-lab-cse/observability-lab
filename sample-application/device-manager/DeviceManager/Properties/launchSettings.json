@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "SensorDataGenerator": {
+    "DeviceManager": {
       "commandName": "Project"
     },
     "Docker": {

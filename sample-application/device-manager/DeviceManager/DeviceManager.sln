@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33530.505
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SensorDataGenerator", "SensorDataGenerator.csproj", "{340C3E3F-D1F3-4B90-A203-C25D1D29A5DE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeviceManager", "DeviceManager.csproj", "{340C3E3F-D1F3-4B90-A203-C25D1D29A5DE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

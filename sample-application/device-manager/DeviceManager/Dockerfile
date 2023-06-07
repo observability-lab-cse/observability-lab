@@ -5,16 +5,16 @@ WORKDIR /app
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["SensorDataGenerator.csproj", "."]
-RUN dotnet restore "./SensorDataGenerator.csproj"
+COPY ["DeviceManager.csproj", "."]
+RUN dotnet restore "./DeviceManager.csproj"
 COPY . .
 WORKDIR "/src/."
-RUN dotnet build "SensorDataGenerator.csproj" -c Release -o /app/build
+RUN dotnet build "DeviceManager.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "SensorDataGenerator.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "DeviceManager.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "SensorDataGenerator.dll"]
+ENTRYPOINT ["dotnet", "DeviceManager.dll"]
