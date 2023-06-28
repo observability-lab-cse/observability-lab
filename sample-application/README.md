@@ -16,7 +16,7 @@ docker compose up --build
 
 Currently, the docker-compose file starts the following components: 
 * `devices-api` - a java service
-* `SensorDataGenerator` - .NET console application
+* `DeviceManager` - .NET console application
 * OpenTelemetry collector
 
 After executing the command above go to http://localhost:8080/devices. The response should show an empty list.
