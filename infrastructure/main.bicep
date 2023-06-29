@@ -52,5 +52,14 @@ module cosmosDb './cosmos_db.bicep' = {
   }
 }
 
+module eventHub './event_hub.bicep' = {
+  name: 'event_hub_deployment'
+  params: {
+    eventHubNamespaceName: 'evhns-${projectName}'
+    eventHubName: 'evh-${projectName}'
+    location: location
+  }
+}
+
 output acrName string = acr.outputs.acrName
 output clusterName string = k8s.outputs.clusterName

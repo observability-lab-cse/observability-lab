@@ -24,3 +24,14 @@ services:
     command: [ "--config=/etc/otelcol-config.yml" ]
     volumes:
       - ./otel-collector/otelcol-config.yml:/etc/otelcol-config.yml
+
+  device-telemetry-simulator:
+    container_name: device-telemetry-simulator
+    image: mcr.microsoft.com/oss/azure-samples/azureiot-telemetrysimulator
+    environment:
+      EventHubConnectionString: ${EVENT_HUB_CONNECTION_STRING}
+      DeviceCount: 3
+      MessageCount: 0 # send unlimited
+      Interval: 1000
+      Template: '{"deviceId": "$.DeviceId", "deviceTimestamp": "$.Time", "temp": $.DoubleValue}'
+      Variables: '[{"name": "DoubleValue", "randomDouble":true, "min":20.00, "max":28.00}]'

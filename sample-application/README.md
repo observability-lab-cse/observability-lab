@@ -10,15 +10,18 @@ The device API, device manager, as well as Cosmos DB, expose telemetry data, to 
 
 ## How to run
 
+Create `.env` file and set `EVENT_HUB_CONNECTION_STRING` with Event Hub connection string.
+
 ```bash
 cd sample-application
 
 docker compose up --build
 ```
 
-Currently, the docker-compose file starts the following components: 
+Currently, the docker-compose file starts the following components:
 * `devices-api` - a java service
 * `device-manager` - .NET console application
 * OpenTelemetry collector
+* [Azure Device Telemetry Simulator](https://learn.microsoft.com/en-us/samples/azure-samples/iot-telemetry-simulator/azure-iot-device-telemetry-simulator/)
 
 After executing the command above go to http://localhost:8080/devices. The response should show an empty list.
