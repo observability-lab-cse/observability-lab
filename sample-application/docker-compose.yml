@@ -30,7 +30,7 @@ services:
     image: mcr.microsoft.com/oss/azure-samples/azureiot-telemetrysimulator
     environment:
       EventHubConnectionString: ${EVENT_HUB_CONNECTION_STRING}
-      DeviceCount: 3
+      DeviceList: 'device-01,device-42' # Specify your device names
       MessageCount: 0 # send unlimited
       Interval: 1000
       Template: '{"deviceId": "$.DeviceId", "deviceTimestamp": "$.Time", "temp": $.DoubleValue}'
