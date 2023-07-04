@@ -1,7 +1,7 @@
 # observability-lab
 
-- Create [infrastructure](./infrastructure/README.md) and connect to the AKS cluster.
-- Build and push [devices-api](./sample-application/devices-api/README.md) image.
+* Create [infrastructure](./infrastructure/README.md) and connect to the AKS cluster.
+* Build and push [devices-api](./sample-application/devices-api/README.md) image.
   Note: specify your project name (the same as for the infrastructure creation) with all lowercase letters.
 
   ```bash
@@ -11,11 +11,26 @@
   docker push acr<project-name>.azurecr.io/devices-api:v1
   ```
 
-- Modify deployment file and specify your project name in the image.
-- Deploy devices-api
+* Modify deployment file and specify your project name in the image.
+* Deploy devices-api
 
   ```bash
   kubectl apply -f k8s-files/devices-api-deployment.yaml
+  ```
+
+* Build and push `device-manager` image.
+
+  ```bash
+  cd sample-application/device-manager/DeviceManager
+  docker build -t acr<project-name>.azurecr.io/device-manager:v1 .
+  docker push acr<project-name>.azurecr.io/device-manager:v1
+  ```
+
+* Modify the [deployment file](./k8s-files/device-manager-deployment.yaml) and specify your project name in the image.
+* Deploy device-manager
+
+  ```bash
+  kubect apply -f k8s-files/device-manager-deployment.yaml
   ```
 
 * Modify the Azure Monitor instrumentation key (`INSTRUMENTATION_KEY_PLACEHOLDER`) in the [`collector.yaml`](./k8s-files/collector.yaml) file.

@@ -1,0 +1,48 @@
+kind: Deployment
+apiVersion: apps/v1
+
+metadata:
+  name: device-manager
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: device-manager
+  template:
+    metadata:
+      labels:
+        app: device-manager
+    spec:
+      containers:
+        - name: device-manager
+          image: acr${project-name}.azurecr.io/device-manager:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 150m
+              memory: 512Mi
+          env:
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: "http://opentelemetrycollector:4317"
+            - name: OTEL_LOGS_EXPORTER
+              value: otlp
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: device-manager-service
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 8080 
+    targetPort: 8080
+  selector:
+    app: device-manager
