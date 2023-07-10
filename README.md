@@ -51,3 +51,9 @@ ENV_RESOURCE_GROUP_NAME=<rg-name>
 ENV_LOCATION="westeurope"
 ENV_PROJECT_NAME=<project-name> # should just be letters or numbers
 ```
+
+To deploy only Devices Data Simulator use:
+
+```bash
+make deploy-devices-simulator
+```
