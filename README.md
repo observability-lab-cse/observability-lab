@@ -52,7 +52,7 @@ ENV_LOCATION="westeurope"
 ENV_PROJECT_NAME=<project-name> # should just be letters or numbers
 ```
 
-To deploy only Devices Data Simulator use:
+To deploy only the Devices Simulator use:
 
 ```bash
 make deploy-devices-simulator

@@ -26,5 +26,5 @@ deploy:
 	@bash ./sample-application/sample.sh --deploy
 
 deploy-devices-simulator:
-	@echo "Deploy Devices Data Simulator to AKS"
+	@echo "Deploy Devices Simulator to AKS"
 	@bash ./sample-application/sample.sh --deploy_devices_simulator

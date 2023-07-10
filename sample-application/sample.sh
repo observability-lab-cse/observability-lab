@@ -44,7 +44,7 @@ deploy(){
 }
 
 deploy_devices_simulator(){
-    echo "- DEPLOY devices data simulator"
+    echo "- DEPLOY Devices Simulator"
     AKS_NAME=$(az aks list -g "$ENV_RESOURCE_GROUP_NAME" --query "[0].name" -o tsv)
     az aks get-credentials \
     --resource-group "$ENV_RESOURCE_GROUP_NAME" \
