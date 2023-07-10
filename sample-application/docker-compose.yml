@@ -25,8 +25,8 @@ services:
     volumes:
       - ./otel-collector/otelcol-config.yml:/etc/otelcol-config.yml
 
-  devices-data-simulator:
-    container_name: devices-data-simulator
+  devices-simulator:
+    container_name: devices-simulator
     image: mcr.microsoft.com/oss/azure-samples/azureiot-telemetrysimulator
     environment:
       EventHubConnectionString: ${EVENT_HUB_CONNECTION_STRING}

@@ -52,7 +52,7 @@ deploy_devices_simulator(){
     --overwrite-existing
 
     EVENT_HUB_CONNECTION_STRING=$(az eventhubs eventhub authorization-rule keys list --resource-group "$ENV_RESOURCE_GROUP_NAME" --namespace-name evhns-"$ENV_PROJECT_NAME" --eventhub-name evh-"$ENV_PROJECT_NAME" --name Send  --query primaryConnectionString -o tsv)
-    cat k8s-files/devices-data-simulator-deployment.yaml | sed -e "s#EVENT_HUB_CONNECTION_STRING_PLACEHOLDER#$EVENT_HUB_CONNECTION_STRING#" | kubectl apply -f  -
+    cat k8s-files/devices-simulator-deployment.yaml | sed -e "s#EVENT_HUB_CONNECTION_STRING_PLACEHOLDER#$EVENT_HUB_CONNECTION_STRING#" | kubectl apply -f  -
     echo ""
 }
 
