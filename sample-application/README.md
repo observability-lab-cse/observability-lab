@@ -22,6 +22,6 @@ Currently, the docker-compose file starts the following components:
 * `devices-api` - a java service
 * `device-manager` - .NET console application
 * OpenTelemetry collector
-* [Azure Device Telemetry Simulator](https://learn.microsoft.com/en-us/samples/azure-samples/iot-telemetry-simulator/azure-iot-device-telemetry-simulator/)
+* [Devices Data Simulator](https://learn.microsoft.com/en-us/samples/azure-samples/iot-telemetry-simulator/azure-iot-device-telemetry-simulator/)
 
 After executing the command above go to http://localhost:8080/devices. The response should show an empty list.
