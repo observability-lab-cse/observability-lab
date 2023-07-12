@@ -1,10 +1,10 @@
 package observabilitylab.devices.model;
 
-import org.springframework.data.annotation.Id;
-
 import com.azure.spring.data.cosmos.core.mapping.Container;
 import com.azure.spring.data.cosmos.core.mapping.GeneratedValue;
 import com.azure.spring.data.cosmos.core.mapping.PartitionKey;
+import org.springframework.data.annotation.Id;
+
 
 @Container(containerName = "devicesContainer", ru = "400")
 public class Device {

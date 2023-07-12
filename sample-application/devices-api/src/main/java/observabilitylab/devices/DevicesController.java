@@ -1,6 +1,7 @@
 package observabilitylab.devices;
 
 import java.util.List;
+
 import observabilitylab.devices.model.Device;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,8 +32,8 @@ public class DevicesController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Device addDevice(@RequestBody Device device) {
-        var newDevice = new Device(device.getName());
-        return repository.save(newDevice);
+        //TODO: do we want to pass in ID? or do we want a CreateDevice Object > will effect what CRUD we need
+        return repository.save(device);
     }
     
     @GetMapping("/{id}")
@@ -44,13 +45,14 @@ public class DevicesController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteDeviceById(@PathVariable("id") String id){
+        // log.info("Device with id {id} was deleted")
         repository.deleteDeviceById(id);
     }
 
     @PutMapping()
     @ResponseStatus(HttpStatus.OK)
     public Device updatDevice(@RequestBody Device device){
-        // TODO: Implement update device
-        return repository.getDeviceById(device.getId());
+        // log.info("Device with id {id} was updated")
+        return repository.save(device);
     }
 }
