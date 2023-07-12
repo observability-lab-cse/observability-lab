@@ -36,6 +36,8 @@ docker run -p 8080:8080 devices-api .
 
 ## Check results
 
+You should have a Swagger UI at `http://localhost:8080/swagger-ui.html`.
+or 
 Go to http://localhost:8080/devices. The response should be `[]`
 
 ## Telemetry
