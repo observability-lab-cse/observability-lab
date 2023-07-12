@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace SensorDataGenerator
+namespace DeviceManager
 {
     internal class Program
     {
@@ -14,8 +14,6 @@ namespace SensorDataGenerator
             {
                 builder.AddConsole();
             });
-
-            serviceCollection.AddSingleton<IMessagePublisher, MessagePublisher>();
 
             var serviceProvider = serviceCollection.BuildServiceProvider();
 
