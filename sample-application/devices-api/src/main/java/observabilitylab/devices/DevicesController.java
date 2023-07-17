@@ -43,7 +43,6 @@ public class DevicesController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteDeviceById(@PathVariable("id") String id){
-        // log.info("Device with id {id} was deleted")
         repository.deleteDeviceById(id);
     }
 }
