@@ -3,7 +3,6 @@ package observabilitylab.devices;
 import java.util.List;
 
 import observabilitylab.devices.model.Device;
-import observabilitylab.devices.model.DeviceStatus;
 import observabilitylab.devices.model.UpdateDevice;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +48,7 @@ public class DevicesController {
         Device device = repository.getDeviceById(id);
 
         if (device == null) {
-            return new ResponseEntity<Device>((Device)null, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<Device>((Device) null, HttpStatus.NOT_FOUND);
         }
 
         device.setValue(updateDevice.getValue());
@@ -58,14 +57,13 @@ public class DevicesController {
         return new ResponseEntity<Device>(device, HttpStatus.OK);
     }
 
-
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Device> getDeviceById(@PathVariable("id") String id) {
         Device device = repository.getDeviceById(id);
 
         if (device == null) {
-            return new ResponseEntity<Device>((Device)null, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<Device>((Device) null, HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<Device>(device, HttpStatus.OK);
 
