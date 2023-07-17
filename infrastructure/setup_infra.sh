@@ -19,11 +19,9 @@ create_infrastructure(){
 }
 connect_cluster(){
     AKS_NAME=$(az aks list -g "$ENV_RESOURCE_GROUP_NAME" --query "[0].name" -o tsv)
-    echo "- Connect cluster $AKS_NAME"
-    SUBSCRIPTION_ID=$(az account subscription list --query "[0].subscriptionId" -o tsv)
-    
+    echo "- Connect to cluster $AKS_NAME"
+
     echo "- Add $AKS_NAME context to local .kubeconfig"
-    az account set --subscription "$SUBSCRIPTION_ID"
     az aks get-credentials \
     --resource-group "$ENV_RESOURCE_GROUP_NAME" \
     --name "$AKS_NAME" \
