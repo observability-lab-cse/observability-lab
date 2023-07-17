@@ -36,20 +36,11 @@ public class DevicesController {
 
     }
 
-    @PutMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public Device addOrUpdateDevice(@RequestBody Device device) {
-        return repository.save(device);
-    }
-
-    // -----------------------------------------------
-
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Device> updateDevice(@RequestBody String name) {
+    public Device createDevice(@RequestBody String name) {
         Device device = new Device(name);
-        repository.save(device);
-        return new ResponseEntity<Device>(device, HttpStatus.OK);
+        return repository.save(device);
     }
 
     @PutMapping("/{id}")
@@ -66,9 +57,6 @@ public class DevicesController {
         repository.save(device);
         return new ResponseEntity<Device>(device, HttpStatus.OK);
     }
-
-
-
 
 
     @GetMapping("/{id}")
