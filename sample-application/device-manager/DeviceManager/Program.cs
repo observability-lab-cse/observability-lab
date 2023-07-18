@@ -19,6 +19,9 @@ namespace DeviceManager
 
             var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
             logger.LogInformation("Telemetry generator started.");
+
+            // this is temporary to avoid the module from restarting
+            while (true) {}
         }
     }
 }
