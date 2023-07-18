@@ -64,5 +64,19 @@ To use it create a `.env` in the root of the project and add the following conte
 ```text
 ENV_RESOURCE_GROUP_NAME=<rg-name>
 ENV_LOCATION="westeurope"
-ENV_PROJECT_NAME=<project-name> # should just be letters or numbers
+ENV_PROJECT_NAME=<project-name> # should just be lowercase letters or numbers
+```
+
+To provision infrastructure and deploy applications to the cluster, run the following commands:
+
+```bash
+az login
+az account set --subscription <name or ID of your subscription>
+make
+```
+
+To deploy only the Devices Simulator use:
+
+```bash
+make deploy-devices-simulator
 ```
