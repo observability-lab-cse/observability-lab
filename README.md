@@ -6,9 +6,9 @@
 
   ```bash
   cd sample-application/devices-api
-  docker build -t acr<project-name>.azurecr.io/devices-api:v1 .
+  docker build -t acr<project-name>.azurecr.io/devices-api:latest .
   az acr login --name acr<project-name>
-  docker push acr<project-name>.azurecr.io/devices-api:v1
+  docker push acr<project-name>.azurecr.io/devices-api:latest
   ```
 
 * Modify deployment file and specify your project name in the image.
@@ -22,8 +22,8 @@
 
   ```bash
   cd sample-application/device-manager/DeviceManager
-  docker build -t acr<project-name>.azurecr.io/device-manager:v1 .
-  docker push acr<project-name>.azurecr.io/device-manager:v1
+  docker build -t acr<project-name>.azurecr.io/device-manager:latest .
+  docker push acr<project-name>.azurecr.io/device-manager:latest
   ```
 
 * Modify the [deployment file](./k8s-files/device-manager-deployment.yaml) and specify your project name in the image.
