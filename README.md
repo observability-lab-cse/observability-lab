@@ -30,7 +30,7 @@
 * Deploy device-manager
 
   ```bash
-  kubect apply -f k8s-files/device-manager-deployment.yaml
+  kubectl apply -f k8s-files/device-manager-deployment.yaml
   ```
 
 * Modify the Azure Monitor instrumentation key (`INSTRUMENTATION_KEY_PLACEHOLDER`) in the [`collector.yaml`](./k8s-files/collector.yaml) file.
