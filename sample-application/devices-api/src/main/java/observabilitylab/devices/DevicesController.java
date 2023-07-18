@@ -37,24 +37,14 @@ public class DevicesController {
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public Device createDevice(@RequestBody String name) {
-        Device device = new Device(name);
-        return repository.save(device);
-    }
+    public ResponseEntity<Device> createDevice(@RequestBody String name) {
+        List<Device> devices = repository.getDeviceByName(name);
 
-    @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Device> updateDevice(@PathVariable("id") String id, @RequestBody UpdateDevice updateDevice) {
-        Device device = repository.getDeviceById(id);
-
-        if (device == null) {
-            return new ResponseEntity<Device>((Device) null, HttpStatus.NOT_FOUND);
+        if (!devices.isEmpty()) {
+            return new ResponseEntity<Device>((Device) null, HttpStatus.CONFLICT);
         }
-
-        device.setValue(updateDevice.getValue());
-        device.setStatus(updateDevice.getStatus());
-        repository.save(device);
-        return new ResponseEntity<Device>(device, HttpStatus.OK);
+        Device newDevice = new Device(name);
+        return new ResponseEntity<Device>(repository.save(newDevice), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
@@ -73,5 +63,33 @@ public class DevicesController {
     @ResponseStatus(HttpStatus.OK)
     public void deleteDeviceById(@PathVariable("id") String id) {
         repository.deleteDeviceById(id);
+    }
+
+    @PutMapping("/names/{name}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<Device> updateDevice(@PathVariable("name") String name,
+            @RequestBody UpdateDevice updateDevice) {
+        List<Device> devices = repository.getDeviceByName(name);
+
+        if (devices.isEmpty()) {
+            return new ResponseEntity<Device>((Device) null, HttpStatus.NOT_FOUND);
+        }
+        Device device = devices.get(0);
+        device.setValue(updateDevice.getValue());
+        device.setStatus(updateDevice.getStatus());
+        repository.save(device);
+        return new ResponseEntity<Device>(device, HttpStatus.OK);
+    }
+
+    @GetMapping("/names/{name}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<Device> getDeviceByName(@PathVariable("name") String name) {
+        List<Device> devices = repository.getDeviceByName(name);
+
+        if (devices.isEmpty()) {
+            return new ResponseEntity<Device>((Device) null, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<Device>(devices.get(0), HttpStatus.OK);
+
     }
 }
