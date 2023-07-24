@@ -1,0 +1,96 @@
+
+using System.Text;
+using System.Text.Json;
+using Azure.Messaging.EventHubs.Processor;
+using Azure.Messaging.EventHubs;
+using Azure.Storage.Blobs;
+using Microsoft.Extensions.Logging;
+
+namespace DeviceManager
+{
+    class EventHubReceiverService
+    {
+        private readonly BlobContainerClient _storageClient;
+        private readonly EventProcessorClient _processor;
+        private readonly ILogger<EventHubReceiverService> _logger;
+
+
+        public EventHubReceiverService(
+            string storageConnectionString,
+            string blobContainerName,
+            string eventHubsConnectionString,
+            string eventHubName,
+            string consumerGroup,
+            ILogger<EventHubReceiverService> logger)
+        {
+            _logger = logger;
+            _storageClient = new BlobContainerClient(storageConnectionString, blobContainerName);
+            _processor = new EventProcessorClient(_storageClient, consumerGroup, eventHubsConnectionString, eventHubName);
+
+            _processor.ProcessEventAsync += ProcessEventHandler;
+            _processor.ProcessErrorAsync += ProcessErrorHandler;
+        }
+        private async Task<HttpResponseMessage?> UpdateDeviceData(DeviceMessage deviceMessage)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                try
+                {
+                    var baseUrl = Environment.GetEnvironmentVariable("DEVICE_API_URL");
+                    var requestBody = JsonSerializer.Serialize(new
+                    {
+                        value = deviceMessage.temp,
+                        status = "IN_USE"
+                    });
+
+                    var requestBodyContent = new StringContent(requestBody, Encoding.UTF8, "application/json");
+                    HttpResponseMessage response = await client.PutAsync($"{baseUrl}/devices/names/{deviceMessage.deviceId}", requestBodyContent);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string responseBody = await response.Content.ReadAsStringAsync();
+                        _logger.LogInformation(responseBody);
+                    }
+                    else
+                    {
+                        _logger.LogWarning($"Request failed with status code {response.StatusCode}");
+                    }
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"An error occurred: {ex.Message}");
+                    return null;
+                }
+            }
+        }
+        public async Task<HttpResponseMessage?> ProcessEventHandler(ProcessEventArgs eventArgs)
+        {
+            var messageBody = Encoding.UTF8.GetString(eventArgs.Data.Body.ToArray());
+            _logger.LogInformation("\tReceived event: {0}", messageBody);
+            var message = JsonSerializer.Deserialize<DeviceMessage>(messageBody);
+            return await UpdateDeviceData(message);
+
+        }
+
+        public Task ProcessErrorHandler(ProcessErrorEventArgs eventArgs)
+        {
+            _logger.LogError($"\tPartition '{eventArgs.PartitionId}': an unhandled exception was encountered. This was not expected to happen.");
+            _logger.LogError(eventArgs.Exception.Message);
+            return Task.CompletedTask;
+        }
+
+        public async Task StartProcessingAsync()
+        {
+            _logger.LogInformation("Start processing messages async...");
+            await _processor.StartProcessingAsync();
+        }
+
+        public async Task StopProcessingAsync()
+        {
+            _logger.LogInformation("Stop processing messages.");
+            await _processor.StopProcessingAsync();
+        }
+
+    }
+}

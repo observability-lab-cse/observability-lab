@@ -1,11 +1,7 @@
-﻿using System.Text;
-using Azure.Messaging.EventHubs;
-using Azure.Messaging.EventHubs.Processor;
-using Azure.Storage.Blobs;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using System.Diagnostics;
+
 
 namespace DeviceManager
 {
@@ -13,21 +9,7 @@ namespace DeviceManager
     {
         static async Task Main(string[] args)
         {
-
-            var serviceCollection = new ServiceCollection();
-
-            // Configure logging
-            serviceCollection.AddLogging(builder =>
-            {
-                builder.AddConsole();
-            });
-
-            var serviceProvider = serviceCollection.BuildServiceProvider();
-
-            var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
-            logger.LogInformation("Telemetry generator started.");
-
-
+            // TODO: bind them as configs
             var storageConnectionString = Environment.GetEnvironmentVariable("STORAGE_CONNECTION_STRING");
             var blobContainerName = Environment.GetEnvironmentVariable("BLOB_CONTAINER_NAME");
 
@@ -35,23 +17,34 @@ namespace DeviceManager
             var eventHubName = Environment.GetEnvironmentVariable("EVENTHUB_NAME");
             var consumerGroup = Environment.GetEnvironmentVariable("CONSUMER_GROUP");
 
+            var serviceCollection = new ServiceCollection();
+            // Configure logging 
+            serviceCollection.AddLogging(builder =>
+            {
+                builder.AddConsole();
+            });
+            serviceCollection.AddSingleton<EventHubReceiverService>(provider =>
+            {
+                var logger = provider.GetRequiredService<ILogger<EventHubReceiverService>>();
+                return new EventHubReceiverService(
+                    storageConnectionString,
+                    blobContainerName,
+                    eventHubsConnectionString,
+                    eventHubName,
+                    consumerGroup,
+                    logger);
+            });
 
-            var storageClient = new BlobContainerClient(storageConnectionString, blobContainerName);
-            var processor = new EventProcessorClient(storageClient, consumerGroup, eventHubsConnectionString, eventHubName);
+            var serviceProvider = serviceCollection.BuildServiceProvider();
 
-            processor.ProcessEventAsync += MessageHandler.ProcessEventHandler;
-            processor.ProcessErrorAsync += MessageHandler.ProcessErrorHandler;
+            var eventHubReceiverService = serviceProvider.GetRequiredService<EventHubReceiverService>();
 
-            // Start the processing
-            await processor.StartProcessingAsync();
+            await eventHubReceiverService.StartProcessingAsync();
 
-            // Wait for 30 seconds for the events to be processed
             await Task.Delay(TimeSpan.FromSeconds(30));
 
-            // Stop the processing
-            await processor.StopProcessingAsync();
+            await eventHubReceiverService.StopProcessingAsync();
         }
 
-   
     }
 }

@@ -2,8 +2,8 @@
 
 ## Prerequisites
 
-* CosmosDB account
-* Docker
+- CosmosDB account
+- Docker
 
 ## Set up
 
@@ -20,7 +20,7 @@ Replace the properties values from [launchSettings.json](Properties/launchSettin
 "DEVICE_API_URL":"http://localhost:8080"
 ```
 
-## Run locally 
+## Run locally
 
 ```bash
 cd sample-application/device-manager/DeviceManager
@@ -29,5 +29,7 @@ dotnet run
 ```
 
 ## Run locally from docker
+
 TBD
+
 ## Check results
