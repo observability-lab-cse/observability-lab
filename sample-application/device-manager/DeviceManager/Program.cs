@@ -9,13 +9,15 @@ namespace DeviceManager
     {
         static async Task Main(string[] args)
         {
-            var configuration = new ConfigurationBuilder().AddEnvironmentVariables()
+            var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json",true,true)
+                                                        .AddEnvironmentVariables()
                                                         .Build();
             var consumerGroup =  configuration.GetValue<string>("CONSUMER_GROUP");
             var storageConnectionString = configuration.GetValue<string>("STORAGE_CONNECTION_STRING");
             var blobContainerName = configuration.GetValue<string>("BLOB_CONTAINER_NAME"); 
             var eventHubsConnectionString = configuration.GetValue<string>("EVENTHUBS_CONNECTION_STRING");
             var eventHubName = configuration.GetValue<string>("EVENTHUB_NAME");
+            var deviceApiUrl = configuration.GetValue<string>("DEVICE_API_URL");
             
             var serviceCollection = new ServiceCollection();
             serviceCollection.AddLogging(builder =>
@@ -31,6 +33,7 @@ namespace DeviceManager
                     eventHubsConnectionString,
                     eventHubName,
                     consumerGroup,
+                    deviceApiUrl,
                     logger);
             });
 
@@ -40,7 +43,7 @@ namespace DeviceManager
 
             await eventHubReceiverService.StartProcessingAsync();
 
-            await Task.Delay(TimeSpan.FromSeconds(30));
+            await Task.Delay(TimeSpan.FromSeconds(300));
 
             await eventHubReceiverService.StopProcessingAsync();
         }

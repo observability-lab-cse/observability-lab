@@ -30,6 +30,18 @@ dotnet run
 
 ## Run locally from docker
 
-TBD
+```bash
+cd sample-application/device-manager/DeviceManager
+
+docker build -t devices-manager .
+docker run devices-manager .
+```
 
 ## Check results
+
+When application starts running, you should see messages being received and processed
+
+```text
+info: DeviceManager.EventHubReceiverService[0]
+Received event: {"deviceId": "device-42", "deviceTimestamp": "2023-07-17T17:41:52.8690130Z", "temp": 23.70572735914296}
+```

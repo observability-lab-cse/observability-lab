@@ -13,6 +13,7 @@ namespace DeviceManager
         private readonly BlobContainerClient _storageClient;
         private readonly EventProcessorClient _processor;
         private readonly ILogger<EventHubReceiverService> _logger;
+        private string _baseUrl;
 
 
         public EventHubReceiverService(
@@ -21,6 +22,7 @@ namespace DeviceManager
             string? eventHubsConnectionString,
             string? eventHubName,
             string? consumerGroup,
+            string? baseUrl,
             ILogger<EventHubReceiverService> logger)
         {
             ArgumentNullException.ThrowIfNull(storageConnectionString);
@@ -28,7 +30,9 @@ namespace DeviceManager
             ArgumentNullException.ThrowIfNull(eventHubsConnectionString);
             ArgumentNullException.ThrowIfNull(eventHubName);
             ArgumentNullException.ThrowIfNull(consumerGroup);
+            ArgumentNullException.ThrowIfNull(baseUrl);
             _logger = logger;
+            _baseUrl = baseUrl;
             _storageClient = new BlobContainerClient(storageConnectionString, blobContainerName);
             _processor = new EventProcessorClient(_storageClient, consumerGroup, eventHubsConnectionString, eventHubName);
 
@@ -41,15 +45,14 @@ namespace DeviceManager
             {
                 try
                 {
-                    var baseUrl = Environment.GetEnvironmentVariable("DEVICE_API_URL");
                     var requestBody = JsonSerializer.Serialize(new
                     {
                         value = deviceMessage.temp,
                         status = "IN_USE"
                     });
-
+                    _logger.LogInformation($"Update device {deviceMessage.deviceId} with message {requestBody} calling {_baseUrl}/devices/names/{deviceMessage.deviceId}");
                     var requestBodyContent = new StringContent(requestBody, Encoding.UTF8, "application/json");
-                    HttpResponseMessage response = await client.PutAsync($"{baseUrl}/devices/names/{deviceMessage.deviceId}", requestBodyContent);
+                    HttpResponseMessage response = await client.PutAsync($"{_baseUrl}/devices/names/{deviceMessage.deviceId}", requestBodyContent);
 
                     if (response.IsSuccessStatusCode)
                     {
