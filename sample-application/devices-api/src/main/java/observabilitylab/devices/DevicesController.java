@@ -10,13 +10,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping(path = "/devices")
@@ -29,7 +30,7 @@ public class DevicesController {
     public ResponseEntity<List<Device>> getDevices() {
         List<Device> devices = repository.findAll();
         if (devices == null) {
-            return new ResponseEntity<List<Device>>(devices, HttpStatus.NOT_FOUND);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<List<Device>>(devices, HttpStatus.OK);
 
@@ -42,13 +43,12 @@ public class DevicesController {
         return repository.save(device);
     }
 
-    @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.CREATED)
+    @PatchMapping("/{id}")
     public ResponseEntity<Device> updateDevice(@PathVariable("id") String id, @RequestBody UpdateDevice updateDevice) {
         Device device = repository.getDeviceById(id);
 
         if (device == null) {
-            return new ResponseEntity<Device>((Device) null, HttpStatus.NOT_FOUND);
+           throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Device with id %s not found".formatted(id));
         }
 
         device.setValue(updateDevice.getValue());
@@ -58,12 +58,11 @@ public class DevicesController {
     }
 
     @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Device> getDeviceById(@PathVariable("id") String id) {
         Device device = repository.getDeviceById(id);
 
         if (device == null) {
-            return new ResponseEntity<Device>((Device) null, HttpStatus.NOT_FOUND);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Device with id %s not found".formatted(id));
         }
         return new ResponseEntity<Device>(device, HttpStatus.OK);
 
