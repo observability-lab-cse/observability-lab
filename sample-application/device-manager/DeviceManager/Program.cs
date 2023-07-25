@@ -9,16 +9,15 @@ namespace DeviceManager
     {
         static async Task Main(string[] args)
         {
-            // TODO: bind them as configs
-            var storageConnectionString = Environment.GetEnvironmentVariable("STORAGE_CONNECTION_STRING");
-            var blobContainerName = Environment.GetEnvironmentVariable("BLOB_CONTAINER_NAME");
-
-            var eventHubsConnectionString = Environment.GetEnvironmentVariable("EVENTHUBS_CONNECTION_STRING");
-            var eventHubName = Environment.GetEnvironmentVariable("EVENTHUB_NAME");
-            var consumerGroup = Environment.GetEnvironmentVariable("CONSUMER_GROUP");
-
+            var configuration = new ConfigurationBuilder().AddEnvironmentVariables()
+                                                        .Build();
+            var consumerGroup =  configuration.GetValue<string>("CONSUMER_GROUP");
+            var storageConnectionString = configuration.GetValue<string>("STORAGE_CONNECTION_STRING");
+            var blobContainerName = configuration.GetValue<string>("BLOB_CONTAINER_NAME"); 
+            var eventHubsConnectionString = configuration.GetValue<string>("EVENTHUBS_CONNECTION_STRING");
+            var eventHubName = configuration.GetValue<string>("EVENTHUB_NAME");
+            
             var serviceCollection = new ServiceCollection();
-            // Configure logging 
             serviceCollection.AddLogging(builder =>
             {
                 builder.AddConsole();

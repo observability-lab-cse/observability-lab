@@ -16,13 +16,18 @@ namespace DeviceManager
 
 
         public EventHubReceiverService(
-            string storageConnectionString,
-            string blobContainerName,
-            string eventHubsConnectionString,
-            string eventHubName,
-            string consumerGroup,
+            string? storageConnectionString,
+            string? blobContainerName,
+            string? eventHubsConnectionString,
+            string? eventHubName,
+            string? consumerGroup,
             ILogger<EventHubReceiverService> logger)
         {
+            ArgumentNullException.ThrowIfNull(storageConnectionString);
+            ArgumentNullException.ThrowIfNull(blobContainerName);
+            ArgumentNullException.ThrowIfNull(eventHubsConnectionString);
+            ArgumentNullException.ThrowIfNull(eventHubName);
+            ArgumentNullException.ThrowIfNull(consumerGroup);
             _logger = logger;
             _storageClient = new BlobContainerClient(storageConnectionString, blobContainerName);
             _processor = new EventProcessorClient(_storageClient, consumerGroup, eventHubsConnectionString, eventHubName);
