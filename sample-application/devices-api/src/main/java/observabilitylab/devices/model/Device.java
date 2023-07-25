@@ -1,10 +1,10 @@
 package observabilitylab.devices.model;
 
-import org.springframework.data.annotation.Id;
-
 import com.azure.spring.data.cosmos.core.mapping.Container;
 import com.azure.spring.data.cosmos.core.mapping.GeneratedValue;
 import com.azure.spring.data.cosmos.core.mapping.PartitionKey;
+import org.springframework.data.annotation.Id;
+
 
 @Container(containerName = "devicesContainer", ru = "400")
 public class Device {
@@ -18,14 +18,14 @@ public class Device {
 
     private Double value;
 
-    private Status status;
+    private DeviceStatus status;
 
     public Device(String name) {
         this.name = name;
-        this.status = Status.NEW;
+        this.status = DeviceStatus.NEW;
     }
 
-    public Device(String name, Double value, Status status)
+    public Device(String name, Double value, DeviceStatus status)
     {
         this.name = name;
         this.value = value;
@@ -44,7 +44,7 @@ public class Device {
         return value;
     }
 
-    public Status getStatus() {
+    public DeviceStatus getStatus() {
         return status;
     }
 
@@ -52,7 +52,7 @@ public class Device {
         this.value = value;
     }
 
-    public void setStatus(Status status) {
+    public void setStatus(DeviceStatus status) {
         this.status = status;
     }
     
@@ -61,9 +61,4 @@ public class Device {
         return "Device [id=" + id + ", name=" + name + "]";
     }
 
-    enum Status {
-        NEW,
-        IN_USE,
-        ERROR
-    }
 }

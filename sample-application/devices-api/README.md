@@ -36,6 +36,12 @@ docker run -p 8080:8080 devices-api .
 
 ## Check results
 
+You should get redirected to the swagger if you go to the root url `http://localhost:8080/` 
+
+> Note: In case of redirect issues the swagger url is the following `http://localhost:8080/swagger-ui.html`
+
+or 
+
 Go to http://localhost:8080/devices. The response should be `[]`
 
 ## Telemetry
