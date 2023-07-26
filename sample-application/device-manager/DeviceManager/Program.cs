@@ -26,7 +26,6 @@ namespace DeviceManager
             {
                 builder.AddConsole();
             });
-            Console.WriteLine(consumerGroup);
             serviceCollection.AddSingleton<EventHubReceiverService>(provider =>
             {
                 var logger = provider.GetRequiredService<ILogger<EventHubReceiverService>>();
