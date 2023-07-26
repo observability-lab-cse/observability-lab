@@ -41,16 +41,17 @@ public class DevicesController {
 
     }
 
-    @PostMapping()
-    public ResponseEntity<Device> createDevice(@RequestBody String name) {
+    @GetMapping("/names/{name}")
+    public ResponseEntity<Device> getDeviceByName(@PathVariable("name") String name) {
         List<Device> devices = repository.getDeviceByName(name);
-        if (!devices.isEmpty()) {
-            logger.warn("Device with name %s already exists".formatted(name));
-            return new ResponseEntity<Device>((Device) null, HttpStatus.CONFLICT);
+
+        logger.info("GET device with name %s".formatted(name));
+        if (devices.isEmpty()) {
+            logger.warn("Device with name %s not found".formatted(name));
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Device with name %s not found".formatted(name));
         }
-        logger.info("Create device with name %s".formatted(name));
-        Device newDevice = new Device(name);
-        return new ResponseEntity<Device>(repository.save(newDevice), HttpStatus.CREATED);
+        return new ResponseEntity<Device>(devices.get(0), HttpStatus.OK);
+
     }
 
     @GetMapping("/{id}")
@@ -65,16 +66,16 @@ public class DevicesController {
 
     }
 
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public void deleteDeviceById(@PathVariable("id") String id) {
-        logger.info("DELETE device with id %s".formatted(id));
-        Device device = repository.getDeviceById(id);
-        if (device == null) {
-            logger.warn("Device with id %s not found".formatted(id));
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Device with id %s not found".formatted(id));
+    @PostMapping()
+    public ResponseEntity<Device> createDevice(@RequestBody String name) {
+        List<Device> devices = repository.getDeviceByName(name);
+        if (!devices.isEmpty()) {
+            logger.warn("Device with name %s already exists".formatted(name));
+            return new ResponseEntity<Device>((Device) null, HttpStatus.CONFLICT);
         }
-        repository.deleteDeviceById(id);
+        logger.info("Create device with name %s".formatted(name));
+        Device newDevice = new Device(name);
+        return new ResponseEntity<Device>(repository.save(newDevice), HttpStatus.CREATED);
     }
 
     @PutMapping("/names/{name}")
@@ -93,16 +94,16 @@ public class DevicesController {
         return new ResponseEntity<Device>(device, HttpStatus.OK);
     }
 
-    @GetMapping("/names/{name}")
-    public ResponseEntity<Device> getDeviceByName(@PathVariable("name") String name) {
-        List<Device> devices = repository.getDeviceByName(name);
-
-        logger.info("GET device with name %s".formatted(name));
-        if (devices.isEmpty()) {
-            logger.warn("Device with name %s not found".formatted(name));
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Device with name %s not found".formatted(name));
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteDeviceById(@PathVariable("id") String id) {
+        logger.info("DELETE device with id %s".formatted(id));
+        Device device = repository.getDeviceById(id);
+        if (device == null) {
+            logger.warn("Device with id %s not found".formatted(id));
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Device with id %s not found".formatted(id));
         }
-        return new ResponseEntity<Device>(devices.get(0), HttpStatus.OK);
-
+        repository.deleteDeviceById(id);
     }
+
 }
