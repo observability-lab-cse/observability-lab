@@ -12,11 +12,20 @@ services:
 
   device-manager:
     container_name: device-manager
+    depends_on:
+      - devices-api
     build:
       context: device-manager/DeviceManager
       dockerfile: Dockerfile
+    env_file:
+      - otel-dotnet.env # enable OpenTelemetry .NET Automatic Instrumentation
     ports:
       - "8090:8090"
+    environment:
+      OTEL_SERVICE_NAME: "device-manager"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4318"
+      DEVICE_API_URL: "http://devices-api:8080"
+
 
   otel-collector:
     image: otel/opentelemetry-collector-contrib:latest
