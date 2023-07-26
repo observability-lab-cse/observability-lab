@@ -42,7 +42,6 @@ public class DevicesController {
     }
 
     @PostMapping()
-    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Device> createDevice(@RequestBody String name) {
         List<Device> devices = repository.getDeviceByName(name);
         if (!devices.isEmpty()) {
@@ -70,17 +69,21 @@ public class DevicesController {
     @ResponseStatus(HttpStatus.OK)
     public void deleteDeviceById(@PathVariable("id") String id) {
         logger.info("DELETE device with id %s".formatted(id));
+        Device device = repository.getDeviceById(id);
+        if (device == null) {
+            logger.warn("Device with id %s not found".formatted(id));
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Device with id %s not found".formatted(id));
+        }
         repository.deleteDeviceById(id);
     }
 
     @PutMapping("/names/{name}")
-    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Device> updateDevice(@PathVariable("name") String name,
             @RequestBody UpdateDevice updateDevice) {
         List<Device> devices = repository.getDeviceByName(name);
         if (devices.isEmpty()) {
             logger.warn("Device with name %s not found".formatted(name));
-            return new ResponseEntity<Device>((Device) null, HttpStatus.NOT_FOUND);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Device with name %s not found".formatted(name));
         }
         Device device = devices.get(0);
         device.setValue(updateDevice.getValue());
@@ -91,14 +94,13 @@ public class DevicesController {
     }
 
     @GetMapping("/names/{name}")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Device> getDeviceByName(@PathVariable("name") String name) {
         List<Device> devices = repository.getDeviceByName(name);
 
         logger.info("GET device with name %s".formatted(name));
         if (devices.isEmpty()) {
             logger.warn("Device with name %s not found".formatted(name));
-            return new ResponseEntity<Device>((Device) null, HttpStatus.NOT_FOUND);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Device with name %s not found".formatted(name));
         }
         return new ResponseEntity<Device>(devices.get(0), HttpStatus.OK);
 
