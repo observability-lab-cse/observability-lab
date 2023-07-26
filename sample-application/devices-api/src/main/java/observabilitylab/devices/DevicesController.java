@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping(path = "/devices")
@@ -34,7 +35,7 @@ public class DevicesController {
         List<Device> devices = repository.findAll();
         if (devices == null) {
             logger.warn("Device list is null");
-            return new ResponseEntity<List<Device>>(devices, HttpStatus.NOT_FOUND);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<List<Device>>(devices, HttpStatus.OK);
 
@@ -54,13 +55,12 @@ public class DevicesController {
     }
 
     @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Device> getDeviceById(@PathVariable("id") String id) {
         Device device = repository.getDeviceById(id);
         logger.info("GET device with id %s".formatted(id));
         if (device == null) {
             logger.warn("Device with id %s not found".formatted(id));
-            return new ResponseEntity<Device>((Device) null, HttpStatus.NOT_FOUND);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Device with id %s not found".formatted(id));
         }
         return new ResponseEntity<Device>(device, HttpStatus.OK);
 
