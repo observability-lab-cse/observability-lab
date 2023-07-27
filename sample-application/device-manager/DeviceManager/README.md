@@ -1,4 +1,4 @@
-# Sample Java App
+# Sample C# Device Manager Service
 
 ## Prerequisites
 
@@ -9,7 +9,7 @@
 
 Open the project in VS Code using dev containers [configuration file](../../.devcontainer/devcontainer.json).
 
-Replace the properties values from [launchSettings.json](Properties/launchSettings.json) with the CosmosDB and EventHub properties:
+Replace the values from [appsettings.json](appsettings.json) with the CosmosDB and EventHub properties:
 
 ```text
 "EVENTHUBS_CONNECTION_STRING": "<>",
@@ -19,6 +19,7 @@ Replace the properties values from [launchSettings.json](Properties/launchSettin
 "CONSUMER_GROUP": "devicemanager",
 "DEVICE_API_URL":"http://localhost:8080"
 ```
+> Note: When running the devices-api service locally you can keep the url domain to be `localhost`. However, as soon as you run the service in a container replace the domain with the service name.
 
 ## Run locally
 
