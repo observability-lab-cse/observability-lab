@@ -4,6 +4,7 @@
 
 - CosmosDB account
 - Docker
+- EventHub
 
 ## Set up
 

@@ -75,7 +75,7 @@ namespace DeviceManager
         public async Task<HttpResponseMessage?> ProcessEventHandler(ProcessEventArgs eventArgs)
         {
             var messageBody = Encoding.UTF8.GetString(eventArgs.Data.Body.ToArray());
-            _logger.LogInformation("\tReceived event: {0}", messageBody);
+            _logger.LogDebug($"Received event: {messageBody}");
             var message = JsonSerializer.Deserialize<DeviceMessage>(messageBody);
             return await UpdateDeviceData(message);
 
@@ -83,8 +83,7 @@ namespace DeviceManager
 
         public Task ProcessErrorHandler(ProcessErrorEventArgs eventArgs)
         {
-            _logger.LogError($"\tPartition '{eventArgs.PartitionId}': an unhandled exception was encountered. This was not expected to happen.");
-            _logger.LogError(eventArgs.Exception.Message);
+            _logger.LogError($"\tPartition '{eventArgs.PartitionId}': {eventArgs.Exception.Message}");
             return Task.CompletedTask;
         }
 
