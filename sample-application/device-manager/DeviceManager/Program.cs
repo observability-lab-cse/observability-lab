@@ -1,27 +1,51 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+
 
 namespace DeviceManager
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
+            var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json",true,true)
+                                                        .Build();
+            var consumerGroup =  configuration.GetValue<string>("CONSUMER_GROUP");
+            var storageConnectionString = configuration.GetValue<string>("STORAGE_CONNECTION_STRING");
+            var blobContainerName = configuration.GetValue<string>("BLOB_CONTAINER_NAME"); 
+            var eventHubsConnectionString = configuration.GetValue<string>("EVENT_HUB_CONNECTION_STRING");
+            var eventHubName = configuration.GetValue<string>("EVENTHUB_NAME");
+            var deviceApiUrl = configuration.GetValue<string>("DEVICE_API_URL");
+            
             var serviceCollection = new ServiceCollection();
-
-            // Configure logging
             serviceCollection.AddLogging(builder =>
             {
                 builder.AddConsole();
             });
+            serviceCollection.AddSingleton<EventHubReceiverService>(provider =>
+            {
+                var logger = provider.GetRequiredService<ILogger<EventHubReceiverService>>();
+                return new EventHubReceiverService(
+                    storageConnectionString,
+                    blobContainerName,
+                    eventHubsConnectionString,
+                    eventHubName,
+                    consumerGroup,
+                    deviceApiUrl,
+                    logger);
+            });
 
             var serviceProvider = serviceCollection.BuildServiceProvider();
 
-            var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
-            logger.LogInformation("Telemetry generator started.");
+            var eventHubReceiverService = serviceProvider.GetRequiredService<EventHubReceiverService>();
 
-            // this is temporary to avoid the module from restarting
-            while (true) {}
+            await eventHubReceiverService.StartProcessingAsync();
+
+            await Task.Delay(TimeSpan.FromSeconds(300));
+
+            await eventHubReceiverService.StopProcessingAsync();
         }
+
     }
 }

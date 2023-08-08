@@ -30,4 +30,8 @@ public class UpdateDevice {
     public void setStatus(DeviceStatus status) {
         this.status = status;
     }
+    @Override
+    public String toString() {
+        return "UpdateDevice [value=" + value + ", status=" + status + "]";
+    }
 }
