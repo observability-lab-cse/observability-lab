@@ -10,7 +10,6 @@ namespace DeviceManager
         static async Task Main(string[] args)
         {
             var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json",true,true)
-                                                        .AddEnvironmentVariables()
                                                         .Build();
             var consumerGroup =  configuration.GetValue<string>("CONSUMER_GROUP");
             var storageConnectionString = configuration.GetValue<string>("STORAGE_CONNECTION_STRING");
