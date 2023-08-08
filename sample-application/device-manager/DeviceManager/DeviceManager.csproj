@@ -8,6 +8,10 @@
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>.</DockerfileContext>
   </PropertyGroup>
+  
+  <ItemGroup>
+    <None Include="appsettings.json" CopyToOutputDirectory="Always" CopyToPublishDirectory="Always" />
+  </ItemGroup>
 
   <ItemGroup>
     <Content Include="appsettings.json">

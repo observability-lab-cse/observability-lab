@@ -10,13 +10,11 @@ namespace DeviceManager
     {
         static async Task Main(string[] args)
         {
-            var configuration = new ConfigurationBuilder()
-                                                        .AddJsonFile("appsettings.json", true, true)
-                                                        .AddEnvironmentVariables()
+            var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json",true,true)
                                                         .Build();
             var consumerGroup = configuration.GetValue<string>("CONSUMER_GROUP");
             var blobContainerName = configuration.GetValue<string>("BLOB_CONTAINER_NAME");
-            var storageConnectionString = configuration.GetValue<string>("STORAGE_CONNECTION_STRING");
+            var storageConnectionString = configuration.GetValue<string>("STORAGE_CONNECTION_STRING"); 
             var eventHubsConnectionString = configuration.GetValue<string>("EVENT_HUB_CONNECTION_STRING");
             var eventHubName = configuration.GetValue<string>("EVENTHUB_NAME");
             var deviceApiUrl = configuration.GetValue<string>("DEVICE_API_URL");
