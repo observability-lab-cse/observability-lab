@@ -30,7 +30,7 @@ namespace DeviceManager
                 return new EventHubReceiverService(
                     storageConnectionString,
                     blobContainerName,
-                    eventHubsConnectionString,
+                    eventHubConnectionString,
                     eventHubName,
                     consumerGroup,
                     deviceApiUrl,

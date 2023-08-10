@@ -13,10 +13,10 @@ Open the project in VS Code using dev containers [configuration file](../../.dev
 Replace the values from [appsettings.json](appsettings.json) with the CosmosDB and EventHub properties:
 
 ```text
-"EVENTHUBS_CONNECTION_STRING": "<>",
+"EVENT_HUB_CONNECTION_STRING": "<>",
 "STORAGE_CONNECTION_STRING": "<>",
 "BLOB_CONTAINER_NAME": "<>",
-"EVENTHUB_NAME": "<>",
+"EVEN_THUB_NAME": "<>",
 "CONSUMER_GROUP": "devicemanager",
 "DEVICE_API_URL":"http://localhost:8080"
 ```
@@ -35,8 +35,8 @@ dotnet run
 ```bash
 cd sample-application/device-manager/DeviceManager
 
-docker build -t devices-manager .
-docker run devices-manager .
+docker build -t device-manager .
+docker run device-manager .
 ```
 
 ## Check results
