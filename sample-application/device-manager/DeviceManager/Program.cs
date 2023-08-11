@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration.Json;
 
 
 namespace DeviceManager
@@ -11,13 +12,13 @@ namespace DeviceManager
         {
             var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json",true,true)
                                                         .Build();
-            var consumerGroup =  configuration.GetValue<string>("CONSUMER_GROUP");
-            var storageConnectionString = configuration.GetValue<string>("STORAGE_CONNECTION_STRING");
-            var blobContainerName = configuration.GetValue<string>("BLOB_CONTAINER_NAME"); 
-            var eventHubsConnectionString = configuration.GetValue<string>("EVENT_HUB_CONNECTION_STRING");
-            var eventHubName = configuration.GetValue<string>("EVENTHUB_NAME");
+            var consumerGroup = configuration.GetValue<string>("CONSUMER_GROUP");
+            var blobContainerName = configuration.GetValue<string>("BLOB_CONTAINER_NAME");
+            var storageConnectionString = configuration.GetValue<string>("STORAGE_CONNECTION_STRING"); 
+            var eventHubConnectionString = configuration.GetValue<string>("EVENT_HUB_CONNECTION_STRING");
+            var eventHubName = configuration.GetValue<string>("EVENT_HUB_NAME");
             var deviceApiUrl = configuration.GetValue<string>("DEVICE_API_URL");
-            
+
             var serviceCollection = new ServiceCollection();
             serviceCollection.AddLogging(builder =>
             {
@@ -29,7 +30,7 @@ namespace DeviceManager
                 return new EventHubReceiverService(
                     storageConnectionString,
                     blobContainerName,
-                    eventHubsConnectionString,
+                    eventHubConnectionString,
                     eventHubName,
                     consumerGroup,
                     deviceApiUrl,
