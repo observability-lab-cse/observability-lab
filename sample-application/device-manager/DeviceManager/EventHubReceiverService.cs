@@ -75,10 +75,13 @@ namespace DeviceManager
         public async Task<HttpResponseMessage?> ProcessEventHandler(ProcessEventArgs eventArgs)
         {
             var messageBody = Encoding.UTF8.GetString(eventArgs.Data.Body.ToArray());
-            _logger.LogDebug($"Received event: {messageBody}");
+            _logger.LogInformation($"Received event: {messageBody}");
             var message = JsonSerializer.Deserialize<DeviceMessage>(messageBody);
-            return await UpdateDeviceData(message);
-
+            var response = await UpdateDeviceData(message);
+            // TODO: Checkpointing per message is not recommended.
+            // This is a temporal solution. Also should we do anything when the response is not successful?
+            await eventArgs.UpdateCheckpointAsync(eventArgs.CancellationToken);
+            return response;
         }
 
         public Task ProcessErrorHandler(ProcessErrorEventArgs eventArgs)
