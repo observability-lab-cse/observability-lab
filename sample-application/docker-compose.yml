@@ -41,6 +41,6 @@ services:
       EventHubConnectionString: ${EVENT_HUB_CONNECTION_STRING}
       DeviceList: 'device-01,device-42' # Specify your device names
       MessageCount: 0 # send unlimited
-      Interval: 1000
+      Interval: 60000 # each device sends message every 1 minute
       Template: '{"deviceId": "$.DeviceId", "deviceTimestamp": "$.Time", "temp": $.DoubleValue}'
       Variables: '[{"name": "DoubleValue", "randomDouble":true, "min":20.00, "max":28.00}]'

@@ -33,7 +33,7 @@ spec:
             - name: MessageCount
               value: '0' # send unlimited
             - name: Interval
-              value: '1000'
+              value: '60000' # each device sends message every 1 minute
             - name: Template
               value: '{"deviceId": "$.DeviceId", "deviceTimestamp": "$.Time", "temp": $.DoubleValue}'
             - name: Variables
