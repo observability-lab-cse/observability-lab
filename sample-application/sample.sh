@@ -43,6 +43,20 @@ deploy(){
     echo ""
 }
 
+deploy_otel_collector(){
+    echo "- DEPLOY Open Telemetry Collector"
+    AKS_NAME=$(az aks list -g "$ENV_RESOURCE_GROUP_NAME" --query "[0].name" -o tsv)
+    az aks get-credentials \
+    --resource-group "$ENV_RESOURCE_GROUP_NAME" \
+    --name "$AKS_NAME" \
+    --overwrite-existing
+
+    APP_INSIGHTS_INSTRUMENTATION_KEY=$(az graph query -q "Resources | where type =~ 'microsoft.insights/components' and name =~ 'appi-$ENV_PROJECT_NAME' and resourceGroup =~ '$ENV_RESOURCE_GROUP_NAME' | project properties.InstrumentationKey" | jq -r '.data[0].properties_InstrumentationKey')
+    cat k8s-files/collector.yaml | sed -e "s#INSTRUMENTATION_KEY_PLACEHOLDER#$APP_INSIGHTS_INSTRUMENTATION_KEY#" | kubectl apply -f  -
+    kubectl apply -f k8s-files/otel-collector-deployment.yaml
+    echo ""
+}
+
 deploy_devices_simulator(){
     echo "- DEPLOY Devices Simulator"
     AKS_NAME=$(az aks list -g "$ENV_RESOURCE_GROUP_NAME" --query "[0].name" -o tsv)
@@ -70,6 +84,10 @@ run_main() {
         elif [[ "$1" == "--deploy" ]] || [[ "$1" == "-d" ]]; then
         echo "--- Deploy to AKS Cluster  ---"
         deploy
+        exit 0
+        elif [[ "$1" == "--deploy_otel_collector" ]]; then
+        echo "--- Deploy to AKS Cluster  ---"
+        deploy_otel_collector
         exit 0
         elif [[ "$1" == "--deploy_devices_simulator" ]]; then
         echo "--- Deploy to AKS Cluster  ---"
