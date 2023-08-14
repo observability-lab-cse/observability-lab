@@ -58,6 +58,7 @@ module eventHub './event_hub.bicep' = {
     eventHubNamespaceName: 'evhns-${projectName}'
     eventHubName: 'evh-${projectName}'
     location: location
+    storageAccountName: 'st${projectName}'
   }
 }
 

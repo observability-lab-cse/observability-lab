@@ -4,6 +4,9 @@ param eventHubNamespaceName string
 @description('The name of the Event Hub')
 param eventHubName string
 
+@description('The name of the Storage Account needed for storing Event Hub ownership and checkpointing data')
+param storageAccountName string
+
 @description('Location for the Event Hub Namespace')
 param location string
 
@@ -26,7 +29,7 @@ resource eventHub 'Microsoft.EventHub/namespaces/eventhubs@2022-01-01-preview' =
   }
 }
 
-resource authorizationRule 'Microsoft.EventHub/namespaces/eventhubs/authorizationRules@2022-01-01-preview' = {
+resource sendAuthorizationRule 'Microsoft.EventHub/namespaces/eventhubs/authorizationRules@2022-01-01-preview' = {
   name: 'Send'
   parent: eventHub
   properties: {
@@ -36,7 +39,36 @@ resource authorizationRule 'Microsoft.EventHub/namespaces/eventhubs/authorizatio
   }
 }
 
+resource listenAuthorizationRule 'Microsoft.EventHub/namespaces/eventhubs/authorizationRules@2022-01-01-preview' = {
+  name: 'Listen'
+  parent: eventHub
+  properties: {
+    rights: [
+      'Listen'
+    ]
+  }
+}
+
 resource consumerGroup 'Microsoft.EventHub/namespaces/eventhubs/consumergroups@2022-01-01-preview' = {
   name: 'DeviceManager'
   parent: eventHub
+}
+
+resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
+  name: storageAccountName
+  location: location
+  sku: {
+    name: 'Standard_LRS'
+  }
+  kind: 'StorageV2'
+}
+
+resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2022-09-01' = {
+  parent: storageAccount
+  name: 'default'
+}
+
+resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@2022-09-01' = {
+  name: 'event-hub-data'
+  parent: blobService
 }
