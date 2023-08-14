@@ -17,10 +17,6 @@ push:
 	@echo "Build and push application"
 	@bash ./sample-application/sample.sh --push
 
-run:
-	@echo "Run application localy"
-	@bash ./sample-application/sample.sh --run
-
 deploy:
 	@echo "Deploy application to AKS"
 	@bash ./sample-application/sample.sh --deploy
