@@ -32,6 +32,12 @@ spec:
               value: "http://opentelemetrycollector:4317"
             - name: OTEL_LOGS_EXPORTER
               value: otlp
+            - name: COSMOS_DB_URI
+              value: COSMOS_DB_URI_PLACEHOLDER
+            - name: COSMOS_DB_KEY
+              value: COSMOS_DB_KEY_PLACEHOLDER
+            - name: COSMOS_DB_NAME
+              value: COSMOS_DB_NAME_PLACEHOLDER
 
 ---
 

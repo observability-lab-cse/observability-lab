@@ -32,6 +32,16 @@ spec:
               value: "http://opentelemetrycollector:4317"
             - name: OTEL_LOGS_EXPORTER
               value: otlp
+            - name: EVENT_HUB_CONNECTION_STRING
+              value: EVENT_HUB_LISTEN_POLICY_CONNECTION_STRING_PLACEHOLDER
+            - name: STORAGE_CONNECTION_STRING
+              value: STORAGE_CONNECTION_STRING_PLACEHOLDER
+            - name: BLOB_CONTAINER_NAME
+              value: event-hub-data
+            - name: EVENT_HUB_NAME
+              value: EVENT_HUB_NAME_PLACEHOLDER
+            - name: DEVICE_API_URL
+              value: "http://devices-api-service:8080"
 
 ---
 

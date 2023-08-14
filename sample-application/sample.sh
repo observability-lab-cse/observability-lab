@@ -37,9 +37,26 @@ deploy(){
     --resource-group "$ENV_RESOURCE_GROUP_NAME" \
     --name "$AKS_NAME" \
     --overwrite-existing
+
+    COSMOS_DB_URI=$(az cosmosdb show --name cosmos-$ENV_PROJECT_NAME --resource-group $ENV_RESOURCE_GROUP_NAME --query documentEndpoint)
+    COSMOS_DB_KEY=$(az cosmosdb keys list --name cosmos-$ENV_PROJECT_NAME --resource-group $ENV_RESOURCE_GROUP_NAME --type keys --query primaryMasterKey)
+    cat k8s-files/devices-api-deployment.yaml | \
+    sed -e "s/\${project-name}/$ENV_PROJECT_NAME/" \
+        -e "s#COSMOS_DB_URI_PLACEHOLDER#$COSMOS_DB_URI#" \
+        -e "s#COSMOS_DB_KEY_PLACEHOLDER#$COSMOS_DB_KEY#" \
+        -e "s#COSMOS_DB_NAME_PLACEHOLDER#cosmos-db-$ENV_PROJECT_NAME#" | \
+    kubectl apply -f  -
+
+    EVENT_HUB_CONNECTION_STRING=$(az eventhubs eventhub authorization-rule keys list --resource-group "$ENV_RESOURCE_GROUP_NAME" --namespace-name evhns-"$ENV_PROJECT_NAME" --eventhub-name evh-"$ENV_PROJECT_NAME" --name Listen  --query primaryConnectionString -o tsv)
+    STORAGE_CONNECTION_STRING=$(az storage account show-connection-string --name st$ENV_PROJECT_NAME --resource-group $ENV_RESOURCE_GROUP_NAME -o tsv)
     
-    cat k8s-files/devices-api-deployment.yaml | sed -e "s/\${project-name}/$ENV_PROJECT_NAME/" | kubectl apply -f  -
-    cat k8s-files/device-manager-deployment.yaml | sed -e "s/\${project-name}/$ENV_PROJECT_NAME/" | kubectl apply -f  -
+    cat k8s-files/device-manager-deployment.yaml | \
+    sed -e "s/\${project-name}/$ENV_PROJECT_NAME/" \
+        -e "s#EVENT_HUB_LISTEN_POLICY_CONNECTION_STRING_PLACEHOLDER#$EVENT_HUB_CONNECTION_STRING#" \
+        -e "s#STORAGE_CONNECTION_STRING_PLACEHOLDER#$STORAGE_CONNECTION_STRING#" \
+        -e "s#EVENT_HUB_NAME_PLACEHOLDER#evh-$ENV_PROJECT_NAME#" | \
+    kubectl apply -f -
+
     echo ""
 }
 
