@@ -47,7 +47,7 @@ module cosmosDb './cosmos_db.bicep' = {
   params: {
     accountName: 'cosmos-${toLower(projectName)}'
     databaseName: 'cosmos-db-${projectName}'
-    containerName: 'cosmos-con-${projectName}'
+    containerName: 'devicesContainer'
     location: location
   }
 }
