@@ -57,7 +57,8 @@ deploy(){
         -e "s#EVENT_HUB_NAME_PLACEHOLDER#evh-$ENV_PROJECT_NAME#" | \
     kubectl apply -f -
 
-    echo ""
+    DEVICES_API_IP=$(kubectl get service devices-api-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+    echo "Devices API URL http://$DEVICES_API_IP:8080"
 }
 
 deploy_otel_collector(){
