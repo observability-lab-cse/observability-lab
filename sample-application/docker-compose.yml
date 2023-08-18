@@ -9,6 +9,9 @@ services:
       OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4317
       # according to the doc otlp is default value but after testing this env var seems to be necessary
       OTEL_LOGS_EXPORTER: otlp
+      COSMOS_DB_URI: COSMOS_DB_URI_PLACEHOLDER
+      COSMOS_DB_KEY: COSMOS_DB_KEY_PLACEHOLDER
+      COSMOS_DB_NAME: COSMOS_DB_NAME_PLACEHOLDER
 
   device-manager:
     container_name: device-manager
@@ -25,7 +28,11 @@ services:
       OTEL_SERVICE_NAME: "device-manager"
       OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4318"
       DEVICE_API_URL: "http://devices-api:8080"
-
+      EVENT_HUB_CONNECTION_STRING: EVENT_HUB_CONNECTION_STRING_PLACEHOLDER
+      STORAGE_CONNECTION_STRING: STORAGE_CONNECTION_STRING_PLACEHOLDER
+      BLOB_CONTAINER_NAME: BLOB_CONTAINER_NAME_PLACEHOLDER
+      EVENT_HUB_NAME: EVENT_HUB_NAME_PLACEHOLDER
+      CONSUMER_GROUP: "devicemanager"
 
   otel-collector:
     image: otel/opentelemetry-collector-contrib:latest
@@ -39,7 +46,7 @@ services:
     image: mcr.microsoft.com/oss/azure-samples/azureiot-telemetrysimulator
     environment:
       EventHubConnectionString: ${EVENT_HUB_CONNECTION_STRING}
-      DeviceList: 'device-01,device-42' # Specify your device names
+      DeviceList: 'DEVICE_NAMES_PLACEHOLDER' # Specify your device names
       MessageCount: 0 # send unlimited
       Interval: 60000 # each device sends message every 1 minute
       Template: '{"deviceId": "$.DeviceId", "deviceTimestamp": "$.Time", "temp": $.DoubleValue}'
