@@ -29,7 +29,7 @@ spec:
             - name: EventHubConnectionString
               value: EVENT_HUB_CONNECTION_STRING_PLACEHOLDER
             - name: DeviceList
-              value: 'device-01,device-42' # Specify your device names
+              value: 'DEVICE_NAMES_PLACEHOLDER' # Specify your device names
             - name: MessageCount
               value: '0' # send unlimited
             - name: Interval
