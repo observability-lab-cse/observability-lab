@@ -46,8 +46,12 @@ spec:
   ports:
   - name: grpc-otlp
     port: 4317
-    protocol: TCP
     targetPort: 4317
+    protocol: TCP
+  - name: http-otlp
+    port: 4318
+    targetPort: 4318
+    protocol: TCP
   selector:
     app.kubernetes.io/name: opentelemetrycollector
   type: ClusterIP
