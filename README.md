@@ -28,6 +28,25 @@ To deploy it, execute:
 make deploy-devices-simulator
 ```
 
+Then, call the Devices API using `GET /devices` method, and you should see your devices with `IN_USE` status, and a response similar to this:
+
+```json
+[
+  {
+    "id":"cc831450-4ec9-45ec-a72a-ce4f96e2d477",
+    "name":"device-1",
+    "value":25.14771,
+    "status":"IN_USE"
+  },
+  {
+    "id":"1a569548-11e8-4245-bde8-e3774ff1aa42",
+    "name":"device-2",
+    "value":26.55738,
+    "status":"IN_USE"
+  }
+]
+```
+
 ## Step-by-step setup
 
 * Create [infrastructure](./infrastructure/README.md) and connect to the AKS cluster.
