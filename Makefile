@@ -3,7 +3,7 @@ include .env
 SHELL = /bin/bash
 
 
-all: provision push deploy
+all: provision push deploy-otel-collector deploy
 
 provision:
 	@echo "Creating Infrastructure"
@@ -17,13 +17,13 @@ push:
 	@echo "Build and push application"
 	@bash ./sample-application/sample.sh --push
 
-run:
-	@echo "Run application localy"
-	@bash ./sample-application/sample.sh --run
-
 deploy:
 	@echo "Deploy application to AKS"
 	@bash ./sample-application/sample.sh --deploy
+
+deploy-otel-collector:
+	@echo "Deploy Open Telemetry Collector to AKS"
+	@bash ./sample-application/sample.sh --deploy_otel_collector
 
 deploy-devices-simulator:
 	@echo "Deploy Devices Simulator to AKS"

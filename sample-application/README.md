@@ -10,12 +10,10 @@ The device API, device manager, as well as Cosmos DB, expose telemetry data, to 
 
 ## How to run
 
-Create `.env` file and set `EVENT_HUB_CONNECTION_STRING` with Event Hub connection string.
+The following command sets up all required environment variables and starts docker compose project:
 
 ```bash
-cd sample-application
-
-docker compose up --build
+./run-all-locally.sh
 ```
 
 Currently, the docker-compose file starts the following components:

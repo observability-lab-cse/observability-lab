@@ -11,6 +11,7 @@ namespace DeviceManager
         static async Task Main(string[] args)
         {
             var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json",true,true)
+                                                        .AddEnvironmentVariables()
                                                         .Build();
             var consumerGroup = configuration.GetValue<string>("CONSUMER_GROUP");
             var blobContainerName = configuration.GetValue<string>("BLOB_CONTAINER_NAME");

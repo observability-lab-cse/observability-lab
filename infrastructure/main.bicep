@@ -47,7 +47,7 @@ module cosmosDb './cosmos_db.bicep' = {
   params: {
     accountName: 'cosmos-${toLower(projectName)}'
     databaseName: 'cosmos-db-${projectName}'
-    containerName: 'cosmos-con-${projectName}'
+    containerName: 'devicesContainer'
     location: location
   }
 }
@@ -58,6 +58,7 @@ module eventHub './event_hub.bicep' = {
     eventHubNamespaceName: 'evhns-${projectName}'
     eventHubName: 'evh-${projectName}'
     location: location
+    storageAccountName: 'st${projectName}'
   }
 }
 

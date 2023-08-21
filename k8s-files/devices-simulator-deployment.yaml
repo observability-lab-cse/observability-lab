@@ -29,11 +29,11 @@ spec:
             - name: EventHubConnectionString
               value: EVENT_HUB_CONNECTION_STRING_PLACEHOLDER
             - name: DeviceList
-              value: 'device-01,device-42' # Specify your device names
+              value: 'DEVICE_NAMES_PLACEHOLDER' # Specify your device names
             - name: MessageCount
               value: '0' # send unlimited
             - name: Interval
-              value: '1000'
+              value: '60000' # each device sends message every 1 minute
             - name: Template
               value: '{"deviceId": "$.DeviceId", "deviceTimestamp": "$.Time", "temp": $.DoubleValue}'
             - name: Variables
