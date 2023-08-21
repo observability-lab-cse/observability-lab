@@ -21,10 +21,30 @@
 * Modify the Azure Monitor instrumentation key (`INSTRUMENTATION_KEY_PLACEHOLDER`) in the [`collector.yaml`](./k8s-files/collector.yaml) file.
 * Deploy the OpenTelemetry collector
 
-    ```bash
-    kubectl apply -f k8s-files/collector.yaml
-    kubectl apply -f k8s-files/otel-collector-deployment.yaml
-    ```
+```bash
+kubectl apply -f k8s-files/collector.yaml
+kubectl apply -f k8s-files/otel-collector-deployment.yaml
+```
+
+* Get value of clusterKeyVaultSecretProviderClientId from k8s-deployment output
+
+```bash
+az deployment group show -g rg-obs-ik -n k8s_deployment --query properties.outputs.clusterKeyVaultSecretProviderObjectId.value
+```
+
+* Get value of keyVaultTenantId from kv-observabilityik output
+
+
+```bash
+az deployment group show -g rg-obs-ik -n key_vault_deployment --query properties.outputs.kvTenantId.value
+```
+
+* Deploy secrets store
+
+```bash
+kubectl apply -f k8s-files/secrets-store.yaml
+```  
+
 
 * To test the devices-api:
   * find the name of the pod:

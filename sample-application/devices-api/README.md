@@ -27,7 +27,7 @@ cd sample-application/devices-api
 
 Build project and run docker:
 
-```bash
+```bash 
 cd sample-application/devices-api
 
 docker build -t devices-api .

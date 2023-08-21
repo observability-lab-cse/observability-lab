@@ -10,6 +10,7 @@ module k8s './k8s.bicep' = {
     location: location
     clusterName: 'aks-${projectName}'
     dnsPrefix: projectName
+    logAnalyticsWorkspaceId: logAnalyticsWorkspace.outputs.id
   }
 }
 
@@ -52,5 +53,18 @@ module cosmosDb './cosmos_db.bicep' = {
   }
 }
 
+module kv './keyvault.bicep' = {
+  name: 'key_vault_deployment'
+  params: {
+    location: location
+    kvName: 'kv-${projectName}'
+    cosmosDBEndpoint: cosmosDb.outputs.cosmosDBEndpoint
+    cosmosDBAccountName: cosmosDb.outputs.cosmosDBAccountName
+    clusterKeyVaultSecretProviderObjectId: k8s.outputs.clusterKeyVaultSecretProviderObjectId
+  }
+}
+
 output acrName string = acr.outputs.acrName
 output clusterName string = k8s.outputs.clusterName
+output aksKeyVaultSecretProviderClientId string = k8s.outputs.clusterKeyVaultSecretProviderClientId
+

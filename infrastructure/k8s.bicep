@@ -20,6 +20,10 @@ param agentCount int = 2
 @description('The size of the Virtual Machine.')
 param agentVMSize string = 'Standard_B2ms'
 
+@description('The name of the Log Analytics workspace linked to AKS')
+@minLength(1)
+param logAnalyticsWorkspaceId string
+
 resource aks 'Microsoft.ContainerService/managedClusters@2022-05-02-preview' = {
   name: clusterName
   location: location
@@ -38,8 +42,25 @@ resource aks 'Microsoft.ContainerService/managedClusters@2022-05-02-preview' = {
         mode: 'System'
       }
     ]
+    addonProfiles: {
+          omsAgent: {
+            enabled: true
+            config: {
+              logAnalyticsWorkspaceResourceID: logAnalyticsWorkspaceId
+            }
+          }
+          azureKeyvaultSecretsProvider: {
+            enabled: true
+            config: {
+              enableSecretRotation: 'true'
+              rotationPollInterval: '2m'
+            }
+          }
+        }
   }
 }
 
 output clusterName string = aks.name
 output kubeletIdentityId string = aks.properties.identityProfile.kubeletidentity.objectId
+output clusterKeyVaultSecretProviderObjectId string = aks.properties.addonProfiles.azureKeyvaultSecretsProvider.identity.objectId
+output clusterKeyVaultSecretProviderClientId string = aks.properties.addonProfiles.azureKeyvaultSecretsProvider.identity.clientId
