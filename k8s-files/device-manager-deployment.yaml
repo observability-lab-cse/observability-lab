@@ -44,6 +44,11 @@ spec:
               value: "/otel-dotnet-auto/net/OpenTelemetry.AutoInstrumentation.StartupHook.dll"
             - name: OTEL_DOTNET_AUTO_HOME
               value: "/otel-dotnet-auto"
+            - name: OTEL_SERVICE_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.labels['app']
             - name: EVENT_HUB_CONNECTION_STRING
               value: EVENT_HUB_LISTEN_POLICY_CONNECTION_STRING_PLACEHOLDER
             - name: EVENT_HUB_NAME
@@ -54,11 +59,6 @@ spec:
               value: event-hub-data
             - name: DEVICE_API_URL
               value: "http://devices-api-service:8080"
-            - name: OTEL_SERVICE_NAME
-              valueFrom:
-                fieldRef:
-                  apiVersion: v1
-                  fieldPath: metadata.labels['app']
 ---
 
 apiVersion: v1
