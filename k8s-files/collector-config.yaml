@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: config
 data:
-  collector.yaml: |
+  collector-config.yaml: |
     receivers:
       otlp:
         protocols:
