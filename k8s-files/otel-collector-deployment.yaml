@@ -17,7 +17,7 @@ spec:
       - name: otelcol
         args:
         - --config=/conf/collector.yaml
-        image: otel/opentelemetry-collector-contrib:0.77.0
+        image: otel/opentelemetry-collector-contrib:0.83.0
         volumeMounts:
         - mountPath: /conf
           name: config
@@ -46,8 +46,12 @@ spec:
   ports:
   - name: grpc-otlp
     port: 4317
-    protocol: TCP
     targetPort: 4317
+    protocol: TCP
+  - name: http-otlp
+    port: 4318
+    targetPort: 4318
+    protocol: TCP
   selector:
     app.kubernetes.io/name: opentelemetrycollector
   type: ClusterIP

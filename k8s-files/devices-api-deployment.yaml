@@ -38,6 +38,11 @@ spec:
               value: COSMOS_DB_KEY_PLACEHOLDER
             - name: COSMOS_DB_NAME
               value: COSMOS_DB_NAME_PLACEHOLDER
+            - name: OTEL_SERVICE_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.labels['app']
 
 ---
 
