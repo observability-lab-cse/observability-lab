@@ -1,5 +1,6 @@
 * text=auto
 
+*.env text eol=lf
 *.sln text eol=crlf
 *.sh text eol=lf
 
