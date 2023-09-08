@@ -14,6 +14,7 @@ echo "BLOB_CONTAINER_NAME=event-hub-data" >> ./.env
 echo "EVENT_HUB_SEND_POLICY_CONNECTION_STRING=$(az eventhubs eventhub authorization-rule keys list --resource-group "$ENV_RESOURCE_GROUP_NAME" --namespace-name evhns-"$ENV_PROJECT_NAME" --eventhub-name evh-"$ENV_PROJECT_NAME" --name Send  --query primaryConnectionString -o tsv)" >> ./.env
 echo "DEVICE_NAMES=$DEVICE_NAME_TO_CREATE" >> ./.env
 
+az extension add --name resource-graph
 APP_INSIGHTS_INSTRUMENTATION_KEY=$(az graph query -q "Resources | where type =~ 'microsoft.insights/components' and name =~ 'appi-$ENV_PROJECT_NAME' and resourceGroup =~ '$ENV_RESOURCE_GROUP_NAME' | project properties.InstrumentationKey" | jq -r '.data[0].properties_InstrumentationKey')
 sed -i "s/INSTRUMENTATION_KEY_PLACEHOLDER/$APP_INSIGHTS_INSTRUMENTATION_KEY/g" ./otel-collector/otelcol-config.yml
 
