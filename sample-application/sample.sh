@@ -75,6 +75,7 @@ deploy_otel_collector(){
     --name "$AKS_NAME" \
     --overwrite-existing
 
+    az extension add --name resource-graph
     APP_INSIGHTS_INSTRUMENTATION_KEY=$(az graph query -q "Resources | where type =~ 'microsoft.insights/components' and name =~ 'appi-$ENV_PROJECT_NAME' and resourceGroup =~ '$ENV_RESOURCE_GROUP_NAME' | project properties.InstrumentationKey" | jq -r '.data[0].properties_InstrumentationKey')
     cat k8s-files/collector-config.yaml | sed -e "s#INSTRUMENTATION_KEY_PLACEHOLDER#$APP_INSIGHTS_INSTRUMENTATION_KEY#" | kubectl apply -f  -
     kubectl apply -f k8s-files/otel-collector-deployment.yaml
