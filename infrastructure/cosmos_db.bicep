@@ -67,3 +67,6 @@ resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/container
     }
   }
 }
+
+output cosmosDBEndpoint string = account.properties.documentEndpoint
+output cosmosDBAccountName string = account.name

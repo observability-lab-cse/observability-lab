@@ -52,6 +52,19 @@ module cosmosDb './cosmos_db.bicep' = {
   }
 }
 
+module kv './keyvault.bicep' = {
+  name: 'key_vault_deployment'
+  params: {
+    location: location
+    kvName: 'kv-${projectName}'
+    cosmosDBEndpoint: cosmosDb.outputs.cosmosDBEndpoint
+    cosmosDBAccountName: cosmosDb.outputs.cosmosDBAccountName
+    clusterKeyVaultSecretProviderObjectId: k8s.outputs.clusterKeyVaultSecretProviderObjectId
+    clusterKeyVaultSecretProviderClientId: k8s.outputs.clusterKeyVaultSecretProviderClientId
+    aksId: k8s.outputs.aksId
+  }
+}
+
 module eventHub './event_hub.bicep' = {
   name: 'event_hub_deployment'
   params: {
@@ -64,3 +77,5 @@ module eventHub './event_hub.bicep' = {
 
 output acrName string = acr.outputs.acrName
 output clusterName string = k8s.outputs.clusterName
+output aksKeyVaultSecretProviderClientId string = k8s.outputs.clusterKeyVaultSecretProviderClientId
+
