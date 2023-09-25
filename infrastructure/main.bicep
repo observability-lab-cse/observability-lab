@@ -61,6 +61,8 @@ module kv './keyvault.bicep' = {
     cosmosDBEndpoint: cosmosDb.outputs.cosmosDBEndpoint
     cosmosDBAccountName: cosmosDb.outputs.cosmosDBAccountName
     clusterKeyVaultSecretProviderObjectId: k8s.outputs.clusterKeyVaultSecretProviderObjectId
+    clusterKeyVaultSecretProviderClientId: k8s.outputs.clusterKeyVaultSecretProviderClientId
+    aksId: k8s.outputs.aksId
   }
 }
 

@@ -31,6 +31,14 @@ param cosmosDBAccountName string
 @secure()
 param clusterKeyVaultSecretProviderObjectId string
 
+@description('The Client ID of the user-defined Managed Identity used by the AKS Secret Provider')
+@minLength(1)
+@secure()
+param clusterKeyVaultSecretProviderClientId string
+
+@description('ID of the AKS resource')
+param aksId string
+
 resource keyVault 'Microsoft.KeyVault/vaults@2021-11-01-preview' = {
   name: kvName
   location: location
@@ -76,6 +84,16 @@ resource keyVault 'Microsoft.KeyVault/vaults@2021-11-01-preview' = {
         value: cosmosDBAccountName
       }
     }
+}
+
+resource roleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+  name: guid(aksId, keyVault.id, '00482a5a-887f-4fb3-b363-3b7fe8e74483') // ID of Key Vault Administrator role
+  scope: keyVault
+  properties: {
+    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', '00482a5a-887f-4fb3-b363-3b7fe8e74483')
+    principalId: clusterKeyVaultSecretProviderClientId
+    principalType: 'User'
+  }
 }
 
 output kvName string = keyVault.name

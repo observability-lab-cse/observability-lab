@@ -61,6 +61,7 @@ resource aks 'Microsoft.ContainerService/managedClusters@2022-05-02-preview' = {
 }
 
 output clusterName string = aks.name
+output aksId string = aks.id
 output kubeletIdentityId string = aks.properties.identityProfile.kubeletidentity.objectId
 output clusterKeyVaultSecretProviderObjectId string = aks.properties.addonProfiles.azureKeyvaultSecretsProvider.identity.objectId
 output clusterKeyVaultSecretProviderClientId string = aks.properties.addonProfiles.azureKeyvaultSecretsProvider.identity.clientId

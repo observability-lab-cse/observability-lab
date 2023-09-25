@@ -29,14 +29,14 @@ kubectl apply -f k8s-files/otel-collector-deployment.yaml
 * Get value of clusterKeyVaultSecretProviderClientId from k8s-deployment output
 
 ```bash
-az deployment group show -g rg-obs-ik -n k8s_deployment --query properties.outputs.clusterKeyVaultSecretProviderObjectId.value
+az deployment group show -g <resource-group> -n k8s_deployment --query properties.outputs.clusterKeyVaultSecretProviderClientId.value
 ```
 
 * Get value of keyVaultTenantId from kv-observabilityik output
 
 
 ```bash
-az deployment group show -g rg-obs-ik -n key_vault_deployment --query properties.outputs.kvTenantId.value
+az deployment group show -g <resource-group> -n key_vault_deployment --query properties.outputs.kvTenantId.value
 ```
 
 * Deploy secrets store

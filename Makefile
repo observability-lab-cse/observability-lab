@@ -18,7 +18,7 @@ push:
 	@bash ./sample-application/sample.sh --push
 
 run:
-	@echo "Run application localy"
+	@echo "Run application locally"
 	@bash ./sample-application/sample.sh --run
 
 deploy:
