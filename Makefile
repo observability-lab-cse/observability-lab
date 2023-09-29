@@ -25,7 +25,7 @@ deploy-otel-collector:
 	@echo "Deploy Open Telemetry Collector to AKS"
 	@bash ./sample-application/sample.sh --deploy_otel_collector
 
-deploy-opentelemetry-operator-with-collector:
+deploy-otel-operator-with-collector:
 	@echo "Deploy Open Telemetry Collector to AKS"
 	@bash ./sample-application/sample.sh --deploy_opentelemetry_operator_with_collector
 
