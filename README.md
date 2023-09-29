@@ -82,11 +82,11 @@ Then, call the Devices API using `GET /devices` method, and you should see your 
   kubectl apply -f k8s-files/device-manager-deployment.yaml
   ```
 
-* Modify the Azure Monitor instrumentation key (`INSTRUMENTATION_KEY_PLACEHOLDER`) in the [`collector.yaml`](./k8s-files/collector.yaml) file.
+* Modify the Azure Monitor instrumentation key (`INSTRUMENTATION_KEY_PLACEHOLDER`) in the [`collector-config.yaml`](./k8s-files/collector-config.yaml) file.
 * Deploy the OpenTelemetry collector
 
     ```bash
-    kubectl apply -f k8s-files/collector.yaml
+    kubectl apply -f k8s-files/collector-config.yaml
     kubectl apply -f k8s-files/otel-collector-deployment.yaml
     ```
 
