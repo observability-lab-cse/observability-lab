@@ -11,11 +11,11 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication
 @EnableSwagger2
-public class DevicesApiApplication {
+public class DeviceApiApplication {
 
 	public static void main(String[] args) {
 		try {
-			SpringApplication.run(DevicesApiApplication.class, args);
+			SpringApplication.run(DeviceApiApplication.class, args);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

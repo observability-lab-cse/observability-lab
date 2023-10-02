@@ -1,5 +1,5 @@
 #!/bin/bash
-DEVICE_API_IMAGE_NAME="devices-api"
+DEVICE_API_IMAGE_NAME="device-api"
 DEVICE_MANAGER_IMAGE_NAME="device-manager"
 TAG="latest"
 
@@ -7,7 +7,7 @@ TAG="latest"
 # For project-name use only alphanumeric characters
 build_images() {
     echo "- BUILD module images"
-    cd ./sample-application/devices-api || { echo "Directory not found" && exit "2"; }
+    cd ./sample-application/device-api || { echo "Directory not found" && exit "2"; }
     echo "Image Tag: $DEVICE_API_IMAGE_NAME:$TAG"
     docker build -t "$DEVICE_API_IMAGE_NAME":"$TAG" .
     echo ""
@@ -44,8 +44,8 @@ deploy(){
 
     COSMOS_DB_URI=$(az cosmosdb show --name cosmos-$ENV_PROJECT_NAME --resource-group $ENV_RESOURCE_GROUP_NAME --query documentEndpoint)
     COSMOS_DB_KEY=$(az cosmosdb keys list --name cosmos-$ENV_PROJECT_NAME --resource-group $ENV_RESOURCE_GROUP_NAME --type keys --query primaryMasterKey)
-    cat k8s-files/devices-api-deployment.yaml | \
-    # cat k8s-files/devices-api-deployment-with-otel-operator.yaml | \
+    cat k8s-files/device-api-deployment.yaml | \
+    # cat k8s-files/device-api-deployment-with-otel-operator.yaml | \
     sed -e "s/\${project-name}/$ENV_PROJECT_NAME/" \
         -e "s#COSMOS_DB_URI_PLACEHOLDER#$COSMOS_DB_URI#" \
         -e "s#COSMOS_DB_KEY_PLACEHOLDER#$COSMOS_DB_KEY#" \
@@ -63,8 +63,8 @@ deploy(){
         -e "s#EVENT_HUB_NAME_PLACEHOLDER#evh-$ENV_PROJECT_NAME#" | \
     kubectl apply -f -
 
-    DEVICES_API_IP=$(kubectl get service devices-api-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-    echo "Devices API URL http://$DEVICES_API_IP:8080"
+    DEVICES_API_IP=$(kubectl get service device-api-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+    echo "Device API URL http://$DEVICES_API_IP:8080"
 }
 
 deploy_otel_collector(){
@@ -113,20 +113,20 @@ deploy_opentelemetry_operator_with_collector(){
     echo ""
 }
 
-deploy_devices_simulator(){
-    echo "- DEPLOY Devices Simulator"
+deploy_device_simulator(){
+    echo "- DEPLOY Device Simulator"
     AKS_NAME=$(az aks list -g "$ENV_RESOURCE_GROUP_NAME" --query "[0].name" -o tsv)
     az aks get-credentials \
     --resource-group "$ENV_RESOURCE_GROUP_NAME" \
     --name "$AKS_NAME" \
     --overwrite-existing
 
-    DEVICES_API_IP=$(kubectl get service devices-api-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+    DEVICES_API_IP=$(kubectl get service device-api-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
     DEVICE_NAMES=$(curl -X GET --header 'Accept: application/json' "http://$DEVICES_API_IP:8080/devices" | jq -r '[.[].name] | join(",")')
-    echo "Configuring the devices simulator for the following device names: $DEVICE_NAMES"
+    echo "Configuring the Device Simulator for the following device names: $DEVICE_NAMES"
 
     EVENT_HUB_CONNECTION_STRING=$(az eventhubs eventhub authorization-rule keys list --resource-group "$ENV_RESOURCE_GROUP_NAME" --namespace-name evhns-"$ENV_PROJECT_NAME" --eventhub-name evh-"$ENV_PROJECT_NAME" --name Send  --query primaryConnectionString -o tsv)
-    cat k8s-files/devices-simulator-deployment.yaml | \
+    cat k8s-files/device-simulator-deployment.yaml | \
     sed -e "s#EVENT_HUB_CONNECTION_STRING_PLACEHOLDER#$EVENT_HUB_CONNECTION_STRING#" \
         -e "s#DEVICE_NAMES_PLACEHOLDER#$DEVICE_NAMES#" | \
     kubectl apply -f  -
@@ -156,9 +156,9 @@ run_main() {
         echo "--- Deploy to AKS Cluster  ---"
         deploy_opentelemetry_operator_with_collector
         exit 0
-        elif [[ "$1" == "--deploy_devices_simulator" ]]; then
+        elif [[ "$1" == "--deploy_device_simulator" ]]; then
         echo "--- Deploy to AKS Cluster  ---"
-        deploy_devices_simulator
+        deploy_device_simulator
         exit 0
         
     else

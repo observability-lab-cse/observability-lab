@@ -20,7 +20,8 @@ Replace the values from [appsettings.json](appsettings.json) with the CosmosDB a
 "CONSUMER_GROUP": "devicemanager",
 "DEVICE_API_URL":"http://localhost:8080"
 ```
-> Note: When running the devices-api service locally you can keep the url domain to be `localhost`. However, as soon as you run the service in a container replace the domain with the service name.
+
+> Note: When running the device-api service locally you can keep the url domain to be `localhost`. However, as soon as you run the service in a container replace the domain with the service name.
 
 ## Run locally
 

@@ -2,21 +2,21 @@ kind: Deployment
 apiVersion: apps/v1
 
 metadata:
-  name: devices-api
+  name: device-api
 
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: devices-api
+      app: device-api
   template:
     metadata:
       labels:
-        app: devices-api
+        app: device-api
     spec:
       containers:
-        - name: devices-api
-          image: acr${project-name}.azurecr.io/devices-api:latest
+        - name: device-api
+          image: acr${project-name}.azurecr.io/device-api:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
@@ -44,11 +44,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: devices-api-service
+  name: device-api-service
 spec:
   type: LoadBalancer
   ports:
   - port: 8080 
     targetPort: 8080
   selector:
-    app: devices-api
+    app: device-api

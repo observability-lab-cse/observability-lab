@@ -11,14 +11,14 @@ Open the project in VS Code using dev containers [configuration file](../../.dev
 
 Replace the properties values from [application.properties](src/main/resources/application.properties) with the CosmosDB properties:
 
-* azure.cosmosdb.uri - uri 
+* azure.cosmosdb.uri - uri
 * azure.cosmosdb.key - primary key
 * azure.cosmosdb.database - database name
 
 ## Run locally from Gradle
 
 ```bash
-cd sample-application/devices-api
+cd sample-application/device-api
 
 ./gradlew bootRun
 ```
@@ -28,19 +28,19 @@ cd sample-application/devices-api
 Build project and run docker:
 
 ```bash
-cd sample-application/devices-api
+cd sample-application/device-api
 
-docker build -t devices-api .
-docker run -p 8080:8080 devices-api .
+docker build -t device-api .
+docker run -p 8080:8080 device-api .
 ```
 
 ## Check results
 
-You should get redirected to the swagger if you go to the root url `http://localhost:8080/` 
+You should get redirected to the swagger if you go to the root url `http://localhost:8080/`.
 
-> Note: In case of redirect issues the swagger url is the following `http://localhost:8080/swagger-ui.html`
+> Note: In case of redirect issues the swagger url is the following `http://localhost:8080/swagger-ui.html`.
 
-or 
+or
 
 Go to http://localhost:8080/devices. The response should be `[]`
 

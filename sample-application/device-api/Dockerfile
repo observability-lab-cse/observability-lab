@@ -9,6 +9,6 @@ RUN curl -L -O https://github.com/open-telemetry/opentelemetry-java-instrumentat
 
 RUN ./gradlew build
 
-ENTRYPOINT ["java", "-javaagent:opentelemetry-javaagent.jar", "-jar","build/libs/devices-api.jar"]
+ENTRYPOINT ["java", "-javaagent:opentelemetry-javaagent.jar", "-jar","build/libs/device-api.jar"]
 
 

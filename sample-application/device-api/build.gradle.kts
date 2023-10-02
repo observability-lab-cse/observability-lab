@@ -23,6 +23,6 @@ tasks.withType<Test> {
 }
 
 tasks.jar {
-	manifest.attributes["Main-Class"] = "observabilitylab.devices.DevicesApiApplication"
+	manifest.attributes["Main-Class"] = "observabilitylab.devices.DeviceApiApplication"
 }
 
