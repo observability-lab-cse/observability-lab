@@ -2,20 +2,20 @@ kind: Deployment
 apiVersion: apps/v1
 
 metadata:
-  name: device-simulator
+  name: devices-simulator
 
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: device-simulator
+      app: devices-simulator
   template:
     metadata:
       labels:
-        app: device-simulator
+        app: devices-simulator
     spec:
       containers:
-        - name: device-simulator
+        - name: devices-simulator
           image: mcr.microsoft.com/oss/azure-samples/azureiot-telemetrysimulator:latest
           imagePullPolicy: Always
           resources:

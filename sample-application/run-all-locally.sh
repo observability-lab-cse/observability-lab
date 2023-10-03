@@ -29,7 +29,7 @@ while true; do
         echo "A new device $DEVICE_NAME_TO_CREATE successfully created"
         break
     else
-        echo "Device API is not ready yet. Retrying in $retry_interval seconds..."
+        echo "Devices API is not ready yet. Retrying in $retry_interval seconds..."
         sleep $retry_interval
     fi
 done

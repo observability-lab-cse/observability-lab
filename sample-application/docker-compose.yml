@@ -1,8 +1,8 @@
 services:
-  device-api:
-    container_name: device-api
+  devices-api:
+    container_name: devices-api
     build:
-      context: device-api
+      context: devices-api
     ports:
       - "8080:8080"
     environment:
@@ -16,7 +16,7 @@ services:
   device-manager:
     container_name: device-manager
     depends_on:
-      - device-api
+      - devices-api
     build:
       context: device-manager/DeviceManager
       dockerfile: Dockerfile
@@ -27,7 +27,7 @@ services:
     environment:
       OTEL_SERVICE_NAME: "device-manager"
       OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4318"
-      DEVICE_API_URL: "http://device-api:8080"
+      DEVICE_API_URL: "http://devices-api:8080"
       EVENT_HUB_CONNECTION_STRING: ${EVENT_HUB_LISTEN_POLICY_CONNECTION_STRING}
       EVENT_HUB_NAME: ${EVENT_HUB_NAME}
       STORAGE_CONNECTION_STRING: ${STORAGE_CONNECTION_STRING}
@@ -41,8 +41,8 @@ services:
     volumes:
       - ./otel-collector/otelcol-config.yml:/etc/otelcol-config.yml
 
-  device-simulator:
-    container_name: device-simulator
+  devices-simulator:
+    container_name: devices-simulator
     image: mcr.microsoft.com/oss/azure-samples/azureiot-telemetrysimulator
     environment:
       EventHubConnectionString: ${EVENT_HUB_SEND_POLICY_CONNECTION_STRING}

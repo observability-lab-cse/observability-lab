@@ -11,7 +11,7 @@ import com.azure.spring.data.cosmos.repository.Query;
 import observabilitylab.devices.model.Device;
 
 @Repository
-public interface DeviceRepository extends CosmosRepository<Device, String> {
+public interface DevicesRepository extends CosmosRepository<Device, String> {
     
     List<Device> findAll();
     

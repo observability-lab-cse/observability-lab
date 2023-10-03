@@ -58,7 +58,7 @@ spec:
             - name: BLOB_CONTAINER_NAME
               value: event-hub-data
             - name: DEVICE_API_URL
-              value: "http://device-api-service:8080"
+              value: "http://devices-api-service:8080"
 ---
 
 apiVersion: v1

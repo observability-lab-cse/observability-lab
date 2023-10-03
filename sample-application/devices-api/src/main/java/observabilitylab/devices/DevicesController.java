@@ -22,12 +22,12 @@ import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping(path = "/devices")
-public class DeviceController {
+public class DevicesController {
 
-    private Logger logger = LoggerFactory.getLogger(DeviceController.class);
+    private Logger logger = LoggerFactory.getLogger(DevicesController.class);
 
     @Autowired
-    private DeviceRepository repository;
+    private DevicesRepository repository;
 
     @GetMapping
     public ResponseEntity<List<Device>> getDevices() {

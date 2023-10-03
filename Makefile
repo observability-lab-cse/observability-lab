@@ -29,6 +29,6 @@ deploy-otel-operator-with-collector:
 	@echo "Deploy Open Telemetry Collector to AKS"
 	@bash ./sample-application/sample.sh --deploy_opentelemetry_operator_with_collector
 
-deploy-device-simulator:
-	@echo "Deploy Device Simulator to AKS"
-	@bash ./sample-application/sample.sh --deploy_device_simulator
+deploy-devices-simulator:
+	@echo "Deploy Devices Simulator to AKS"
+	@bash ./sample-application/sample.sh --deploy_devices_simulator
