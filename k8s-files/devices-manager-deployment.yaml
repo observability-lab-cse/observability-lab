@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: devices-manager
-          image: acrmsalak.azurecr.io/devices-manager:latest
+          image: acr${project-name}.azurecr.io/devices-manager:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8090
