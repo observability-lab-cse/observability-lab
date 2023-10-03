@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration.Json;
 
 
-namespace DeviceManager
+namespace DevicesManager
 {
     internal class Program
     {

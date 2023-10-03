@@ -67,19 +67,21 @@ Then, call the Devices API using `GET /devices` method, and you should see your 
   kubectl apply -f k8s-files/devices-api-deployment.yaml
   ```
 
-* Build and push `device-manager` image.
+* Build and push `devices-manager` image.
 
   ```bash
-  cd sample-application/device-manager/DeviceManager
-  docker build -t acr<project-name>.azurecr.io/device-manager:latest .
-  docker push acr<project-name>.azurecr.io/device-manager:latest
+  cd sample-application/devices-manager/DevicesManager
+  docker build -t acr<project-name>.azurecr.io/devices-manager:latest .
+  docker push acr<project-name>.azurecr.io/devices-manager:latest
   ```
 
-* Modify the [deployment file](./k8s-files/device-manager-deployment.yaml) and specify your project name in the image.
-* Deploy device-manager
+* Modify the [deployment file](./k8s-files/devices-manager-deployment.yaml) and specify your project name in the image.
+* Deploy devices-manager
 
+  From the root folder, run:
+  
   ```bash
-  kubectl apply -f k8s-files/device-manager-deployment.yaml
+  kubectl apply -f k8s-files/devices-manager-deployment.yaml
   ```
 
 * Modify the Azure Monitor instrumentation key (`INSTRUMENTATION_KEY_PLACEHOLDER`) in the [`collector-config.yaml`](./k8s-files/collector-config.yaml) file.

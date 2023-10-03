@@ -2,23 +2,23 @@ kind: Deployment
 apiVersion: apps/v1
 
 metadata:
-  name: device-manager
+  name: devices-manager
 
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: device-manager
+      app: devices-manager
   template:
     metadata:
       labels:
-        app: device-manager
+        app: devices-manager
       annotations:
         instrumentation.opentelemetry.io/inject-dotnet: "true"
     spec:
       containers:
-        - name: device-manager
-          image: acr${project-name}.azurecr.io/device-manager:no-auto-instrumentation
+        - name: devices-manager
+          image: acr${project-name}.azurecr.io/devices-manager:no-auto-instrumentation
           imagePullPolicy: Always
           ports:
             - containerPort: 8090
@@ -46,11 +46,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: device-manager-service
+  name: devices-manager-service
 spec:
   type: LoadBalancer
   ports:
   - port: 8090 
     targetPort: 8090
   selector:
-    app: device-manager
+    app: devices-manager

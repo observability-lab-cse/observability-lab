@@ -6,7 +6,7 @@ using Azure.Messaging.EventHubs;
 using Azure.Storage.Blobs;
 using Microsoft.Extensions.Logging;
 
-namespace DeviceManager
+namespace DevicesManager
 {
     class EventHubReceiverService
     {
