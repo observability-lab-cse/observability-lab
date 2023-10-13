@@ -16,7 +16,7 @@ spec:
       containers:
       - name: otelcol
         args:
-        - --config=/conf/collector.yaml
+        - --config=/conf/collector-config.yaml
         image: otel/opentelemetry-collector-contrib:0.83.0
         volumeMounts:
         - mountPath: /conf
@@ -31,8 +31,8 @@ spec:
       volumes:
       - configMap:
           items:
-          - key: "collector.yaml"
-            path: collector.yaml
+          - key: "collector-config.yaml"
+            path: collector-config.yaml
           name: config
         name: config
 

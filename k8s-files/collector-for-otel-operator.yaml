@@ -1,9 +1,10 @@
-apiVersion: v1
-kind: ConfigMap
+apiVersion: opentelemetry.io/v1alpha1
+kind: OpenTelemetryCollector
 metadata:
-  name: config
-data:
-  collector.yaml: |
+  name: otel-contrib
+spec:
+  image: otel/opentelemetry-collector-contrib:0.83.0
+  config: |
     receivers:
       otlp:
         protocols:
