@@ -43,6 +43,13 @@ spec:
                 fieldRef:
                   apiVersion: v1
                   fieldPath: metadata.labels['app']
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            periodSeconds: 20
+            initialDelaySeconds: 20
+            failureThreshold: 15
 
 ---
 

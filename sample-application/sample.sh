@@ -63,7 +63,19 @@ deploy(){
         -e "s#EVENT_HUB_NAME_PLACEHOLDER#evh-$ENV_PROJECT_NAME#" | \
     kubectl apply -f -
 
-    DEVICES_API_IP=$(kubectl get service devices-api-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+    DEVICES_API_IP=""
+    while [ -z $DEVICES_API_IP ]; do
+        DEVICES_API_IP=$(kubectl get service devices-api-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+        echo "Waiting for Devices API to start..."
+        sleep 1;
+    done
+
+    HEALTHCHECK_URL="http://$DEVICES_API_IP:8080/health"
+    while [[ $(curl -s -o /dev/null -w "%{http_code}" $HEALTHCHECK_URL) != "200" ]]; do
+        echo "Still a few seconds..."
+        sleep 1;
+    done
+
     echo "Devices API URL http://$DEVICES_API_IP:8080"
 }
 
