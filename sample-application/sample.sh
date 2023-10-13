@@ -52,10 +52,7 @@ deploy(){
     
     cat k8s-files/device-manager-deployment.yaml | \
     # cat k8s-files/device-manager-deployment-with-otel-operator.yaml | \
-    sed -e "s/\${project-name}/$ENV_PROJECT_NAME/" \
-        -e "s#EVENT_HUB_LISTEN_POLICY_CONNECTION_STRING_PLACEHOLDER#$EVENT_HUB_CONNECTION_STRING#" \
-        -e "s#STORAGE_CONNECTION_STRING_PLACEHOLDER#$STORAGE_CONNECTION_STRING#" \
-        -e "s#EVENT_HUB_NAME_PLACEHOLDER#evh-$ENV_PROJECT_NAME#" | \
+    sed -e "s/\${project-name}/$ENV_PROJECT_NAME/" | \
     kubectl apply -f -
 
     DEVICES_API_IP=$(kubectl get service devices-api-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
@@ -140,8 +137,7 @@ deploy_devices_simulator(){
 
     EVENT_HUB_CONNECTION_STRING=$(az eventhubs eventhub authorization-rule keys list --resource-group "$ENV_RESOURCE_GROUP_NAME" --namespace-name evhns-"$ENV_PROJECT_NAME" --eventhub-name evh-"$ENV_PROJECT_NAME" --name Send  --query primaryConnectionString -o tsv)
     cat k8s-files/devices-simulator-deployment.yaml | \
-    sed -e "s#EVENT_HUB_CONNECTION_STRING_PLACEHOLDER#$EVENT_HUB_CONNECTION_STRING#" \
-        -e "s#DEVICE_NAMES_PLACEHOLDER#$DEVICE_NAMES#" | \
+    sed -e "s#DEVICE_NAMES_PLACEHOLDER#$DEVICE_NAMES#" | \
     kubectl apply -f  -
     echo ""
 }
