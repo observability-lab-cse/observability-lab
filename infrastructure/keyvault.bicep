@@ -112,7 +112,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2021-11-01-preview' = {
     }
 
   resource storageAccountConnectionStringSecret 'secrets' = {
-    name: 'storageAccountConnectionString'
+    name: 'StorageAccountConnectionString'
         properties: {
              value: storageAccountConnectionString
         }

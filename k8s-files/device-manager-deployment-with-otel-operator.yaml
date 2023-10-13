@@ -48,7 +48,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: application-secrets
-                  key: StorageConnectionString
+                  key: StorageAccountConnectionString
             - name: BLOB_CONTAINER_NAME
               value: event-hub-data
             - name: DEVICE_API_URL
