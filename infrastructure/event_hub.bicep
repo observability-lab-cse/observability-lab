@@ -73,11 +73,9 @@ resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@20
   parent: blobService
 }
 
-var eventHubNamespaceConnectionString = listenAuthorizationRule.listKeys().primaryConnectionString
+
 var storageAccountKeys = storageAccount.listKeys().keys
+
 output storageAccountConnectionString string = 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccountKeys[0].value};EndpointSuffix=${environment().suffixes.storage}'
-
-
-output eventHubConnectionString string = eventHubNamespaceConnectionString
-
+output eventHubConnectionString string = listenAuthorizationRule.listKeys().primaryConnectionString
 output eventHubName string = eventHubName
