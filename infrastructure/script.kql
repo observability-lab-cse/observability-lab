@@ -1,0 +1,3 @@
+IngestionTestCosmos
+| extend state_icon = case( Status has "IN_USE", "Available", Status has "NEW","pending", Status has "ERROR","error","none")
+| summarize arg_max(_timestamp,*) by Id
