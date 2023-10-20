@@ -1,4 +1,4 @@
-
+#!/bin/bash
 # For project-name use only alphanumeric characters
 create_resource_group() {
     echo "- Create resource group $ENV_RESOURCE_GROUP_NAME"
