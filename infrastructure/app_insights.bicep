@@ -17,3 +17,5 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
     WorkspaceResourceId: workspaceResourceId
   }
 }
+
+output id string = applicationInsights.id

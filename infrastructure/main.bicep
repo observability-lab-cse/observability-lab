@@ -62,5 +62,31 @@ module eventHub './event_hub.bicep' = {
   }
 }
 
+
+module dataExplorer './data_explorer.bicep' = {
+  name: 'data_explorer_deployment'
+  params: {
+    clusterName: 'dxc-${projectName}'
+    kustoDatabaseName: 'dxdb-${projectName}'
+    cosmosDbAccountName: cosmosDb.outputs.storageAccountName
+    cosmosDbDatabaseName:  cosmosDb.outputs.dbName
+    cosmosDbContainerName:  cosmosDb.outputs.containerName
+    location: location
+  }
+}
+
+module dashboard './dashboard.bicep' = {
+  name: 'dashboards'
+  params: {
+    dashboardName: 'Dashboard-${projectName}'
+    workbookDisplayName: 'Workbook-${projectName}'
+    workbookSourceId: appInsights.outputs.id
+    eventHubResourceId: eventHub.outputs.id
+    dataExplorerName: dataExplorer.outputs.name
+    location: location
+  }
+}
+
+
 output acrName string = acr.outputs.acrName
 output clusterName string = k8s.outputs.clusterName

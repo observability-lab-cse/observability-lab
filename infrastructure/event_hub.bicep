@@ -54,21 +54,4 @@ resource consumerGroup 'Microsoft.EventHub/namespaces/eventhubs/consumergroups@2
   parent: eventHub
 }
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
-  name: storageAccountName
-  location: location
-  sku: {
-    name: 'Standard_LRS'
-  }
-  kind: 'StorageV2'
-}
-
-resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2022-09-01' = {
-  parent: storageAccount
-  name: 'default'
-}
-
-resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@2022-09-01' = {
-  name: 'event-hub-data'
-  parent: blobService
-}
+output id string = eventHubNamespace.id

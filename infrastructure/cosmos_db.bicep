@@ -67,3 +67,8 @@ resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/container
     }
   }
 }
+
+
+output storageAccountName string = account.name
+output containerName string = container.name
+output dbName string = database.name
