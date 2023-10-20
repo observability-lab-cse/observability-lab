@@ -61,6 +61,9 @@ module kv './keyvault.bicep' = {
     cosmosDBAccountName: cosmosDb.outputs.cosmosDBAccountName
     clusterKeyVaultSecretProviderObjectId: k8s.outputs.clusterKeyVaultSecretProviderObjectId
     clusterKeyVaultSecretProviderClientId: k8s.outputs.clusterKeyVaultSecretProviderClientId
+    eventHubConnectionString: eventHub.outputs.eventHubConnectionString
+    eventHubName: eventHub.outputs.eventHubName
+    storageAccountConnectionString: eventHub.outputs.storageAccountConnectionString
     aksId: k8s.outputs.aksId
   }
 }
