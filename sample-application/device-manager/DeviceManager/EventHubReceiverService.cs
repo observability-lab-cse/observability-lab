@@ -5,15 +5,16 @@ using Azure.Messaging.EventHubs.Processor;
 using Azure.Messaging.EventHubs;
 using Azure.Storage.Blobs;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Hosting;
 
 namespace DeviceManager
 {
-    class EventHubReceiverService
+    class EventHubReceiverService: IHostedService
     {
         private readonly BlobContainerClient _storageClient;
         private readonly EventProcessorClient _processor;
         private readonly ILogger<EventHubReceiverService> _logger;
-        private string _baseUrl;
+        private readonly string _baseUrl;
 
 
         public EventHubReceiverService(
@@ -41,47 +42,58 @@ namespace DeviceManager
         }
         private async Task<HttpResponseMessage?> UpdateDeviceData(DeviceMessage deviceMessage)
         {
-            using (HttpClient client = new HttpClient())
+            using HttpClient client = new();
+            try
             {
-                try
+                var requestBody = JsonSerializer.Serialize(new
                 {
-                    var requestBody = JsonSerializer.Serialize(new
-                    {
-                        value = deviceMessage.temp,
-                        status = "IN_USE"
-                    });
-                    _logger.LogInformation($"Update device {deviceMessage.deviceId} with message {requestBody} calling {_baseUrl}/devices/names/{deviceMessage.deviceId}");
-                    var requestBodyContent = new StringContent(requestBody, Encoding.UTF8, "application/json");
-                    HttpResponseMessage response = await client.PutAsync($"{_baseUrl}/devices/names/{deviceMessage.deviceId}", requestBodyContent);
+                    value = deviceMessage.temp,
+                    status = "IN_USE"
+                });
+                _logger.LogInformation($"Update device {deviceMessage.deviceId} with message {requestBody} calling {_baseUrl}/devices/names/{deviceMessage.deviceId}");
+                var requestBodyContent = new StringContent(requestBody, Encoding.UTF8, "application/json");
+                HttpResponseMessage response = await client.PutAsync($"{_baseUrl}/devices/names/{deviceMessage.deviceId}", requestBodyContent);
 
-                    if (response.IsSuccessStatusCode)
-                    {
-                        string responseBody = await response.Content.ReadAsStringAsync();
-                        _logger.LogInformation(responseBody);
-                    }
-                    else
-                    {
-                        _logger.LogWarning($"Request failed with status code {response.StatusCode}");
-                    }
-                    return response;
-                }
-                catch (Exception ex)
+                if (response.IsSuccessStatusCode)
                 {
-                    _logger.LogError($"An error occurred: {ex.Message}");
-                    return null;
+                    string responseBody = await response.Content.ReadAsStringAsync();
+                    _logger.LogInformation(responseBody);
                 }
+                else
+                {
+                    _logger.LogWarning($"Request failed with status code {response.StatusCode}");
+                }
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"An error occurred: {ex.Message}");
+                return null;
             }
         }
-        public async Task<HttpResponseMessage?> ProcessEventHandler(ProcessEventArgs eventArgs)
+        public async Task ProcessEventHandler(ProcessEventArgs eventArgs)
         {
+
             var messageBody = Encoding.UTF8.GetString(eventArgs.Data.Body.ToArray());
             _logger.LogInformation($"Received event: {messageBody}");
-            var message = JsonSerializer.Deserialize<DeviceMessage>(messageBody);
-            var response = await UpdateDeviceData(message);
-            // TODO: Checkpointing per message is not recommended.
-            // This is a temporal solution. Also should we do anything when the response is not successful?
-            await eventArgs.UpdateCheckpointAsync(eventArgs.CancellationToken);
-            return response;
+            try
+            {
+                var message = JsonSerializer.Deserialize<DeviceMessage>(messageBody);
+                
+                if (message != null)
+                {
+                    await UpdateDeviceData(message);
+                    await eventArgs.UpdateCheckpointAsync(eventArgs.CancellationToken);
+                }
+                else
+                {
+                    _logger.LogError("Empty message, unable to call Device API.");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"An error occurred: {ex.Message}");
+            }
         }
 
         public Task ProcessErrorHandler(ProcessErrorEventArgs eventArgs)
@@ -90,17 +102,16 @@ namespace DeviceManager
             return Task.CompletedTask;
         }
 
-        public async Task StartProcessingAsync()
+        public Task StartAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation("Start processing messages async...");
-            await _processor.StartProcessingAsync();
+            return _processor.StartProcessingAsync(cancellationToken);
         }
 
-        public async Task StopProcessingAsync()
+        public Task StopAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation("Stop processing messages.");
-            await _processor.StopProcessingAsync();
+            return _processor.StopProcessingAsync(cancellationToken);
         }
-
     }
 }
