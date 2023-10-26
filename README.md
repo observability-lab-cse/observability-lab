@@ -60,6 +60,16 @@ Then, call the Devices API using `GET /devices` method, and you should see your 
   docker push acr<project-name>.azurecr.io/devices-api:latest
   ```
 
+* Modify secret-store.yml file replacing:
+  * ${project-name} with your project name
+  * ${clusterKeyVaultSecretProviderClientId} with a value the cluster client id that can be retrieved with `az deployment group show -g "$ENV_RESOURCE_GROUP_NAME" -n k8s_deployment --query properties.outputs.clusterKeyVaultSecretProviderClientId.value -o tsv`
+  * ${keyVaultTenantId} with key vault tenant id that can be retrieved with `az deployment group show -g "$ENV_RESOURCE_GROUP_NAME" -n key_vault_deployment --query properties.outputs.kvTenantId.value -o tsv`
+* Deploy secret-store
+
+  ```bash
+  kubectl apply -f k8s-files/secret-store.yaml
+  ```
+  
 * Modify deployment file and specify your project name in the image.
 * Deploy devices-api
 

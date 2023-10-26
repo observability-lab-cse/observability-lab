@@ -4,9 +4,9 @@ source ../.env
 
 DEVICE_NAME_TO_CREATE=device-42
 
-echo "COSMOS_DB_URI=$(az cosmosdb show --name cosmos-$ENV_PROJECT_NAME --resource-group $ENV_RESOURCE_GROUP_NAME --query documentEndpoint)" >> ./.env
-echo "COSMOS_DB_KEY=$(az cosmosdb keys list --name cosmos-$ENV_PROJECT_NAME --resource-group $ENV_RESOURCE_GROUP_NAME --type keys --query primaryMasterKey)" >> ./.env
-echo "COSMOS_DB_NAME=cosmos-db-$ENV_PROJECT_NAME" >> ./.env
+echo "AZURE_COSMOS_DB_URI=$(az cosmosdb show --name cosmos-$ENV_PROJECT_NAME --resource-group $ENV_RESOURCE_GROUP_NAME --query documentEndpoint)" >> ./.env
+echo "AZURE_COSMOS_DB_KEY=$(az cosmosdb keys list --name cosmos-$ENV_PROJECT_NAME --resource-group $ENV_RESOURCE_GROUP_NAME --type keys --query primaryMasterKey)" >> ./.env
+echo "AZURE_COSMOS_DB_NAME=cosmos-db-$ENV_PROJECT_NAME" >> ./.env
 echo "EVENT_HUB_LISTEN_POLICY_CONNECTION_STRING=$(az eventhubs eventhub authorization-rule keys list --resource-group "$ENV_RESOURCE_GROUP_NAME" --namespace-name evhns-"$ENV_PROJECT_NAME" --eventhub-name evh-"$ENV_PROJECT_NAME" --name Listen  --query primaryConnectionString -o tsv)" >> ./.env
 echo "STORAGE_CONNECTION_STRING=$(az storage account show-connection-string --name st$ENV_PROJECT_NAME --resource-group $ENV_RESOURCE_GROUP_NAME -o tsv)" >> ./.env
 echo "EVENT_HUB_NAME=evh-$ENV_PROJECT_NAME" >> ./.env
