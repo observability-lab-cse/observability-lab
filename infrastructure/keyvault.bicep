@@ -26,9 +26,13 @@ param cosmosDBEndpoint string
 @minLength(1)
 param cosmosDBAccountName string
 
-@description('Event Hub Connection String')
+@description('Event Hub Connection String - Listen')
 @minLength(1)
-param eventHubConnectionString string
+param eventHubConnectionStringListen string
+
+@description('Event Hub Connection String - Send')
+@minLength(1)
+param eventHubConnectionStringSend string
 
 @description('Azure Storage Connection String')
 @minLength(1)
@@ -97,12 +101,19 @@ resource keyVault 'Microsoft.KeyVault/vaults@2021-11-01-preview' = {
       }
   }
 
-    resource eventHubConnectionStringSecret 'secrets' = {
-        name: 'EventHubConnectionString'
+    resource eventHubConnectionStringListenSecret 'secrets' = {
+        name: 'EventHubConnectionStringListen'
         properties: {
-          value: eventHubConnectionString
+          value: eventHubConnectionStringListen
         }
   }
+
+    resource eventHubConnectionStringSendSecret 'secrets' = {
+          name: 'EventHubConnectionStringSend'
+          properties: {
+            value: eventHubConnectionStringSend
+          }
+    }
 
   resource eventHubNameSecret 'secrets' = {
     name: 'EventHubName'

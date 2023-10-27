@@ -30,7 +30,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: application-secrets
-                  key: EventHubConnectionString
+                  key: eventHubConnectionStringSend
             - name: DeviceList
               value: 'DEVICE_NAMES_PLACEHOLDER' # Specify your device names
             - name: MessageCount

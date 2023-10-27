@@ -57,7 +57,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: application-secrets
-                  key: EventHubConnectionString
+                  key: eventHubConnectionStringListen
             - name: EVENT_HUB_NAME
               valueFrom:
                 secretKeyRef:
