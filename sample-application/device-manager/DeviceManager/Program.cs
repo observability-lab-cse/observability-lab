@@ -1,31 +1,21 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using DeviceManager;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Configuration.Json;
 
-
-namespace DeviceManager
-{
-    internal class Program
-    {
-        static async Task Main(string[] args)
+using var host = Host.CreateDefaultBuilder(args)
+        .ConfigureServices((hostContext, services) =>
         {
-            var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json",true,true)
-                                                        .AddEnvironmentVariables()
-                                                        .Build();
+            var configuration = hostContext.Configuration;
             var consumerGroup = configuration.GetValue<string>("CONSUMER_GROUP");
             var blobContainerName = configuration.GetValue<string>("BLOB_CONTAINER_NAME");
-            var storageConnectionString = configuration.GetValue<string>("STORAGE_CONNECTION_STRING"); 
+            var storageConnectionString = configuration.GetValue<string>("STORAGE_CONNECTION_STRING");
             var eventHubConnectionString = configuration.GetValue<string>("EVENT_HUB_CONNECTION_STRING");
             var eventHubName = configuration.GetValue<string>("EVENT_HUB_NAME");
             var deviceApiUrl = configuration.GetValue<string>("DEVICE_API_URL");
 
-            var serviceCollection = new ServiceCollection();
-            serviceCollection.AddLogging(builder =>
-            {
-                builder.AddConsole();
-            });
-            serviceCollection.AddSingleton<EventHubReceiverService>(provider =>
+            services.AddHostedService(provider =>
             {
                 var logger = provider.GetRequiredService<ILogger<EventHubReceiverService>>();
                 return new EventHubReceiverService(
@@ -37,17 +27,7 @@ namespace DeviceManager
                     deviceApiUrl,
                     logger);
             });
+        })
+        .Build();
 
-            var serviceProvider = serviceCollection.BuildServiceProvider();
-
-            var eventHubReceiverService = serviceProvider.GetRequiredService<EventHubReceiverService>();
-
-            await eventHubReceiverService.StartProcessingAsync();
-
-            await Task.Delay(TimeSpan.FromSeconds(300));
-
-            await eventHubReceiverService.StopProcessingAsync();
-        }
-
-    }
-}
+await host.RunAsync();
