@@ -14,19 +14,24 @@ data:
     exporters:
       azuremonitor:
         instrumentation_key: INSTRUMENTATION_KEY_PLACEHOLDER
-      logging:
-        verbosity: normal
+      debug:
+        verbosity: detailed
+    extensions:
+      health_check:
+      pprof:
+      zpages:
     service:
+      extensions: [health_check, pprof, zpages]
       pipelines:
         traces:
           receivers: [otlp]
-          processors: []
-          exporters: [azuremonitor, logging]
+          processors: [batch]
+          exporters: [azuremonitor, debug]
         metrics:
           receivers: [otlp]
-          processors: []
-          exporters: [azuremonitor, logging]
+          processors: [batch]
+          exporters: [azuremonitor, debug]
         logs:
           receivers: [otlp]
-          processors: []
-          exporters: [azuremonitor, logging]
+          processors: [batch]
+          exporters: [azuremonitor, debug]
