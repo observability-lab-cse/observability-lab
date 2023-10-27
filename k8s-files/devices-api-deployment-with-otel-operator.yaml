@@ -27,17 +27,50 @@ spec:
             limits:
               cpu: 150m
               memory: 512Mi
+          volumeMounts:
+            - name: secrets-store-inline
+              mountPath: "/mnt/secrets-store"
+              readOnly: true
           env:
             - name: OTEL_EXPORTER_OTLP_ENDPOINT
               value: "http://otel-contrib-collector:4317"
             - name: OTEL_LOGS_EXPORTER
               value: otlp
-            - name: COSMOS_DB_URI
-              value: COSMOS_DB_URI_PLACEHOLDER
-            - name: COSMOS_DB_KEY
-              value: COSMOS_DB_KEY_PLACEHOLDER
-            - name: COSMOS_DB_NAME
-              value: COSMOS_DB_NAME_PLACEHOLDER
+            - name: OTEL_SERVICE_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.labels['app']
+            - name: AZURE_COSMOS_DB_URI
+              valueFrom:
+                secretKeyRef:
+                  name: devices-api-secrets
+                  key: CosmosDBEndpoint
+            - name: AZURE_COSMOS_DB_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: devices-api-secrets
+                  key: CosmosDBKey
+            - name: AZURE_COSMOS_DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: devices-api-secrets
+                  key: CosmosDBName
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            periodSeconds: 20
+            initialDelaySeconds: 20
+            failureThreshold: 15
+      volumes:
+        - name: secrets-store-inline
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "kvprovider"
+
 
 ---
 
