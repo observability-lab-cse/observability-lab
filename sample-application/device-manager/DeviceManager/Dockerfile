@@ -19,9 +19,4 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 
-ARG OTEL_VERSION=1.0.0-rc.2
-ADD https://github.com/open-telemetry/opentelemetry-dotnet-instrumentation/releases/download/v${OTEL_VERSION}/otel-dotnet-auto-install.sh otel-dotnet-auto-install.sh
-RUN apt-get update && apt-get install -y unzip && apt-get install -y curl && \
-    OTEL_DOTNET_AUTO_HOME="/otel-dotnet-auto" sh otel-dotnet-auto-install.sh
-
 ENTRYPOINT ["dotnet", "DeviceManager.dll"]
