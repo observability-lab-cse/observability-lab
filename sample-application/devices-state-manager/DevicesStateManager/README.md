@@ -17,7 +17,7 @@ Replace the values from [appsettings.json](appsettings.json) with the CosmosDB a
 "STORAGE_CONNECTION_STRING": "<>",
 "BLOB_CONTAINER_NAME": "<>",
 "EVEN_THUB_NAME": "<>",
-"CONSUMER_GROUP": "DevicesStateManager",
+"CONSUMER_GROUP": "devicesstatemanager",
 "DEVICE_API_URL":"http://localhost:8080"
 ```
 
