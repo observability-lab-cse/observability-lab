@@ -27,17 +27,37 @@ spec:
             limits:
               cpu: 150m
               memory: 512Mi
+          volumeMounts:
+            - name: secrets-store-inline
+              mountPath: "/mnt/secrets-store"
+              readOnly: true
           env:
             - name: EVENT_HUB_CONNECTION_STRING
-              value: EVENT_HUB_LISTEN_POLICY_CONNECTION_STRING_PLACEHOLDER
+              valueFrom:
+                secretKeyRef:
+                  name: application-secrets
+                  key: EventHubConnectionString
             - name: EVENT_HUB_NAME
-              value: EVENT_HUB_NAME_PLACEHOLDER
+              valueFrom:
+                secretKeyRef:
+                  name: application-secrets
+                  key: EventHubName
             - name: STORAGE_CONNECTION_STRING
-              value: STORAGE_CONNECTION_STRING_PLACEHOLDER
+              valueFrom:
+                secretKeyRef:
+                  name: application-secrets
+                  key: StorageAccountConnectionString
             - name: BLOB_CONTAINER_NAME
               value: event-hub-data
             - name: DEVICE_API_URL
               value: "http://devices-api-service:8080"
+      volumes:
+        - name: secrets-store-inline
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "kvprovider"
 ---
 
 apiVersion: v1

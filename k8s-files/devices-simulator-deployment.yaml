@@ -26,8 +26,11 @@ spec:
               cpu: 100m
               memory: 128Mi
           env:
-            - name: EventHubConnectionString
-              value: EVENT_HUB_CONNECTION_STRING_PLACEHOLDER
+            - name: EVENT_HUB_CONNECTION_STRING
+              valueFrom:
+                secretKeyRef:
+                  name: application-secrets
+                  key: EventHubConnectionString
             - name: DeviceList
               value: 'DEVICE_NAMES_PLACEHOLDER' # Specify your device names
             - name: MessageCount
