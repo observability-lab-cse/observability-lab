@@ -47,9 +47,6 @@ deploy(){
     sed -e "s/\${project-name}/$ENV_PROJECT_NAME/" | \
     kubectl apply -f  -
 
-    EVENT_HUB_CONNECTION_STRING=$(az eventhubs eventhub authorization-rule keys list --resource-group "$ENV_RESOURCE_GROUP_NAME" --namespace-name evhns-"$ENV_PROJECT_NAME" --eventhub-name evh-"$ENV_PROJECT_NAME" --name Listen  --query primaryConnectionString -o tsv)
-    STORAGE_CONNECTION_STRING=$(az storage account show-connection-string --name st$ENV_PROJECT_NAME --resource-group $ENV_RESOURCE_GROUP_NAME -o tsv)
-    
     cat k8s-files/devices-state-manager-deployment.yaml | \
     # cat k8s-files/devices-state-manager-deployment-with-otel-operator.yaml | \
     sed -e "s/\${project-name}/$ENV_PROJECT_NAME/" | \
@@ -147,7 +144,6 @@ deploy_devices_data_simulator(){
     DEVICE_NAMES=$(curl -X GET --header 'Accept: application/json' "http://$DEVICES_API_IP:8080/devices" | jq -r '[.[].name] | join(",")')
     echo "Configuring the Devices Data Simulator for the following device names: $DEVICE_NAMES"
 
-    EVENT_HUB_CONNECTION_STRING=$(az eventhubs eventhub authorization-rule keys list --resource-group "$ENV_RESOURCE_GROUP_NAME" --namespace-name evhns-"$ENV_PROJECT_NAME" --eventhub-name evh-"$ENV_PROJECT_NAME" --name Send  --query primaryConnectionString -o tsv)
     cat k8s-files/devices-data-simulator-deployment.yaml | \
     sed -e "s#DEVICE_NAMES_PLACEHOLDER#$DEVICE_NAMES#" | \
     kubectl apply -f  -

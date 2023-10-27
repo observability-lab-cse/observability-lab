@@ -118,7 +118,6 @@ Then, call the Devices API using `GET /devices` method, and you should see your 
   * Open your browser or use `curl http://localhost:8080/devices`. You should receive `[]`.
   * Navigate to `http://localhost:8080/` and create a couple of devices using the Devices API POST method.
 * To simulate the temperature data for each of the created device, deploy the Devices Data Simulator
-  * Replace `EVENT_HUB_CONNECTION_STRING_PLACEHOLDER` with your Event Hub connection string.
   * Replace `DEVICE_NAMES_PLACEHOLDER` with comma separated device names, that you previously created.
   * Deploy the simulator
 
