@@ -21,11 +21,11 @@ make
 
 Connect to the Devices API (URL is specified in the output of the previous command, though it takes a couple of minutes until the API is fully operational), and create a couple of devices using the `POST` method.
 
-Once devices are created, you can start the Devices Simulator, which will simulate generation of the temperature for each device.
+Once devices are created, you can start the Devices Data Simulator, which will simulate generation of the temperature for each device.
 To deploy it, execute:
 
 ```bash
-make deploy-devices-simulator
+make deploy-devices-data-simulator
 ```
 
 Then, call the Devices API using `GET /devices` method, and you should see your devices with `IN_USE` status, and a response similar to this:
@@ -67,21 +67,21 @@ Then, call the Devices API using `GET /devices` method, and you should see your 
   kubectl apply -f k8s-files/devices-api-deployment.yaml
   ```
 
-* Build and push `devices-manager` image.
+* Build and push `devices-state-manager` image.
 
   ```bash
-  cd sample-application/devices-manager/DevicesManager
-  docker build -t acr<project-name>.azurecr.io/devices-manager:latest .
-  docker push acr<project-name>.azurecr.io/devices-manager:latest
+  cd sample-application/devices-state-manager/DevicesStateManager
+  docker build -t acr<project-name>.azurecr.io/devices-state-manager:latest .
+  docker push acr<project-name>.azurecr.io/devices-state-manager:latest
   ```
 
-* Modify the [deployment file](./k8s-files/devices-manager-deployment.yaml) and specify your project name in the image.
-* Deploy devices-manager
+* Modify the [deployment file](./k8s-files/devices-state-manager-deployment.yaml) and specify your project name in the image.
+* Deploy devices-state-manager
 
   From the root folder, run:
   
   ```bash
-  kubectl apply -f k8s-files/devices-manager-deployment.yaml
+  kubectl apply -f k8s-files/devices-state-manager-deployment.yaml
   ```
 
 * Modify the Azure Monitor instrumentation key (`INSTRUMENTATION_KEY_PLACEHOLDER`) in the [`collector-config.yaml`](./k8s-files/collector-config.yaml) file.
@@ -107,11 +107,11 @@ Then, call the Devices API using `GET /devices` method, and you should see your 
 
   * Open your browser or use `curl http://localhost:8080/devices`. You should receive `[]`.
   * Navigate to `http://localhost:8080/` and create a couple of devices using the Devices API POST method.
-* To simulate the temperature data for each of the created device, deploy the Devices Simulator
+* To simulate the temperature data for each of the created device, deploy the Devices Data Simulator
   * Replace `EVENT_HUB_CONNECTION_STRING_PLACEHOLDER` with your Event Hub connection string.
   * Replace `DEVICE_NAMES_PLACEHOLDER` with comma separated device names, that you previously created.
   * Deploy the simulator
 
     ```bash
-    kubectl apply -f k8s-files/devices-simulator-deployment.yaml
+    kubectl apply -f k8s-files/devices-data-simulator-deployment.yaml
     ```

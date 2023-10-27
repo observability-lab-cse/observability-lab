@@ -1,6 +1,6 @@
 #!/bin/bash
 DEVICE_API_IMAGE_NAME="devices-api"
-DEVICE_MANAGER_IMAGE_NAME="devices-manager"
+DEVICE_MANAGER_IMAGE_NAME="devices-state-manager"
 TAG="latest"
 
 
@@ -11,7 +11,7 @@ build_images() {
     echo "Image Tag: $DEVICE_API_IMAGE_NAME:$TAG"
     docker build -t "$DEVICE_API_IMAGE_NAME":"$TAG" .
     echo ""
-    cd ../devices-manager/DevicesManager || { echo "Directory not found" && exit "2"; }
+    cd ../devices-state-manager/DevicesStateManager || { echo "Directory not found" && exit "2"; }
     echo "Image Tag: $DEVICE_MANAGER_IMAGE_NAME:$TAG"
     docker build -t "$DEVICE_MANAGER_IMAGE_NAME":"$TAG" .
     echo "Image Tag: $DEVICE_MANAGER_IMAGE_NAME:no-auto-instrumentation"
@@ -55,8 +55,8 @@ deploy(){
     EVENT_HUB_CONNECTION_STRING=$(az eventhubs eventhub authorization-rule keys list --resource-group "$ENV_RESOURCE_GROUP_NAME" --namespace-name evhns-"$ENV_PROJECT_NAME" --eventhub-name evh-"$ENV_PROJECT_NAME" --name Listen  --query primaryConnectionString -o tsv)
     STORAGE_CONNECTION_STRING=$(az storage account show-connection-string --name st$ENV_PROJECT_NAME --resource-group $ENV_RESOURCE_GROUP_NAME -o tsv)
     
-    cat k8s-files/devices-manager-deployment.yaml | \
-    # cat k8s-files/devices-manager-deployment-with-otel-operator.yaml | \
+    cat k8s-files/devices-state-manager-deployment.yaml | \
+    # cat k8s-files/devices-state-manager-deployment-with-otel-operator.yaml | \
     sed -e "s/\${project-name}/$ENV_PROJECT_NAME/" \
         -e "s#EVENT_HUB_LISTEN_POLICY_CONNECTION_STRING_PLACEHOLDER#$EVENT_HUB_CONNECTION_STRING#" \
         -e "s#STORAGE_CONNECTION_STRING_PLACEHOLDER#$STORAGE_CONNECTION_STRING#" \
@@ -114,7 +114,7 @@ deploy_opentelemetry_operator_with_collector(){
 }
 
 deploy_devices_simulator(){
-    echo "- DEPLOY Devices Simulator"
+    echo "- DEPLOY Devices Data Simulator"
     AKS_NAME=$(az aks list -g "$ENV_RESOURCE_GROUP_NAME" --query "[0].name" -o tsv)
     az aks get-credentials \
     --resource-group "$ENV_RESOURCE_GROUP_NAME" \
@@ -123,10 +123,10 @@ deploy_devices_simulator(){
 
     DEVICES_API_IP=$(kubectl get service devices-api-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
     DEVICE_NAMES=$(curl -X GET --header 'Accept: application/json' "http://$DEVICES_API_IP:8080/devices" | jq -r '[.[].name] | join(",")')
-    echo "Configuring the devices simulator for the following device names: $DEVICE_NAMES"
+    echo "Configuring the Devices Data Simulator for the following device names: $DEVICE_NAMES"
 
     EVENT_HUB_CONNECTION_STRING=$(az eventhubs eventhub authorization-rule keys list --resource-group "$ENV_RESOURCE_GROUP_NAME" --namespace-name evhns-"$ENV_PROJECT_NAME" --eventhub-name evh-"$ENV_PROJECT_NAME" --name Send  --query primaryConnectionString -o tsv)
-    cat k8s-files/devices-simulator-deployment.yaml | \
+    cat k8s-files/devices-data-simulator-deployment.yaml | \
     sed -e "s#EVENT_HUB_CONNECTION_STRING_PLACEHOLDER#$EVENT_HUB_CONNECTION_STRING#" \
         -e "s#DEVICE_NAMES_PLACEHOLDER#$DEVICE_NAMES#" | \
     kubectl apply -f  -

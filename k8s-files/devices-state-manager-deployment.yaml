@@ -2,21 +2,21 @@ kind: Deployment
 apiVersion: apps/v1
 
 metadata:
-  name: devices-manager
+  name: devices-state-manager
 
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: devices-manager
+      app: devices-state-manager
   template:
     metadata:
       labels:
-        app: devices-manager
+        app: devices-state-manager
     spec:
       containers:
-        - name: devices-manager
-          image: acr${project-name}.azurecr.io/devices-manager:latest
+        - name: devices-state-manager
+          image: acr${project-name}.azurecr.io/devices-state-manager:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8090
@@ -64,11 +64,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: devices-manager-service
+  name: devices-state-manager-service
 spec:
   type: LoadBalancer
   ports:
   - port: 8090 
     targetPort: 8090
   selector:
-    app: devices-manager
+    app: devices-state-manager

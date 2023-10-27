@@ -1,4 +1,4 @@
-# Sample C# Devices Manager Service
+# Sample C# Devices State Manager Service
 
 ## Prerequisites
 
@@ -17,7 +17,7 @@ Replace the values from [appsettings.json](appsettings.json) with the CosmosDB a
 "STORAGE_CONNECTION_STRING": "<>",
 "BLOB_CONTAINER_NAME": "<>",
 "EVEN_THUB_NAME": "<>",
-"CONSUMER_GROUP": "DevicesManager",
+"CONSUMER_GROUP": "DevicesStateManager",
 "DEVICE_API_URL":"http://localhost:8080"
 ```
 
@@ -26,7 +26,7 @@ Replace the values from [appsettings.json](appsettings.json) with the CosmosDB a
 ## Run locally
 
 ```bash
-cd sample-application/devices-manager/DevicesManager
+cd sample-application/devices-state-manager/DevicesStateManager
 
 dotnet run
 ```
@@ -34,10 +34,10 @@ dotnet run
 ## Run locally from docker
 
 ```bash
-cd sample-application/devices-manager/DevicesManager
+cd sample-application/devices-state-manager/DevicesStateManager
 
-docker build -t devices-manager .
-docker run devices-manager .
+docker build -t devices-state-manager .
+docker run devices-state-manager .
 ```
 
 ## Check results
@@ -45,6 +45,6 @@ docker run devices-manager .
 When application starts running, you should see messages being received and processed
 
 ```text
-info: DevicesManager.EventHubReceiverService[0]
+info: DevicesStateManager.EventHubReceiverService[0]
 Received event: {"deviceId": "device-42", "deviceTimestamp": "2023-07-17T17:41:52.8690130Z", "temp": 23.70572735914296}
 ```

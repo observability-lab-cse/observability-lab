@@ -1,4 +1,4 @@
-namespace DevicesManager
+namespace DevicesStateManager
 {
     public class DeviceMessage
     {
