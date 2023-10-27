@@ -5,10 +5,8 @@ COPY . /app
 WORKDIR /app
 
 # Download opentelemetry-javaagent.jar
-RUN curl -L -O https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/latest/download/opentelemetry-javaagent.jar
+RUN curl -L -O https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v1.31.0/opentelemetry-javaagent.jar
 
 RUN ./gradlew build
 
 ENTRYPOINT ["java", "-javaagent:opentelemetry-javaagent.jar", "-jar","build/libs/devices-api.jar"]
-
-
