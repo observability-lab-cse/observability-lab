@@ -47,8 +47,6 @@ deploy(){
     sed -e "s/\${project-name}/$ENV_PROJECT_NAME/" | \
     kubectl apply -f  -
 
-    STORAGE_CONNECTION_STRING=$(az storage account show-connection-string --name st$ENV_PROJECT_NAME --resource-group $ENV_RESOURCE_GROUP_NAME -o tsv)
-    
     cat k8s-files/device-manager-deployment.yaml | \
     # cat k8s-files/device-manager-deployment-with-otel-operator.yaml | \
     sed -e "s/\${project-name}/$ENV_PROJECT_NAME/" | \
