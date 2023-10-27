@@ -50,18 +50,9 @@ deploy(){
     EVENT_HUB_CONNECTION_STRING=$(az eventhubs eventhub authorization-rule keys list --resource-group "$ENV_RESOURCE_GROUP_NAME" --namespace-name evhns-"$ENV_PROJECT_NAME" --eventhub-name evh-"$ENV_PROJECT_NAME" --name Listen  --query primaryConnectionString -o tsv)
     STORAGE_CONNECTION_STRING=$(az storage account show-connection-string --name st$ENV_PROJECT_NAME --resource-group $ENV_RESOURCE_GROUP_NAME -o tsv)
     
-<<<<<<< HEAD
     cat k8s-files/devices-state-manager-deployment.yaml | \
     # cat k8s-files/devices-state-manager-deployment-with-otel-operator.yaml | \
-    sed -e "s/\${project-name}/$ENV_PROJECT_NAME/" \
-        -e "s#EVENT_HUB_LISTEN_POLICY_CONNECTION_STRING_PLACEHOLDER#$EVENT_HUB_CONNECTION_STRING#" \
-        -e "s#STORAGE_CONNECTION_STRING_PLACEHOLDER#$STORAGE_CONNECTION_STRING#" \
-        -e "s#EVENT_HUB_NAME_PLACEHOLDER#evh-$ENV_PROJECT_NAME#" | \
-=======
-    cat k8s-files/device-manager-deployment.yaml | \
-    # cat k8s-files/device-manager-deployment-with-otel-operator.yaml | \
     sed -e "s/\${project-name}/$ENV_PROJECT_NAME/" | \
->>>>>>> main
     kubectl apply -f -
 
     DEVICES_API_IP=""
