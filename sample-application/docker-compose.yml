@@ -9,9 +9,9 @@ services:
       OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4317
       # according to the doc otlp is default value but after testing this env var seems to be necessary
       OTEL_LOGS_EXPORTER: otlp
-      COSMOS_DB_URI: ${COSMOS_DB_URI}
-      COSMOS_DB_KEY: ${COSMOS_DB_KEY}
-      COSMOS_DB_NAME: ${COSMOS_DB_NAME}
+      AZURE_COSMOS_DB_URI: ${AZURE_COSMOS_DB_URI}
+      AZURE_COSMOS_DB_KEY: ${AZURE_COSMOS_DB_KEY}
+      AZURE_COSMOS_DB_NAME: ${AZURE_COSMOS_DB_NAME}
 
   devices-state-manager:
     container_name: devices-state-manager

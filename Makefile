@@ -3,7 +3,7 @@ include .env
 SHELL = /bin/bash
 
 
-all: provision push deploy-otel-collector deploy
+all: provision push deploy_secret_store deploy-otel-collector deploy
 
 provision:
 	@echo "Creating Infrastructure"
@@ -16,6 +16,10 @@ delete:
 push:
 	@echo "Build and push application"
 	@bash ./sample-application/sample.sh --push
+
+deploy_secret_store:
+	@echo "Deploy secret store provider"
+	@bash ./sample-application/sample.sh --deploy_secret_store
 
 deploy:
 	@echo "Deploy application to AKS"

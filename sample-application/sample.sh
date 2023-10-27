@@ -35,36 +35,67 @@ push_images(){
 
 
 deploy(){
-    echo "- DEPLOY module image"
+
+    echo "- DEPLOY modules: Devices API and Devices Manager"
     AKS_NAME=$(az aks list -g "$ENV_RESOURCE_GROUP_NAME" --query "[0].name" -o tsv)
     az aks get-credentials \
     --resource-group "$ENV_RESOURCE_GROUP_NAME" \
     --name "$AKS_NAME" \
     --overwrite-existing
 
-    COSMOS_DB_URI=$(az cosmosdb show --name cosmos-$ENV_PROJECT_NAME --resource-group $ENV_RESOURCE_GROUP_NAME --query documentEndpoint)
-    COSMOS_DB_KEY=$(az cosmosdb keys list --name cosmos-$ENV_PROJECT_NAME --resource-group $ENV_RESOURCE_GROUP_NAME --type keys --query primaryMasterKey)
     cat k8s-files/devices-api-deployment.yaml | \
-    # cat k8s-files/devices-api-deployment-with-otel-operator.yaml | \
-    sed -e "s/\${project-name}/$ENV_PROJECT_NAME/" \
-        -e "s#COSMOS_DB_URI_PLACEHOLDER#$COSMOS_DB_URI#" \
-        -e "s#COSMOS_DB_KEY_PLACEHOLDER#$COSMOS_DB_KEY#" \
-        -e "s#COSMOS_DB_NAME_PLACEHOLDER#cosmos-db-$ENV_PROJECT_NAME#" | \
+    sed -e "s/\${project-name}/$ENV_PROJECT_NAME/" | \
     kubectl apply -f  -
 
     EVENT_HUB_CONNECTION_STRING=$(az eventhubs eventhub authorization-rule keys list --resource-group "$ENV_RESOURCE_GROUP_NAME" --namespace-name evhns-"$ENV_PROJECT_NAME" --eventhub-name evh-"$ENV_PROJECT_NAME" --name Listen  --query primaryConnectionString -o tsv)
     STORAGE_CONNECTION_STRING=$(az storage account show-connection-string --name st$ENV_PROJECT_NAME --resource-group $ENV_RESOURCE_GROUP_NAME -o tsv)
     
+<<<<<<< HEAD
     cat k8s-files/devices-state-manager-deployment.yaml | \
     # cat k8s-files/devices-state-manager-deployment-with-otel-operator.yaml | \
     sed -e "s/\${project-name}/$ENV_PROJECT_NAME/" \
         -e "s#EVENT_HUB_LISTEN_POLICY_CONNECTION_STRING_PLACEHOLDER#$EVENT_HUB_CONNECTION_STRING#" \
         -e "s#STORAGE_CONNECTION_STRING_PLACEHOLDER#$STORAGE_CONNECTION_STRING#" \
         -e "s#EVENT_HUB_NAME_PLACEHOLDER#evh-$ENV_PROJECT_NAME#" | \
+=======
+    cat k8s-files/device-manager-deployment.yaml | \
+    # cat k8s-files/device-manager-deployment-with-otel-operator.yaml | \
+    sed -e "s/\${project-name}/$ENV_PROJECT_NAME/" | \
+>>>>>>> main
     kubectl apply -f -
 
-    DEVICES_API_IP=$(kubectl get service devices-api-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+    DEVICES_API_IP=""
+    while [ -z $DEVICES_API_IP ]; do
+        DEVICES_API_IP=$(kubectl get service devices-api-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+        echo "Waiting for Devices API to start..."
+        sleep 1;
+    done
+
+    HEALTHCHECK_URL="http://$DEVICES_API_IP:8080/health"
+    while [[ $(curl -s -o /dev/null -w "%{http_code}" $HEALTHCHECK_URL) != "200" ]]; do
+        echo "Still a few seconds..."
+        sleep 1;
+    done
+
     echo "Devices API URL http://$DEVICES_API_IP:8080"
+}
+
+deploy_secret_store(){
+
+    echo "- DEPLOY secret store provider"
+    AKS_NAME=$(az aks list -g "$ENV_RESOURCE_GROUP_NAME" --query "[0].name" -o tsv)
+    az aks get-credentials \
+    --resource-group "$ENV_RESOURCE_GROUP_NAME" \
+    --name "$AKS_NAME" \
+    --overwrite-existing
+
+    CLUSTER_CLIENT_ID=$(az deployment group show -g "$ENV_RESOURCE_GROUP_NAME" -n k8s_deployment --query properties.outputs.clusterKeyVaultSecretProviderClientId.value -o tsv)
+    KEY_VAULT_TENANT_ID=$(az deployment group show -g "$ENV_RESOURCE_GROUP_NAME" -n key_vault_deployment --query properties.outputs.kvTenantId.value -o tsv)
+    cat k8s-files/secret-store.yaml | \
+    sed -e "s/\${project-name}/$ENV_PROJECT_NAME/" \
+        -e "s/\${clusterKeyVaultSecretProviderClientId}/$CLUSTER_CLIENT_ID/" \
+        -e "s/\${keyVaultTenantId}/$KEY_VAULT_TENANT_ID/" | \
+    kubectl apply -f  -
 }
 
 deploy_otel_collector(){
@@ -127,8 +158,7 @@ deploy_devices_data_simulator(){
 
     EVENT_HUB_CONNECTION_STRING=$(az eventhubs eventhub authorization-rule keys list --resource-group "$ENV_RESOURCE_GROUP_NAME" --namespace-name evhns-"$ENV_PROJECT_NAME" --eventhub-name evh-"$ENV_PROJECT_NAME" --name Send  --query primaryConnectionString -o tsv)
     cat k8s-files/devices-data-simulator-deployment.yaml | \
-    sed -e "s#EVENT_HUB_CONNECTION_STRING_PLACEHOLDER#$EVENT_HUB_CONNECTION_STRING#" \
-        -e "s#DEVICE_NAMES_PLACEHOLDER#$DEVICE_NAMES#" | \
+    sed -e "s#DEVICE_NAMES_PLACEHOLDER#$DEVICE_NAMES#" | \
     kubectl apply -f  -
     echo ""
 }
@@ -147,6 +177,10 @@ run_main() {
         elif [[ "$1" == "--deploy" ]] || [[ "$1" == "-d" ]]; then
         echo "--- Deploy to AKS Cluster  ---"
         deploy
+        exit 0
+        elif [[ "$1" == "--deploy_secret_store" ]]; then
+        echo "--- Deploy to AKS Cluster  ---"
+        deploy_secret_store
         exit 0
         elif [[ "$1" == "--deploy_otel_collector" ]]; then
         echo "--- Deploy to AKS Cluster  ---"
