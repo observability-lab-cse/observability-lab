@@ -113,7 +113,7 @@ deploy_opentelemetry_operator_with_collector(){
     echo ""
 }
 
-deploy_devices_simulator(){
+deploy_devices_data_simulator(){
     echo "- DEPLOY Devices Data Simulator"
     AKS_NAME=$(az aks list -g "$ENV_RESOURCE_GROUP_NAME" --query "[0].name" -o tsv)
     az aks get-credentials \
@@ -156,9 +156,9 @@ run_main() {
         echo "--- Deploy to AKS Cluster  ---"
         deploy_opentelemetry_operator_with_collector
         exit 0
-        elif [[ "$1" == "--deploy_devices_simulator" ]]; then
+        elif [[ "$1" == "--deploy_devices_data_simulator" ]]; then
         echo "--- Deploy to AKS Cluster  ---"
-        deploy_devices_simulator
+        deploy_devices_data_simulator
         exit 0
         
     else

@@ -31,4 +31,4 @@ deploy-otel-operator-with-collector:
 
 deploy-devices-data-simulator:
 	@echo "Deploy Devices Data Simulator to AKS"
-	@bash ./sample-application/sample.sh --deploy_devices_simulator
+	@bash ./sample-application/sample.sh --deploy_devices_data_simulator
