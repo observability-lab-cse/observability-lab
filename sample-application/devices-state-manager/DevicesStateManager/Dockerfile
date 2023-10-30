@@ -6,14 +6,14 @@ WORKDIR /app
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["DeviceManager.csproj", "."]
-RUN dotnet restore "./DeviceManager.csproj"
+COPY ["DevicesStateManager.csproj", "."]
+RUN dotnet restore "./DevicesStateManager.csproj"
 COPY . .
 WORKDIR "/src/."
-RUN dotnet build "DeviceManager.csproj" -c Release -o /app/build
+RUN dotnet build "DevicesStateManager.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "DeviceManager.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "DevicesStateManager.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
@@ -24,4 +24,4 @@ ADD https://github.com/open-telemetry/opentelemetry-dotnet-instrumentation/relea
 RUN apt-get update && apt-get install -y unzip && apt-get install -y curl && \
     OTEL_DOTNET_AUTO_HOME="/otel-dotnet-auto" sh otel-dotnet-auto-install.sh
 
-ENTRYPOINT ["dotnet", "DeviceManager.dll"]
+ENTRYPOINT ["dotnet", "DevicesStateManager.dll"]

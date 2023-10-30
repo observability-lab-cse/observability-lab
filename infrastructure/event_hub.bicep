@@ -50,7 +50,7 @@ resource listenAuthorizationRule 'Microsoft.EventHub/namespaces/eventhubs/author
 }
 
 resource consumerGroup 'Microsoft.EventHub/namespaces/eventhubs/consumergroups@2022-01-01-preview' = {
-  name: 'DeviceManager'
+  name: 'DevicesStateManager'
   parent: eventHub
 }
 

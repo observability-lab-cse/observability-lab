@@ -2,21 +2,23 @@ kind: Deployment
 apiVersion: apps/v1
 
 metadata:
-  name: device-manager
+  name: devices-state-manager
 
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: device-manager
+      app: devices-state-manager
   template:
     metadata:
       labels:
-        app: device-manager
+        app: devices-state-manager
+      annotations:
+        instrumentation.opentelemetry.io/inject-dotnet: "true"
     spec:
       containers:
-        - name: device-manager
-          image: acr${project-name}.azurecr.io/device-manager:latest
+        - name: devices-state-manager
+          image: acr${project-name}.azurecr.io/devices-state-manager:no-auto-instrumentation
           imagePullPolicy: Always
           ports:
             - containerPort: 8090
@@ -32,27 +34,6 @@ spec:
               mountPath: "/mnt/secrets-store"
               readOnly: true
           env:
-            - name: OTEL_EXPORTER_OTLP_ENDPOINT
-              value: "http://opentelemetrycollector:4318"
-            - name: CORECLR_ENABLE_PROFILING
-              value: "1"
-            - name: CORECLR_PROFILER
-              value: "{918728DD-259F-4A6A-AC2B-B85E1B658318}"
-            - name: CORECLR_PROFILER_PATH
-              value: "/otel-dotnet-auto/linux-x64/OpenTelemetry.AutoInstrumentation.Native.so"
-            - name: DOTNET_ADDITIONAL_DEPS
-              value: "/otel-dotnet-auto/AdditionalDeps"
-            - name: DOTNET_SHARED_STORE
-              value: "/otel-dotnet-auto/store"
-            - name: DOTNET_STARTUP_HOOKS
-              value: "/otel-dotnet-auto/net/OpenTelemetry.AutoInstrumentation.StartupHook.dll"
-            - name: OTEL_DOTNET_AUTO_HOME
-              value: "/otel-dotnet-auto"
-            - name: OTEL_SERVICE_NAME
-              valueFrom:
-                fieldRef:
-                  apiVersion: v1
-                  fieldPath: metadata.labels['app']
             - name: EVENT_HUB_CONNECTION_STRING
               valueFrom:
                 secretKeyRef:
@@ -79,16 +60,17 @@ spec:
             readOnly: true
             volumeAttributes:
               secretProviderClass: "kvprovider"
+
 ---
 
 apiVersion: v1
 kind: Service
 metadata:
-  name: device-manager-service
+  name: devices-state-manager-service
 spec:
   type: LoadBalancer
   ports:
   - port: 8090 
     targetPort: 8090
   selector:
-    app: device-manager
+    app: devices-state-manager
