@@ -2,24 +2,26 @@ kind: Deployment
 apiVersion: apps/v1
 
 metadata:
-  name: devices-api
+  name: devices-state-manager
 
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: devices-api
+      app: devices-state-manager
   template:
     metadata:
       labels:
-        app: devices-api
+        app: devices-state-manager
+      annotations:
+        instrumentation.opentelemetry.io/inject-dotnet: "true"
     spec:
       containers:
-        - name: devices-api
-          image: acr${project-name}.azurecr.io/devices-api:latest
+        - name: devices-state-manager
+          image: acr${project-name}.azurecr.io/devices-state-manager:no-auto-instrumentation
           imagePullPolicy: Always
           ports:
-            - containerPort: 8080
+            - containerPort: 8090
           resources:
             requests:
               cpu: 50m
@@ -32,37 +34,25 @@ spec:
               mountPath: "/mnt/secrets-store"
               readOnly: true
           env:
-            - name: OTEL_EXPORTER_OTLP_ENDPOINT
-              value: "http://opentelemetrycollector:4317"
-            - name: OTEL_LOGS_EXPORTER
-              value: otlp
-            - name: OTEL_SERVICE_NAME
-              valueFrom:
-                fieldRef:
-                  apiVersion: v1
-                  fieldPath: metadata.labels['app']
-            - name: AZURE_COSMOS_DB_URI
+            - name: EVENT_HUB_CONNECTION_STRING
               valueFrom:
                 secretKeyRef:
                   name: application-secrets
-                  key: CosmosDBEndpoint
-            - name: AZURE_COSMOS_DB_KEY
+                  key: EventHubConnectionStringListen
+            - name: EVENT_HUB_NAME
               valueFrom:
                 secretKeyRef:
                   name: application-secrets
-                  key: CosmosDBKey
-            - name: AZURE_COSMOS_DB_NAME
+                  key: EventHubName
+            - name: STORAGE_CONNECTION_STRING
               valueFrom:
                 secretKeyRef:
                   name: application-secrets
-                  key: CosmosDBName
-          readinessProbe:
-            httpGet:
-              path: /health
-              port: 8080
-            periodSeconds: 20
-            initialDelaySeconds: 20
-            failureThreshold: 15
+                  key: StorageAccountConnectionString
+            - name: BLOB_CONTAINER_NAME
+              value: event-hub-data
+            - name: DEVICE_API_URL
+              value: "http://devices-api-service:8080"
       volumes:
         - name: secrets-store-inline
           csi:
@@ -71,17 +61,16 @@ spec:
             volumeAttributes:
               secretProviderClass: "kvprovider"
 
-
 ---
 
 apiVersion: v1
 kind: Service
 metadata:
-  name: devices-api-service
+  name: devices-state-manager-service
 spec:
   type: LoadBalancer
   ports:
-  - port: 8080 
-    targetPort: 8080
+  - port: 8090 
+    targetPort: 8090
   selector:
-    app: devices-api
+    app: devices-state-manager

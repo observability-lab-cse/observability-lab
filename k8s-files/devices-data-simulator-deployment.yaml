@@ -2,20 +2,20 @@ kind: Deployment
 apiVersion: apps/v1
 
 metadata:
-  name: devices-simulator
+  name: devices-data-simulator
 
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: devices-simulator
+      app: devices-data-simulator
   template:
     metadata:
       labels:
-        app: devices-simulator
+        app: devices-data-simulator
     spec:
       containers:
-        - name: devices-simulator
+        - name: devices-data-simulator
           image: mcr.microsoft.com/oss/azure-samples/azureiot-telemetrysimulator:latest
           imagePullPolicy: Always
           resources:
@@ -27,7 +27,10 @@ spec:
               memory: 128Mi
           env:
             - name: EventHubConnectionString
-              value: EVENT_HUB_CONNECTION_STRING_PLACEHOLDER
+              valueFrom:
+                secretKeyRef:
+                  name: application-secrets
+                  key: EventHubConnectionStringSend
             - name: DeviceList
               value: 'DEVICE_NAMES_PLACEHOLDER' # Specify your device names
             - name: MessageCount

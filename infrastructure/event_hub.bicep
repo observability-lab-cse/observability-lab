@@ -50,7 +50,7 @@ resource listenAuthorizationRule 'Microsoft.EventHub/namespaces/eventhubs/author
 }
 
 resource consumerGroup 'Microsoft.EventHub/namespaces/eventhubs/consumergroups@2022-01-01-preview' = {
-  name: 'DeviceManager'
+  name: 'DevicesStateManager'
   parent: eventHub
 }
 
@@ -72,3 +72,11 @@ resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@20
   name: 'event-hub-data'
   parent: blobService
 }
+
+
+var storageAccountKeys = storageAccount.listKeys().keys
+
+output storageAccountConnectionString string = 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccountKeys[0].value};EndpointSuffix=${environment().suffixes.storage}'
+output eventHubConnectionStringSend string = sendAuthorizationRule.listKeys().primaryConnectionString
+output eventHubConnectionStringListen string = listenAuthorizationRule.listKeys().primaryConnectionString
+output eventHubName string = eventHubName

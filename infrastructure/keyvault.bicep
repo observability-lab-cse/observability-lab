@@ -26,6 +26,22 @@ param cosmosDBEndpoint string
 @minLength(1)
 param cosmosDBAccountName string
 
+@description('Event Hub Connection String - Listen')
+@minLength(1)
+param eventHubConnectionStringListen string
+
+@description('Event Hub Connection String - Send')
+@minLength(1)
+param eventHubConnectionStringSend string
+
+@description('Azure Storage Connection String')
+@minLength(1)
+param storageAccountConnectionString string
+
+@description('Event Hub name')
+@minLength(1)
+param eventHubName string
+
 @description('The Object ID of the user-defined Managed Identity used by the AKS Secret Provider')
 @minLength(1)
 @secure()
@@ -83,6 +99,34 @@ resource keyVault 'Microsoft.KeyVault/vaults@2021-11-01-preview' = {
       properties: {
         value: cosmosDBAccountName
       }
+  }
+
+    resource eventHubConnectionStringListenSecret 'secrets' = {
+        name: 'EventHubConnectionStringListen'
+        properties: {
+          value: eventHubConnectionStringListen
+        }
+  }
+
+    resource eventHubConnectionStringSendSecret 'secrets' = {
+          name: 'EventHubConnectionStringSend'
+          properties: {
+            value: eventHubConnectionStringSend
+          }
+    }
+
+  resource eventHubNameSecret 'secrets' = {
+    name: 'EventHubName'
+        properties: {
+             value: eventHubName
+        }
+    }
+
+  resource storageAccountConnectionStringSecret 'secrets' = {
+    name: 'StorageAccountConnectionString'
+        properties: {
+             value: storageAccountConnectionString
+        }
     }
 }
 

@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "DeviceManager": {
+    "DevicesStateManager": {
       "commandName": "Project"
     },
     "Docker": {
