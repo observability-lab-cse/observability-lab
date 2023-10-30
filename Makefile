@@ -1,4 +1,4 @@
-.PHONY: all deploy build
+.PHONY: all
 include .env
 SHELL = /bin/bash
 
