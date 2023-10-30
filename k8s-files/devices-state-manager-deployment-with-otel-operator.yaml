@@ -60,7 +60,6 @@ spec:
             readOnly: true
             volumeAttributes:
               secretProviderClass: "kvprovider"
-
 ---
 
 apiVersion: v1
