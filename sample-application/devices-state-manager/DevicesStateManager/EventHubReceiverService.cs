@@ -7,7 +7,7 @@ using Azure.Storage.Blobs;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Hosting;
 
-namespace DeviceManager
+namespace DevicesStateManager
 {
     class EventHubReceiverService: IHostedService
     {

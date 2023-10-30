@@ -13,26 +13,26 @@ services:
       AZURE_COSMOS_DB_KEY: ${AZURE_COSMOS_DB_KEY}
       AZURE_COSMOS_DB_NAME: ${AZURE_COSMOS_DB_NAME}
 
-  device-manager:
-    container_name: device-manager
+  devices-state-manager:
+    container_name: devices-state-manager
     depends_on:
       - devices-api
     build:
-      context: device-manager/DeviceManager
+      context: devices-state-manager/DevicesStateManager
       dockerfile: Dockerfile
     env_file:
       - otel-dotnet.env # enable OpenTelemetry .NET Automatic Instrumentation
     ports:
       - "8090:8090"
     environment:
-      OTEL_SERVICE_NAME: "device-manager"
+      OTEL_SERVICE_NAME: "devices-state-manager"
       OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4318"
       DEVICE_API_URL: "http://devices-api:8080"
       EVENT_HUB_CONNECTION_STRING: ${EVENT_HUB_LISTEN_POLICY_CONNECTION_STRING}
       EVENT_HUB_NAME: ${EVENT_HUB_NAME}
       STORAGE_CONNECTION_STRING: ${STORAGE_CONNECTION_STRING}
       BLOB_CONTAINER_NAME: ${BLOB_CONTAINER_NAME}
-      CONSUMER_GROUP: "devicemanager"
+      CONSUMER_GROUP: "DevicesStateManager"
 
   otel-collector:
     image: otel/opentelemetry-collector-contrib:latest
@@ -41,8 +41,8 @@ services:
     volumes:
       - ./otel-collector/otelcol-config.yml:/etc/otelcol-config.yml
 
-  devices-simulator:
-    container_name: devices-simulator
+  devices-data-simulator:
+    container_name: devices-data-simulator
     image: mcr.microsoft.com/oss/azure-samples/azureiot-telemetrysimulator
     environment:
       EventHubConnectionString: ${EVENT_HUB_SEND_POLICY_CONNECTION_STRING}
