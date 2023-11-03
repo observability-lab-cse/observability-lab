@@ -53,6 +53,13 @@ spec:
               value: event-hub-data
             - name: DEVICE_API_URL
               value: "http://devices-api-service:8080"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 5000
+            periodSeconds: 5
+            initialDelaySeconds: 5
+            failureThreshold: 15
       volumes:
         - name: secrets-store-inline
           csi:
