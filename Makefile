@@ -3,11 +3,15 @@ include .env
 SHELL = /bin/bash
 
 
-all: provision push deploy_secret_store deploy-otel-collector deploy
+all: provision push deploy_secret_store deploy deploy-devices-data-simulator
 
 provision:
 	@echo "Creating Infrastructure"
 	@bash ./infrastructure/setup_infra.sh --create
+
+provision-obs:
+	@echo "Creating Observability Infrastructure"
+	@bash ./infrastructure/setup_infra.sh --create-obs
 
 delete:
 	@echo "Delete Infrastructure"
