@@ -1,33 +1,32 @@
 ﻿using DevicesStateManager;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
-using var host = Host.CreateDefaultBuilder(args)
-        .ConfigureServices((hostContext, services) =>
-        {
-            var configuration = hostContext.Configuration;
-            var consumerGroup = configuration.GetValue<string>("CONSUMER_GROUP");
-            var blobContainerName = configuration.GetValue<string>("BLOB_CONTAINER_NAME");
-            var storageConnectionString = configuration.GetValue<string>("STORAGE_CONNECTION_STRING");
-            var eventHubConnectionString = configuration.GetValue<string>("EVENT_HUB_CONNECTION_STRING");
-            var eventHubName = configuration.GetValue<string>("EVENT_HUB_NAME");
-            var deviceApiUrl = configuration.GetValue<string>("DEVICE_API_URL");
+var builder = WebApplication.CreateBuilder(args);
 
-            services.AddHostedService(provider =>
-            {
-                var logger = provider.GetRequiredService<ILogger<EventHubReceiverService>>();
-                return new EventHubReceiverService(
-                    storageConnectionString,
-                    blobContainerName,
-                    eventHubConnectionString,
-                    eventHubName,
-                    consumerGroup,
-                    deviceApiUrl,
-                    logger);
-            });
-        })
-        .Build();
+var configuration = builder.Configuration;
+var consumerGroup = configuration.GetValue<string>("CONSUMER_GROUP");
+var blobContainerName = configuration.GetValue<string>("BLOB_CONTAINER_NAME");
+var storageConnectionString = configuration.GetValue<string>("STORAGE_CONNECTION_STRING");
+var eventHubConnectionString = configuration.GetValue<string>("EVENT_HUB_CONNECTION_STRING");
+var eventHubName = configuration.GetValue<string>("EVENT_HUB_NAME");
+var deviceApiUrl = configuration.GetValue<string>("DEVICE_API_URL");
 
-await host.RunAsync();
+builder.Services.AddHostedService(provider =>
+    {
+        var logger = provider.GetRequiredService<ILogger<EventHubReceiverService>>();
+        return new EventHubReceiverService(
+            storageConnectionString,
+            blobContainerName,
+            eventHubConnectionString,
+            eventHubName,
+            consumerGroup,
+            deviceApiUrl,
+            logger);
+    });
+
+builder.Services.AddHealthChecks()
+    .AddCheck("Sample", () => HealthCheckResult.Healthy("A healthy result."));
+
+var app = builder.Build();
+app.MapHealthChecks("/health");
+await app.RunAsync();

@@ -16,7 +16,6 @@ namespace DevicesStateManager
         private readonly ILogger<EventHubReceiverService> _logger;
         private readonly string _baseUrl;
 
-
         public EventHubReceiverService(
             string? storageConnectionString,
             string? blobContainerName,
