@@ -113,7 +113,7 @@ deploy_opentelemetry_operator_with_collector(){
     echo "Deploying cert-manager"
     kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.12.0/cert-manager.yaml
     echo "Deploying Open Telemetry Operator"
-    kubectl apply -f https://github.com/open-telemetry/opentelemetry-operator/releases/download/v0.83.0/opentelemetry-operator.yaml
+    kubectl apply -f https://github.com/open-telemetry/opentelemetry-operator/releases/download/v0.87.0/opentelemetry-operator.yaml
     while true; do
         my_list=$(kubectl get endpoints opentelemetry-operator-webhook-service -n opentelemetry-operator-system -o jsonpath='{.subsets[*].addresses[*].ip}')
         if [ -n "$my_list" ]; then

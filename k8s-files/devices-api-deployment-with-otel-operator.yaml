@@ -36,6 +36,11 @@ spec:
               value: "http://otel-contrib-collector:4317"
             - name: OTEL_LOGS_EXPORTER
               value: otlp
+            - name: OTEL_SERVICE_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.labels['app']
             - name: AZURE_COSMOS_DB_URI
               valueFrom:
                 secretKeyRef:
@@ -51,6 +56,13 @@ spec:
                 secretKeyRef:
                   name: application-secrets
                   key: CosmosDBName
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            periodSeconds: 20
+            initialDelaySeconds: 20
+            failureThreshold: 15
       volumes:
         - name: secrets-store-inline
           csi:
@@ -58,6 +70,7 @@ spec:
             readOnly: true
             volumeAttributes:
               secretProviderClass: "kvprovider"
+
 
 ---
 
