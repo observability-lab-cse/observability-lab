@@ -15,6 +15,7 @@ namespace DevicesStateManager
         private readonly EventProcessorClient _processor;
         private readonly ILogger<EventHubReceiverService> _logger;
         private readonly string _baseUrl;
+        private readonly Metrics _metrics;
 
 
         public EventHubReceiverService(
@@ -24,7 +25,8 @@ namespace DevicesStateManager
             string? eventHubName,
             string? consumerGroup,
             string? baseUrl,
-            ILogger<EventHubReceiverService> logger)
+            ILogger<EventHubReceiverService> logger,
+            Metrics metrics)
         {
             ArgumentNullException.ThrowIfNull(storageConnectionString);
             ArgumentNullException.ThrowIfNull(blobContainerName);
@@ -39,7 +41,10 @@ namespace DevicesStateManager
 
             _processor.ProcessEventAsync += ProcessEventHandler;
             _processor.ProcessErrorAsync += ProcessErrorHandler;
+
+            _metrics = metrics;
         }
+
         private async Task<HttpResponseMessage?> UpdateDeviceData(DeviceMessage deviceMessage)
         {
             using HttpClient client = new();
@@ -58,6 +63,7 @@ namespace DevicesStateManager
                 {
                     string responseBody = await response.Content.ReadAsStringAsync();
                     _logger.LogInformation(responseBody);
+                    _metrics.AddDeviceUpdate();
                 }
                 else
                 {
