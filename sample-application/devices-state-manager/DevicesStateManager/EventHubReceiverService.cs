@@ -6,6 +6,8 @@ using Azure.Messaging.EventHubs;
 using Azure.Storage.Blobs;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Hosting;
+using System.Diagnostics;
+using System.Diagnostics.Metrics;
 
 namespace DevicesStateManager
 {
@@ -15,7 +17,8 @@ namespace DevicesStateManager
         private readonly EventProcessorClient _processor;
         private readonly ILogger<EventHubReceiverService> _logger;
         private readonly string _baseUrl;
-        private readonly Metrics _metrics;
+        private readonly Meter _meter;
+        private readonly Counter<int> _counter;
 
 
         public EventHubReceiverService(
@@ -25,8 +28,7 @@ namespace DevicesStateManager
             string? eventHubName,
             string? consumerGroup,
             string? baseUrl,
-            ILogger<EventHubReceiverService> logger,
-            Metrics metrics)
+            ILogger<EventHubReceiverService> logger)
         {
             ArgumentNullException.ThrowIfNull(storageConnectionString);
             ArgumentNullException.ThrowIfNull(blobContainerName);
@@ -42,7 +44,8 @@ namespace DevicesStateManager
             _processor.ProcessEventAsync += ProcessEventHandler;
             _processor.ProcessErrorAsync += ProcessErrorHandler;
 
-            _metrics = metrics;
+            _meter = new Meter("DevicesStateManager");
+            _counter = _meter.CreateCounter<int>("device-updates", description: "Device update count");
         }
 
         private async Task<HttpResponseMessage?> UpdateDeviceData(DeviceMessage deviceMessage)
@@ -63,7 +66,7 @@ namespace DevicesStateManager
                 {
                     string responseBody = await response.Content.ReadAsStringAsync();
                     _logger.LogInformation(responseBody);
-                    _metrics.AddDeviceUpdate();
+                    _counter.Add(1);
                 }
                 else
                 {
