@@ -14,6 +14,7 @@ using var host = Host.CreateDefaultBuilder(args)
             var eventHubConnectionString = configuration.GetValue<string>("EVENT_HUB_CONNECTION_STRING");
             var eventHubName = configuration.GetValue<string>("EVENT_HUB_NAME");
             var deviceApiUrl = configuration.GetValue<string>("DEVICE_API_URL");
+
             services.AddHostedService(provider =>
             {
                 var logger = provider.GetRequiredService<ILogger<EventHubReceiverService>>();
