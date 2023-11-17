@@ -53,6 +53,8 @@ spec:
               value: event-hub-data
             - name: DEVICE_API_URL
               value: "http://devices-api-service:8080"
+            - name: OTEL_DOTNET_AUTO_METRICS_ADDITIONAL_SOURCES
+              value: "DevicesStateManager"
       volumes:
         - name: secrets-store-inline
           csi:
