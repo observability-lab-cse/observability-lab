@@ -6,7 +6,6 @@ using Azure.Messaging.EventHubs;
 using Azure.Storage.Blobs;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Hosting;
-using System.Diagnostics;
 using System.Diagnostics.Metrics;
 
 namespace DevicesStateManager
@@ -18,7 +17,8 @@ namespace DevicesStateManager
         private readonly ILogger<EventHubReceiverService> _logger;
         private readonly string _baseUrl;
         private readonly Meter _meter;
-        private readonly Counter<int> _counter;
+        private readonly Counter<int> _deviceUpdateCounter;
+        private readonly Counter<int> _failedDeviceUpdateCounter;
 
 
         public EventHubReceiverService(
@@ -45,7 +45,8 @@ namespace DevicesStateManager
             _processor.ProcessErrorAsync += ProcessErrorHandler;
 
             _meter = new Meter("DevicesStateManager");
-            _counter = _meter.CreateCounter<int>("device-updates", description: "Device update count");
+            _deviceUpdateCounter = _meter.CreateCounter<int>("device-updates", description: "Number of successful device state updates");
+            _failedDeviceUpdateCounter = _meter.CreateCounter<int>("failed-device-updates", description: "Number of failed device state updates");
         }
 
         private async Task<HttpResponseMessage?> UpdateDeviceData(DeviceMessage deviceMessage)
@@ -66,11 +67,12 @@ namespace DevicesStateManager
                 {
                     string responseBody = await response.Content.ReadAsStringAsync();
                     _logger.LogInformation(responseBody);
-                    _counter.Add(1);
+                    _deviceUpdateCounter.Add(1, GetDeviceIdTag(deviceMessage.deviceId));
                 }
                 else
                 {
                     _logger.LogWarning($"Request failed with status code {response.StatusCode}");
+                    _failedDeviceUpdateCounter.Add(1, GetDeviceIdTag(deviceMessage.deviceId));
                 }
                 return response;
             }
@@ -122,5 +124,8 @@ namespace DevicesStateManager
             _logger.LogInformation("Stop processing messages.");
             return _processor.StopProcessingAsync(cancellationToken);
         }
+
+        private KeyValuePair<string, object?> GetDeviceIdTag(string? deviceId) => 
+            new KeyValuePair<string, object?>("deviceId", deviceId);
     }
 }
