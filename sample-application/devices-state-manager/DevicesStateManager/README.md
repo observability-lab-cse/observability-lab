@@ -42,6 +42,8 @@ docker run devices-state-manager .
 
 ## Check results
 
+You can access DeviceStateManager health check by accessing the endpoint `http://localhost:5000/health`.
+
 When application starts running, you should see messages being received and processed
 
 ```text
