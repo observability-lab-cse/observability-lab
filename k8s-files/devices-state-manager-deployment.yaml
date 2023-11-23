@@ -72,8 +72,18 @@ spec:
               value: event-hub-data
             - name: DEVICE_API_URL
               value: "http://devices-api-service:8080"
+<<<<<<< HEAD
             - name: OTEL_DOTNET_AUTO_METRICS_ADDITIONAL_SOURCES
               value: "DevicesStateManager"
+=======
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 5000
+            periodSeconds: 5
+            initialDelaySeconds: 5
+            failureThreshold: 15
+>>>>>>> main
       volumes:
         - name: secrets-store-inline
           csi:

@@ -21,7 +21,6 @@ namespace DevicesStateManager
         private readonly Counter<int> _deviceUpdateCounter;
         private readonly Histogram<float> _temperatureHistogram;
 
-
         public EventHubReceiverService(
             string? storageConnectionString,
             string? blobContainerName,
