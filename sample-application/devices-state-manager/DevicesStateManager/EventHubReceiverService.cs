@@ -6,6 +6,7 @@ using Azure.Messaging.EventHubs;
 using Azure.Storage.Blobs;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Hosting;
+using System.Diagnostics.Metrics;
 
 namespace DevicesStateManager
 {
@@ -15,6 +16,10 @@ namespace DevicesStateManager
         private readonly EventProcessorClient _processor;
         private readonly ILogger<EventHubReceiverService> _logger;
         private readonly string _baseUrl;
+       
+        private readonly Meter _meter;
+        private readonly Counter<int> _deviceUpdateCounter;
+        private readonly Histogram<float> _temperatureHistogram;
 
         public EventHubReceiverService(
             string? storageConnectionString,
@@ -38,7 +43,12 @@ namespace DevicesStateManager
 
             _processor.ProcessEventAsync += ProcessEventHandler;
             _processor.ProcessErrorAsync += ProcessErrorHandler;
+
+            _meter = new Meter("DevicesStateManager");
+            _deviceUpdateCounter = _meter.CreateCounter<int>("device-updates", description: "Number of successful device state updates");
+            _temperatureHistogram = _meter.CreateHistogram<float>("temperature", description: "Temperature measurements");
         }
+
         private async Task<HttpResponseMessage?> UpdateDeviceData(DeviceMessage deviceMessage)
         {
             using HttpClient client = new();
@@ -57,6 +67,8 @@ namespace DevicesStateManager
                 {
                     string responseBody = await response.Content.ReadAsStringAsync();
                     _logger.LogInformation(responseBody);
+                    _deviceUpdateCounter.Add(1, GetDeviceIdTag(deviceMessage.deviceId));
+                    _temperatureHistogram.Record(deviceMessage.temp);
                 }
                 else
                 {
@@ -112,5 +124,8 @@ namespace DevicesStateManager
             _logger.LogInformation("Stop processing messages.");
             return _processor.StopProcessingAsync(cancellationToken);
         }
+
+        private KeyValuePair<string, object?> GetDeviceIdTag(string? deviceId) => 
+            new KeyValuePair<string, object?>("deviceId", deviceId);
     }
 }
