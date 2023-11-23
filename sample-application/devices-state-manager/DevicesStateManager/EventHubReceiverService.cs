@@ -16,9 +16,10 @@ namespace DevicesStateManager
         private readonly EventProcessorClient _processor;
         private readonly ILogger<EventHubReceiverService> _logger;
         private readonly string _baseUrl;
+       
         private readonly Meter _meter;
         private readonly Counter<int> _deviceUpdateCounter;
-        private readonly Counter<int> _failedDeviceUpdateCounter;
+        private readonly Histogram<float> _temperatureHistogram;
 
 
         public EventHubReceiverService(
@@ -46,7 +47,7 @@ namespace DevicesStateManager
 
             _meter = new Meter("DevicesStateManager");
             _deviceUpdateCounter = _meter.CreateCounter<int>("device-updates", description: "Number of successful device state updates");
-            _failedDeviceUpdateCounter = _meter.CreateCounter<int>("failed-device-updates", description: "Number of failed device state updates");
+            _temperatureHistogram = _meter.CreateHistogram<float>("temperature", description: "Temperature measurements");
         }
 
         private async Task<HttpResponseMessage?> UpdateDeviceData(DeviceMessage deviceMessage)
@@ -68,11 +69,11 @@ namespace DevicesStateManager
                     string responseBody = await response.Content.ReadAsStringAsync();
                     _logger.LogInformation(responseBody);
                     _deviceUpdateCounter.Add(1, GetDeviceIdTag(deviceMessage.deviceId));
+                    _temperatureHistogram.Record(deviceMessage.temp);
                 }
                 else
                 {
                     _logger.LogWarning($"Request failed with status code {response.StatusCode}");
-                    _failedDeviceUpdateCounter.Add(1, GetDeviceIdTag(deviceMessage.deviceId));
                 }
                 return response;
             }
