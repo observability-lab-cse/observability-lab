@@ -67,7 +67,7 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-  - port: 8090 
+  - port: 8090
     targetPort: 8090
   selector:
     app: devices-state-manager
