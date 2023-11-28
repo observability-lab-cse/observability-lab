@@ -71,7 +71,7 @@ run_main() {
         exit 0
     
     elif [[ "$1" == "--create-obs" ]] || [[ "$1" == "-d" ]]; then
-        echo "--- Deleting infrastructure ---"
+        echo "--- Creating observability infrastructure ---"
         create_observability_infrastructure
         exit 0
     else
