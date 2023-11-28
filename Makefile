@@ -3,7 +3,7 @@ include .env
 SHELL = /bin/bash
 
 
-all: provision push deploy_secret_store deploy deploy-devices-data-simulator
+all: provision provision-obs push deploy_secret_store deploy deploy-devices-data-simulator deploy-otel-collector
 
 provision:
 	@echo "Creating Infrastructure"
