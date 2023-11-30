@@ -1,5 +1,7 @@
 # observability-lab
 
+> 🚨 *Important:* In case you are following the workshop, don't check out the `main` branch of this repos or follow the `README`. Instead go to the first section of the workshop and follow the workshop instruction on there [01-provision-infrastructure/](https://observability-lab-cse.github.io/observability-lab-workshop/01-provision-infrastructure/)
+
 ## Quick setup
 
 The `Makefile` automates infrastructure creation and applications deployment within a couple of commands.
