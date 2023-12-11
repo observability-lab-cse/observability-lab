@@ -17,6 +17,7 @@ build_images() {
     echo "Image Tag: $DEVICE_MANAGER_IMAGE_NAME:no-auto-instrumentation"
     docker build -f Dockerfile.no-auto-instrumentation -t "$DEVICE_MANAGER_IMAGE_NAME":no-auto-instrumentation .
     echo ""
+    cd ../../..
 }
 
 push_images(){
