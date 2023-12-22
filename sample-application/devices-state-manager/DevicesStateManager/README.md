@@ -43,11 +43,33 @@ docker run devices-state-manager .
 
 ## Check results
 
-You can access DeviceStateManager health check by accessing the endpoint `http://localhost:5000/health`.
-
-When application starts running, you should see messages being received and processed
+If you run the whole solution, including the Devices Simulator, then when Devices State Manager starts running, you should see messages being received and processed
 
 ```text
 info: DevicesStateManager.EventHubReceiverService[0]
 Received event: {"deviceId": "device-42", "deviceTimestamp": "2023-07-17T17:41:52.8690130Z", "temp": 23.70572735914296}
+```
+
+## Health check
+
+Devices State Manager has health-check implemented as a tcp probe so that kubernetes can use it in the readiness probe. If you want to check health-check locally you can execute following steps:
+
+1. Run the Devices State Manager locally
+2. In the application logs you should see a log indicating that the tcp probe service started:
+
+```
+info: DevicesStateManager.TcpHealthProbeService[0]
+Started health check service.
+```
+
+3. Request tcp connection on port 8090, you can use e.g. nc command from terminal:
+
+```bash
+nc localhost 8090
+```
+
+4. Now in your application logs you should see a message:
+
+```
+Successfully processed health check request.
 ```

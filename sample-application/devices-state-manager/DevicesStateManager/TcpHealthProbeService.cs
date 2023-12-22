@@ -16,7 +16,6 @@ public sealed class TcpHealthProbeService : BackgroundService
    {
        _healthCheckService = healthCheckService ?? throw new ArgumentNullException(nameof(healthCheckService));
        _logger = logger;
-       // Attach TCP listener to the port in configuration
         _listener = new TcpListener(IPAddress.Any, 8090);
     }
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -47,11 +46,12 @@ public sealed class TcpHealthProbeService : BackgroundService
             }
 
             _listener.Start();
+            // If the connection is requested
             while (_listener.Server.IsBound && _listener.Pending())
             {
                 var client = await _listener.AcceptTcpClientAsync(token);
                 client.Close();
-                _logger.LogDebug("Successfully processed health check request.");
+                _logger.LogInformation("Successfully processed health check request.");
             }
             _logger.LogDebug("Heartbeat check executed.");
 
