@@ -55,7 +55,7 @@ Received event: {"deviceId": "device-42", "deviceTimestamp": "2023-07-17T17:41:5
 Devices State Manager has a health-check implemented as a TCP probe, so that Kubernetes can use it in the readiness probe. If you want to check the health-check locally, you can execute following steps:
 
 1. Run the Devices State Manager locally
-2. In the application logs you should see a log indicating that the tcp probe service started:
+2. In the application logs you should see a message indicating that the TCP probe service started:
 
 ```
 info: DevicesStateManager.TcpHealthProbeService[0]
