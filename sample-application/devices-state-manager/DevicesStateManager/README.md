@@ -62,7 +62,7 @@ info: DevicesStateManager.TcpHealthProbeService[0]
 Started health check service.
 ```
 
-3. Request tcp connection on port 8090, you can use e.g. nc command from terminal:
+3. Request a TCP connection on port 8090, for example using the `nc` command from your terminal:
 
 ```bash
 nc localhost 8090
