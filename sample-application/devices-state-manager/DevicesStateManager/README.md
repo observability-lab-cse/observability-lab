@@ -68,7 +68,7 @@ Started health check service.
 nc localhost 8090
 ```
 
-4. Now in your application logs you should see a message:
+4. Now, in your application logs you should see the following message:
 
 ```
 Successfully processed health check request.
