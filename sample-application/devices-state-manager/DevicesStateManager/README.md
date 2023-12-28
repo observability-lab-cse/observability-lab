@@ -43,7 +43,7 @@ docker run devices-state-manager .
 
 ## Check results
 
-If you run the whole solution, including the Devices Simulator, then when Devices State Manager starts running, you should see messages being received and processed
+If you run the whole solution, including the Devices Simulator, then, once Devices State Manager starts running, you should see messages being received and processed:
 
 ```text
 info: DevicesStateManager.EventHubReceiverService[0]
