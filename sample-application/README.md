@@ -6,7 +6,7 @@ This project contains a `devices-api` module (Java) which creates and retrieves 
 
 The device API, device manager, as well as Cosmos DB, expose telemetry data, to either be sent to [Log Analytics Workspace](https://learn.microsoft.com/en-us/azure/azure-monitor/logs/log-analytics-workspace-overview) or exported by a telemetry agent like [OTEL-Collector](https://opentelemetry.io/docs/collector/).
 
-![image](./path-1-architecture.jpg)
+![image](./architecture.jpg)
 
 ## How to run
 
