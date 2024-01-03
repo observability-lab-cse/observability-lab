@@ -3,7 +3,7 @@ include .env
 SHELL = /bin/bash
 
 
-all: provision provision-obs push deploy_secret_store deploy deploy-devices-data-simulator deploy-otel-collector
+all: provision
 
 provision:
 	@echo "Creating Infrastructure"
@@ -28,14 +28,6 @@ deploy_secret_store:
 deploy:
 	@echo "Deploy application to AKS"
 	@bash ./sample-application/sample.sh --deploy
-
-deploy-otel-collector:
-	@echo "Deploy Open Telemetry Collector to AKS"
-	@bash ./sample-application/sample.sh --deploy_otel_collector
-
-deploy-otel-operator-with-collector:
-	@echo "Deploy Open Telemetry Collector to AKS"
-	@bash ./sample-application/sample.sh --deploy_opentelemetry_operator_with_collector
 
 deploy-devices-data-simulator:
 	@echo "Deploy Devices Data Simulator to AKS"

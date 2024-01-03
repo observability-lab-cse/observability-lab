@@ -32,15 +32,6 @@ spec:
               mountPath: "/mnt/secrets-store"
               readOnly: true
           env:
-            - name: OTEL_EXPORTER_OTLP_ENDPOINT
-              value: "http://opentelemetrycollector:4317"
-            - name: OTEL_LOGS_EXPORTER
-              value: otlp
-            - name: OTEL_SERVICE_NAME
-              valueFrom:
-                fieldRef:
-                  apiVersion: v1
-                  fieldPath: metadata.labels['app']
             - name: AZURE_COSMOS_DB_URI
               valueFrom:
                 secretKeyRef:
@@ -81,7 +72,7 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-  - port: 8080 
+  - port: 8080
     targetPort: 8080
   selector:
     app: devices-api

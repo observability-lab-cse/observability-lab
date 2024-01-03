@@ -62,4 +62,3 @@ module eventHub './event_hub.bicep' = {
 output acrName string = acr.outputs.acrName
 output clusterName string = k8s.outputs.clusterName
 output aksKeyVaultSecretProviderClientId string = k8s.outputs.clusterKeyVaultSecretProviderClientId
-
