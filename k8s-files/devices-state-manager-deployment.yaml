@@ -74,6 +74,13 @@ spec:
               value: "http://devices-api-service:8080"
             - name: OTEL_DOTNET_AUTO_METRICS_ADDITIONAL_SOURCES
               value: "DevicesStateManager"
+          readinessProbe:
+            tcpSocket:
+              port: 8090
+            initialDelaySeconds: 5
+            failureThreshold: 10
+            timeoutSeconds: 3
+            periodSeconds: 10
       volumes:
         - name: secrets-store-inline
           csi:
