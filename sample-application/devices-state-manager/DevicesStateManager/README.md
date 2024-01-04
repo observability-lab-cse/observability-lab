@@ -6,20 +6,20 @@
 - Docker
 - EventHub
 
-## Set up
+## Setup
 
 Open the project in VS Code using dev containers [configuration file](../../.devcontainer/devcontainer.json).
 
 Replace the values from [appsettings.json](appsettings.json) with the CosmosDB and EventHub properties:
 
 ```text
-"EVENT_HUB_CONNECTION_STRING": "<>",
-"STORAGE_CONNECTION_STRING": "<>",
-"BLOB_CONTAINER_NAME": "<>",
-"EVEN_THUB_NAME": "<>",
-"CONSUMER_GROUP": "devicesstatemanager",
-"DEVICE_API_URL":"http://localhost:8080",
-"OTEL_DOTNET_AUTO_METRICS_ADDITIONAL_SOURCES": "DevicesStateManager"
+"EVENT_HUB_CONNECTION_STRING": "<>",                                    # Listen access policy connection string of the Event Hub created in your Event Hubs namespace
+"STORAGE_CONNECTION_STRING": "<>",                                      # Connection string of the Storage account, needed to persist checkpoints of the Event Processor
+"BLOB_CONTAINER_NAME": "<>",                                            # Name of the blob container created in your Storage account
+"EVENT_HUB_NAME": "<>",                                                 # Name of the Event Hub created in your Event Hubs namespace
+"CONSUMER_GROUP": "devicesstatemanager",                                # Name of the Event Hub consumer group
+"DEVICE_API_URL":"http://localhost:8080",                               # Base URL of the Devices API service
+"OTEL_DOTNET_AUTO_METRICS_ADDITIONAL_SOURCES": "DevicesStateManager"    # Name of the `Meter` defined to collect custom metrics emitted from the application 
 ```
 
 > Note: When running the devices-api service locally you can keep the url domain to be `localhost`. However, as soon as you run the service in a container replace the domain with the service name.

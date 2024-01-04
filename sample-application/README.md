@@ -17,6 +17,7 @@ The following command sets up all required environment variables and starts dock
 ```
 
 Currently, the docker-compose file starts the following components:
+
 * `devices-api` - a java service
 * `devices-state-manager` - .NET console application
 * OpenTelemetry collector
