@@ -56,6 +56,7 @@ namespace DevicesStateManager
         {
             using var activity = DeviceUpdateActivity.StartActivity("UpdateDeviceData");
             activity?.SetTag("deviceId", deviceMessage.deviceId);
+            activity?.SetTag("temperature", deviceMessage.temp);
 
             using HttpClient client = new();
             try
