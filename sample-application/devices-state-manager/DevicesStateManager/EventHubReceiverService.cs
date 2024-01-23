@@ -7,6 +7,7 @@ using Azure.Storage.Blobs;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Hosting;
 using System.Diagnostics.Metrics;
+using System.Diagnostics;
 
 namespace DevicesStateManager
 {
@@ -20,6 +21,8 @@ namespace DevicesStateManager
         private readonly Meter _meter;
         private readonly Counter<int> _deviceUpdateCounter;
         private readonly Histogram<float> _temperatureHistogram;
+
+        private static readonly ActivitySource DeviceUpdateActivity = new ActivitySource("DeviceUpdate");
 
         public EventHubReceiverService(
             string? storageConnectionString,
@@ -51,6 +54,9 @@ namespace DevicesStateManager
 
         private async Task<HttpResponseMessage?> UpdateDeviceData(DeviceMessage deviceMessage)
         {
+            using var activity = DeviceUpdateActivity.StartActivity("UpdateDeviceData");
+            activity?.SetTag("deviceId", deviceMessage.deviceId);
+
             using HttpClient client = new();
             try
             {
