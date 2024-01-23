@@ -55,6 +55,8 @@ spec:
               value: "http://devices-api-service:8080"
             - name: OTEL_DOTNET_AUTO_METRICS_ADDITIONAL_SOURCES
               value: "DevicesStateManager"
+            - name: OTEL_DOTNET_AUTO_TRACES_ADDITIONAL_SOURCES
+              value: "DeviceUpdate"
       volumes:
         - name: secrets-store-inline
           csi:
