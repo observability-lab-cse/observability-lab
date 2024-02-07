@@ -19,7 +19,8 @@ Replace the values from [appsettings.json](appsettings.json) with the CosmosDB a
 "EVENT_HUB_NAME": "<>",                                                 # Name of the Event Hub created in your Event Hubs namespace
 "CONSUMER_GROUP": "devicesstatemanager",                                # Name of the Event Hub consumer group
 "DEVICE_API_URL":"http://localhost:8080",                               # Base URL of the Devices API service
-"OTEL_DOTNET_AUTO_METRICS_ADDITIONAL_SOURCES": "DevicesStateManager"    # Name of the `Meter` defined to collect custom metrics emitted from the application 
+"OTEL_DOTNET_AUTO_METRICS_ADDITIONAL_SOURCES": "DevicesStateManager"    # Name of the `Meter` defined to collect custom metrics emitted from the application
+"OTEL_DOTNET_AUTO_TRACES_ADDITIONAL_SOURCES": "DeviceUpdate"            # Name of the created Activity Source
 ```
 
 > Note: When running the devices-api service locally you can keep the url domain to be `localhost`. However, as soon as you run the service in a container replace the domain with the service name.
