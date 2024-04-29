@@ -17,6 +17,17 @@ create_infrastructure(){
 
     echo ""
 }
+
+
+create_observability_infrastructure(){
+    echo "- Create all observability related resources in resource group $ENV_RESOURCE_GROUP_NAME"
+    az deployment group create \
+    --resource-group "$ENV_RESOURCE_GROUP_NAME" \
+    --template-file ./infrastructure/main-obs.bicep \
+    --parameters projectName="$ENV_PROJECT_NAME"
+
+    echo ""
+}
 connect_cluster(){
     AKS_NAME=$(az aks list -g "$ENV_RESOURCE_GROUP_NAME" --query "[0].name" -o tsv)
     echo "- Connect to cluster $AKS_NAME"
@@ -54,11 +65,15 @@ run_main() {
         connect_cluster
         exit 0
         
-        elif [[ "$1" == "--delete" ]] || [[ "$1" == "-d" ]]; then
+    elif [[ "$1" == "--delete" ]] || [[ "$1" == "-d" ]]; then
         echo "--- Deleting infrastructure ---"
         delete_infrastructure
         exit 0
-        
+    
+    elif [[ "$1" == "--create-obs" ]] || [[ "$1" == "-d" ]]; then
+        echo "--- Creating observability infrastructure ---"
+        create_observability_infrastructure
+        exit 0
     else
         echo "Usage: $0 [--create | -c] | [--delete | -d]"
         exit 1
