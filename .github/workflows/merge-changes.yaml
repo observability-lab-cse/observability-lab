@@ -55,3 +55,4 @@ jobs:
           committer: GitHub <noreply@github.com>
           author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
           delete-branch: true
+          base: ${{ inputs.base_branch }}
