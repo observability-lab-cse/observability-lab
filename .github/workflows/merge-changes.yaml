@@ -21,12 +21,12 @@ jobs:
       - name: Checkout main branch
         uses: actions/checkout@v2
         with:
-          ref: main
+          ref: ${{ inputs.base_branch }}
 
       - name: Create new branch
         id: create_branch
         run: |
-            git checkout -b ${{ inputs.base_branch }}
+            git checkout -b merge/${{ inputs.base_branch }}
 
       - name: Cherry-pick latest commit to new branch
         run: |
