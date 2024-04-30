@@ -30,6 +30,7 @@ jobs:
 
       - name: Cherry-pick latest commit to new branch
         run: |
+          git fetch origin
           git cherry-pick ${{ inputs.starting_branch }} 
 
       - name: Push new branch
