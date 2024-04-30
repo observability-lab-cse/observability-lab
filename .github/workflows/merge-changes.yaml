@@ -34,21 +34,15 @@ jobs:
       - name: Create new branch
         id: create_branch
         run: |
-          git checkout -b merge/fooooo
+          git checkout -b merge/${{ inputs.base_branch }}
 
-      - name: Cherry-pick latest commit to new branch
+      - name: Cherry-pick latest commit to new branch and push
         run: |
           git fetch origin
           echo ${{ github.actor }}
           git branch
           git cherry-pick origin/${{ inputs.starting_branch }}
           git push --set-upstream origin ${{ steps.create_branch.outputs.branch }}
-
-      - name: Push new branch
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ steps.create_branch.outputs.branch }}
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
