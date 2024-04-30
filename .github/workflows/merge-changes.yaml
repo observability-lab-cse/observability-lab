@@ -33,7 +33,7 @@ jobs:
       - name: Create new branch
         id: create_branch
         run: |
-          git checkout -b merge/${{ inputs.base_branch }}
+          git checkout -b merge/fooooo
 
       - name: Cherry-pick latest commit to new branch
         run: |
