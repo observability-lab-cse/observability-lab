@@ -20,7 +20,7 @@ param agentCount int = 2
 @description('The size of the Virtual Machine.')
 param agentVMSize string = 'Standard_B2ms'
 
-resource aks 'Microsoft.ContainerService/managedClusters@2022-05-02-preview' = {
+resource aks 'Microsoft.ContainerService/managedClusters@2022-07-01' = {
   name: clusterName
   location: location
   identity: {
