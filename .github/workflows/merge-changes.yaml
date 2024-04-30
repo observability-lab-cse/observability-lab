@@ -7,13 +7,16 @@ on:
   workflow_dispatch:
     inputs:
       base_branch:
-        description: 'Name of the base branch'
+        description: "Name of the base branch"
         required: true
         type: string
       starting_branch:
-        description: 'Name of the starting branch'
+        description: "Name of the starting branch"
         required: true
         type: string
+
+permissions: write-all
+
 jobs:
   cherry_pick_and_create_pr:
     runs-on: ubuntu-latest
@@ -30,13 +33,13 @@ jobs:
       - name: Create new branch
         id: create_branch
         run: |
-            git checkout -b merge/${{ inputs.base_branch }}
+          git checkout -b merge/${{ inputs.base_branch }}
 
       - name: Cherry-pick latest commit to new branch
         run: |
           git fetch origin
           echo ${{ github.actor }}
-          git cherry-pick origin/${{ inputs.starting_branch }} 
+          git cherry-pick origin/${{ inputs.starting_branch }}
 
       - name: Push new branch
         uses: ad-m/github-push-action@master
@@ -55,4 +58,3 @@ jobs:
           committer: GitHub <noreply@github.com>
           author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
           delete-branch: true
-
