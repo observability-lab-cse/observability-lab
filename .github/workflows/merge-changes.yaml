@@ -49,7 +49,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: "Cherry-pick latest commit to main"
-          branch: ${{ steps.create_branch.outputs.branch }}
+          branch: merge/${{ inputs.base_branch }}
           title: "Cherry-pick latest commit to main"
           body: "This PR cherry-picks the latest commit from main to the new branch."
           committer: GitHub <noreply@github.com>
