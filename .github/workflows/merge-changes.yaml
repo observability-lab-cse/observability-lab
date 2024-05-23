@@ -45,5 +45,7 @@ jobs:
           git push --set-upstream origin ${{ steps.create_branch.outputs.branch }}
 
       - name: Create Pull Request
+        env:
+          GH_token: ${{ secrets.GH_TOKEN }}
         run: |
           gh pr create --base ${{ inputs.base_branch }} --head merge/${{ inputs.base_branch }} --title "Merge merge/${{ inputs.base_branch }} into ${{ inputs.base_branch }}" --body "This PR merges merge/${{ inputs.base_branch }} into ${{ inputs.base_branch }}"
