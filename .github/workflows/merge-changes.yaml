@@ -45,14 +45,5 @@ jobs:
           git push --set-upstream origin ${{ steps.create_branch.outputs.branch }}
 
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "Cherry-pick latest commit to main"
-          branch: merge/${{ inputs.base_branch }}
-          title: "Cherry-pick latest commit to main"
-          body: "This PR cherry-picks the latest commit from main to the new branch."
-          committer: GitHub <noreply@github.com>
-          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
-          delete-branch: true
-          base: ${{ inputs.base_branch }}
+        run: |
+          gh pr create --base ${{ inputs.base_branch }} --head ${{ steps.create_branch.outputs.branch }} --title "Merge ${{ inputs.starting_branch }} into ${{ inputs.base_branch }}" --body "This PR merges ${{ inputs.starting_branch }} into ${{ inputs.base_branch }}"
