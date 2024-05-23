@@ -1,5 +1,7 @@
 #!/bin/bash
 # For project-name use only alphanumeric characters
+set -e
+
 create_resource_group() {
     echo "- Create resource group $ENV_RESOURCE_GROUP_NAME"
     az group create \
