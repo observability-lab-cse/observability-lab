@@ -48,5 +48,5 @@ jobs:
         env:
           GH_token: ${{secrets.GITHUB_TOKEN}}
         run: |
-          gh auth login --with-token
+          gh auth login --with-token <<< $GH_token
           gh pr create --base ${{ inputs.starting_branch }} --head merge/${{ inputs.base_branch }} --title "Merge merge/${{ inputs.base_branch }} into ${{ inputs.starting_branch }}" --body "This PR merges merge/${{ inputs.base_branch }} into ${{ inputs.starting_branch }}"
