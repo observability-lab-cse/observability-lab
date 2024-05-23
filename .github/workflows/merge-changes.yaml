@@ -7,11 +7,11 @@ on:
   workflow_dispatch:
     inputs:
       base_branch:
-        description: "Name of the base branch"
+        description: "Name of the base branch who last commit should be cherry picked and applied to the starting branch"
         required: true
         type: string
       starting_branch:
-        description: "Name of the starting branch"
+        description: "Name of the starting branch from which the cherry picked branch of the base should be applied to"
         required: true
         type: string
 
@@ -46,4 +46,4 @@ jobs:
 
       - name: Create Pull Request
         run: |
-          gh pr create --base ${{ inputs.base_branch }} --head ${{ steps.create_branch.outputs.branch }} --title "Merge ${{ inputs.starting_branch }} into ${{ inputs.base_branch }}" --body "This PR merges ${{ inputs.starting_branch }} into ${{ inputs.base_branch }}"
+          gh pr create --base ${{ inputs.base_branch }} --head merge/${{ inputs.base_branch }} --title "Merge merge/${{ inputs.base_branch }} into ${{ inputs.base_branch }}" --body "This PR merges merge/${{ inputs.base_branch }} into ${{ inputs.base_branch }}"
