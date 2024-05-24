@@ -28,7 +28,7 @@ jobs:
       
       - name: Set up the script
         run: |
-          chmod +x .github/workflows/sample.sh.sh
+          chmod +x .github/workflows/sample.sh
 
       - name: Set up Git
         run: |
