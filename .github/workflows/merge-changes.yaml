@@ -34,19 +34,22 @@ jobs:
       - name: Create new branch
         id: create_branch
         run: |
-          git checkout -b merge/${{ inputs.base_branch }}
+          git checkout -b merge/${{ inputs.base_branch }}/to/${{ inputs.starting_branch }}
 
       - name: Cherry-pick latest commit to new branch and push
         run: |
-          git fetch origin
-          echo ${{ github.actor }}
-          git branch
-          git cherry-pick origin/${{ inputs.starting_branch }}
-          git push --set-upstream origin ${{ steps.create_branch.outputs.branch }}
+          exists=`git show-ref refs/heads/merge/${{ inputs.base_branch }}/to/${{ inputs.starting_branch }}`
+          if [ -n "$exists" ]; then
+              echo 'Branch already exist and assumed at right state!'
+          else
+            git fetch origin
+            git cherry-pick origin/${{ inputs.starting_branch }}
+            git push --set-upstream origin merge/${{ inputs.base_branch }}/to/${{ inputs.starting_branch }}
+          fi
 
       - name: Create Pull Request
         env:
           GH_token: ${{secrets.GITHUB_TOKEN}}
         run: |
           gh auth login --with-token <<< $GH_token
-          gh pr create --base ${{ inputs.starting_branch }} --head merge/${{ inputs.base_branch }} --title "Merge merge/${{ inputs.base_branch }} into ${{ inputs.starting_branch }}" --body "This PR merges merge/${{ inputs.base_branch }} into ${{ inputs.starting_branch }}"
+          gh pr create --base ${{ inputs.starting_branch }} --head merge/${{ inputs.base_branch }}/to/${{ inputs.starting_branch }} --title "Merge merge/${{ inputs.base_branch }}/to/${{ inputs.starting_branch }} into ${{ inputs.starting_branch }}" --body "This PR merges merge/${{ inputs.base_branch }}/to/${{ inputs.starting_branch }} into ${{ inputs.starting_branch }}"
