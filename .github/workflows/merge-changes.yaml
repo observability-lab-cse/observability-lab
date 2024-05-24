@@ -25,6 +25,11 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: ${{ inputs.base_branch }}
+      
+      - name: Set up the script
+        run: |
+          chmod +x .github/workflows/sample.sh.sh
+
       - name: Set up Git
         run: |
           git config --local user.email ${{ github.actor }}@users.noreply.github.com
@@ -33,15 +38,7 @@ jobs:
 
       - name: Cherry-pick latest commit to new branch and push
         run: |
-          exists=`git show-ref refs/heads/merge/00-workshop/to/section/05-visualization`
-          if [ -n "$exists" ]; then
-              echo 'Branch already exist and assumed at right state!'
-          else
-            git fetch origin
-            git checkout -b merge/${{ inputs.base_branch }}/to/${{ inputs.starting_branch }}
-            git cherry-pick origin/${{ inputs.starting_branch }}
-            git push --set-upstream origin merge/${{ inputs.base_branch }}/to/${{ inputs.starting_branch }}
-          fi
+          .github/workflows/sample.sh -b ${{ inputs.base_branch }} -h ${{ inputs.starting_branch }}
 
       - name: Create Pull Request
         env:
