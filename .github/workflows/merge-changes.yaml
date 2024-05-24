@@ -31,18 +31,14 @@ jobs:
           git config --local user.name ${{ github.actor }}
           git config --global push.autoSetupRemote true
 
-      - name: Create new branch
-        id: create_branch
-        run: |
-          git checkout -b merge/${{ inputs.base_branch }}/to/${{ inputs.starting_branch }}
-
       - name: Cherry-pick latest commit to new branch and push
         run: |
-          exists=`git show-ref refs/heads/merge/${{ inputs.base_branch }}/to/${{ inputs.starting_branch }}`
+          exists=`git show-ref refs/heads/merge/00-workshop/to/section/05-visualization`
           if [ -n "$exists" ]; then
               echo 'Branch already exist and assumed at right state!'
           else
             git fetch origin
+            git checkout -b merge/${{ inputs.base_branch }}/to/${{ inputs.starting_branch }}
             git cherry-pick origin/${{ inputs.starting_branch }}
             git push --set-upstream origin merge/${{ inputs.base_branch }}/to/${{ inputs.starting_branch }}
           fi
