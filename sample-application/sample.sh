@@ -1,8 +1,8 @@
 #!/bin/bash
+set -e
 DEVICE_API_IMAGE_NAME="devices-api"
 DEVICE_MANAGER_IMAGE_NAME="devices-state-manager"
 TAG="latest"
-
 
 # For project-name use only alphanumeric characters
 build_images() {
