@@ -34,6 +34,7 @@ services:
       BLOB_CONTAINER_NAME: ${BLOB_CONTAINER_NAME}
       CONSUMER_GROUP: "DevicesStateManager"
       OTEL_DOTNET_AUTO_METRICS_ADDITIONAL_SOURCES: "DevicesStateManager"
+      OTEL_DOTNET_AUTO_TRACES_ADDITIONAL_SOURCES: "DeviceUpdate"
 
   otel-collector:
     image: otel/opentelemetry-collector-contrib:0.88.0
