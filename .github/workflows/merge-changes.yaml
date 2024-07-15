@@ -36,7 +36,7 @@ jobs:
 
       - name: Cherry-pick latest commit to new branch and push
         run: |
-          .github/workflows/sample.sh --b ${{ inputs.base_branch }} --h ${{ inputs.starting_branch }}
+          .github/workflows/sample.sh --b ${{ inputs.base_branch }} --s ${{ inputs.starting_branch }}
 
       - name: Create Pull Request
         env:

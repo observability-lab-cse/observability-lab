@@ -15,12 +15,13 @@ create_branch() {
     else
         git fetch origin
         git checkout $2
-        git checkout -b $merge_branch 
+        git checkout -b $merge_branch
         git cherry-pick origin/$1
         git push --set-upstream origin $merge_branch
         echo "Branch $merge_branch created and pushed to origin"
-fi
+    fi
 }
+
 
 # Function to parse arguments
 parse_args() {
@@ -29,19 +30,19 @@ parse_args() {
             --b|-base)
                 base="$2"
                 shift 2
-                ;;
-            --h|-head)
-                head="$2"
+            ;;
+            --s|-start)
+                start="$2"
                 shift 2
-                ;;
+            ;;
             *)
                 usage
-                ;;
+            ;;
         esac
     done
-
+    
     # Check if both inputs are provided
-    if [[ -z "$base" ]] || [[ -z "$head" ]]; then
+    if [[ -z "$base" ]] || [[ -z "$start" ]]; then
         usage
     fi
 }
@@ -49,10 +50,11 @@ parse_args() {
 # Main function
 run_main() {
     parse_args "$@"
-    create_branch "$base" "$head"
+    create_branch "$base" "$start"
 }
 
 # Ensure the script runs only if it is executed directly
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     run_main "$@"
 fi
+
