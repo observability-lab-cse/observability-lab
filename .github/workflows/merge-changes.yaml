@@ -1,0 +1,46 @@
+name: Cherry-pick and Create PR
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      base_branch:
+        description: "Name of the base branch which last commit should be cherry picked and applied to the starting branch"
+        required: true
+        type: string
+      starting_branch:
+        description: "Name of the starting branch where the cherry picked commit of the base should be applied to"
+        required: true
+        type: string
+
+permissions: write-all
+
+jobs:
+  cherry_pick_and_create_pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main branch
+        uses: actions/checkout@v2
+      
+      - name: Set up the script
+        run: |
+          chmod +x .github/workflows/sample.sh
+
+      - name: Set up Git
+        run: |
+          git config --local user.email ${{ github.actor }}@users.noreply.github.com
+          git config --local user.name ${{ github.actor }}
+          git config --global push.autoSetupRemote true
+
+      - name: Cherry-pick latest commit to new branch and push
+        run: |
+          .github/workflows/sample.sh --b ${{ inputs.base_branch }} --s ${{ inputs.starting_branch }}
+
+      - name: Create Pull Request
+        env:
+          GH_token: ${{secrets.GITHUB_TOKEN}}
+        run: |
+          gh auth login --with-token <<< $GH_token
+          gh pr create --base ${{ inputs.starting_branch }} --head merge/${{ inputs.base_branch }}/to/${{ inputs.starting_branch }} --title "Merge merge/${{ inputs.base_branch }}/to/${{ inputs.starting_branch }} into ${{ inputs.starting_branch }}" --body "This PR merges merge/${{ inputs.base_branch }}/to/${{ inputs.starting_branch }} into ${{ inputs.starting_branch }}"
