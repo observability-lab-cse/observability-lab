@@ -19,7 +19,7 @@ public class JobService {
 
     @Scheduled(fixedRate = 60000) // Execute every 60 seconds
     public void executeJob() {
-        repository.findAll().stream().filter(job -> DeviceJob.JobStatus.IN_PROGRESS.equals(job.getStatus())).forEach(job -> {
+        repository.findAll().stream().filter(job -> DeviceJob.JobStatus.NEW.equals(job.getStatus())).forEach(job -> {
             Executors.newSingleThreadExecutor().submit(() -> {
                 try {
                     job.setStatus(DeviceJob.JobStatus.IN_PROGRESS);
