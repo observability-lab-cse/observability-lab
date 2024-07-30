@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Component
@@ -20,7 +19,7 @@ public class JobService {
 
     @Scheduled(fixedRate = 60000) // Execute every 60 seconds
     public void executeJob() {
-        repository.findAll().forEach(job -> {
+        repository.findAll().stream().filter(job -> DeviceJob.JobStatus.IN_PROGRESS.equals(job.getStatus())).forEach(job -> {
             Executors.newSingleThreadExecutor().submit(() -> {
                 try {
                     job.setStatus(DeviceJob.JobStatus.IN_PROGRESS);
