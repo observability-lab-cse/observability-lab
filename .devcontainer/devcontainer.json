@@ -11,6 +11,9 @@
             "installMaven": "false",
             "installGradle": "true"
         },
+        "ghcr.io/devcontainers/features/node:1": {
+            "version": "22.6.0",
+        },
         "ghcr.io/devcontainers/features/docker-in-docker:2": {},
         "kubectl-helm-minikube": {
             "version": "latest",
