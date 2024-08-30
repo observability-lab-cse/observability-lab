@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPaperPlane, faTrash, faPen } from '@fortawesome/free-solid-svg-icons'
+import { faPaperPlane, faTrash, faPen, faUser, faRobot } from '@fortawesome/free-solid-svg-icons'
 
 
 function ChatInterface() {
@@ -24,19 +24,43 @@ function ChatInterface() {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', padding: '10px' }}>
       {/* Chat history */}
-      <div style={{ flex: 1, overflowY: 'auto', padding: '10px', border: '1px solid #ccc', marginBottom: '10px', overflowY: 'scroll', }}>
+      <div style={{
+        flex: 1,
+        overflowY: 'auto',
+        padding: '10px',
+        border: '1px solid #ccc',
+        boxSizing: 'border-box' // Ensures padding and border are included in the width
+      }}>
         {messages.map((message, index) => (
-          <div key={index} style={{ marginBottom: '10px', textAlign: message.sender === 'AI' ? 'left' : 'right' }}>
-            <strong>{message.sender}:</strong> {message.text}
+          <div
+            key={index}
+            style={{
+              display: 'flex',
+              flexDirection: message.sender === 'AI' ? 'row' : 'row-reverse', // Arrange sender and text side by side
+              margin: '10px 0',  // Only vertical margin, no horizontal margin
+              alignItems: 'center', // Align items vertically centered
+              textAlign: message.sender === 'AI' ? 'left' : 'right',
+            }}>
+            <FontAwesomeIcon style={{ margin: '0 10px', whiteSpace: 'nowrap' }} icon={message.sender === 'AI' ? faRobot : faUser} className="fa-fw" />
+            <div style={{
+              maxWidth: '70%', // Limits message width for readability
+              width: 'auto',
+              backgroundColor: '#f1f1f1',
+              padding: '10px 20px',
+              borderRadius: '10px',
+              border: '1px solid #ccc',
+
+            }}>
+              <p style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{message.text}</p>
+            </div>
           </div>
         ))}
       </div>
-
       {/* Input area */}
       <div style={{
-        display: 'flex', alignItems: 'center', borderTop: '1px solid #ccc', padding: '10px'
+        display: 'flex', alignItems: 'center', borderTop: '1px solid #ccc', paddingTop: '10px'
       }}>
         < textarea
           style={{
@@ -52,7 +76,7 @@ function ChatInterface() {
           onKeyDown={handleKeyPress}
           placeholder="Type your message..."
         />
-        <button onClick={sendMessage} style={{ marginLeft: '10px', padding: '10px 20px' }}>
+        <button onClick={sendMessage} style={{ marginLeft: '10px', padding: '50px 20px' }}>
           Send
           <FontAwesomeIcon icon={faPaperPlane} className="fa-fw" />
         </button>
@@ -67,6 +91,7 @@ function DeviceManagement() {
   const [devices, setDevices] = useState([]);
   // State for storing new device name and location
   const [newDeviceName, setNewDeviceName] = useState('');
+  const [newDeviceType, setNewDeviceType] = useState('');
   const [newDeviceLocation, setNewDeviceLocation] = useState('');
 
   useEffect(() => {
@@ -109,8 +134,8 @@ function DeviceManagement() {
   };
 
   return (
-    <>
-      <div style={{ height: '60%', marginBottom: '20px', border: '1px solid #ccc', paddingTop: '30px'}}>
+    < div style={{ height: '100%', padding: '10px' }}>
+      <div style={{ height: '60%', marginBottom: '20px', border: '1px solid #ccc', paddingTop: '30px', overflowY: 'scroll' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
           {devices.map((device, index) => (
             <div
@@ -128,14 +153,15 @@ function DeviceManagement() {
               }}
             >
               {/* Device name and location */}
-              <div>
+              <div >
                 <strong>{device.name}</strong>
-                <div style={{ fontSize: '0.9em', color: '#555', textIndent: '20px' }}>Location: {device.location}</div>
+                <div style={{ fontSize: '0.9em', color: '#555', textIndent: '20px', margin: '5px' }}>Location: {device.location}</div>
+                <div style={{ fontSize: '0.9em', color: '#555', textIndent: '20px', margin: '5px' }}>Type: {device.type}</div>
               </div>
               {/* Edit and Delete buttons */}
               <div style={{ display: 'flex', flexDirection: 'column', marginLeft: 'auto' }}>
-                <button onClick={() => editDevice(index)} style={{ margin:'5px', padding: '5px' }}><FontAwesomeIcon icon={faPen} className="fa-fw" /></button>
-                <button onClick={() => deleteDevice(index)} style={{ margin:'5px', padding: '5px' }}><FontAwesomeIcon icon={faTrash} className="fa-fw" /></button>
+                <button onClick={() => editDevice(index)} style={{ margin: '5px', padding: '5px' }}><FontAwesomeIcon icon={faPen} className="fa-fw" /></button>
+                <button onClick={() => deleteDevice(index)} style={{ margin: '5px', padding: '5px' }}><FontAwesomeIcon icon={faTrash} className="fa-fw" /></button>
               </div>
             </div>
           ))}
@@ -144,36 +170,49 @@ function DeviceManagement() {
       {/* Form to add a new device */}
       <div style={{ height: '30%', border: '1px solid #ccc', position: 'relative', padding: '20px' }}>
         <h3>Add New Device</h3>
-        <form onSubmit={addDevice} style={{ display: 'flex', flexDirection: 'column', height: '90%' }}>
-          <div style={{ marginBottom: '5px' }}>
+        <form onSubmit={addDevice} style={{ display: 'grid', gridRowGap: '10px', height: '85%', gridTemplateColumns: '1fr 1fr', gridTemplateRows: 'auto auto auto 1fr', marginRight: '15px' }}>
+          <div style={{ gridColumn: '1 / 0' }}>
             <label>
               Name:
               <input
                 type="text"
                 value={newDeviceName}
                 onChange={(e) => setNewDeviceName(e.target.value)}
-                style={{ display: 'block', width: '30%', padding: '5px' }}
+                style={{ display: 'block', width: '80%', padding: '5px' }}
               />
             </label>
           </div>
-          <div style={{ marginBottom: '5px' }}>
+          <div style={{ gridColumn: '1 / 2' }}>
             <label>
               Location:
               <input
                 type="text"
                 value={newDeviceLocation}
                 onChange={(e) => setNewDeviceLocation(e.target.value)}
-                style={{ display: 'block', width: '30%', padding: '5px' }}
+                style={{ display: 'block', width: '80%', padding: '5px' }}
               />
             </label>
           </div>
-          <button type="submit" style={{ alignSelf: 'flex-end', padding: '10px 20px' }}>
+          <div style={{ gridColumn: '2 / 3' }}>
+            <label>
+              Type:
+              <input
+                type="text"
+                value={newDeviceType}
+                onChange={(e) => setNewDeviceType(e.target.value)}
+                style={{ display: 'block', width: '80%', padding: '5px' }}
+              />
+            </label>
+          </div>
+          {/* <button type="submit" style={{ gridColumn: '2 / 3', justifySelf: 'end', alignSelf: 'end', padding: '10px 30px' }}>
             Add Device
-          </button>
+          </button> */}
         </form>
+        <button type="submit" style={{ position: 'absolute', bottom: '20px', right: '20px', padding: '10px 30px' }}>
+          Add Device
+        </button>
       </div>
-
-    </>
+    </div>
   );
 }
 
