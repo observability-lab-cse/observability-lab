@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import GlobalStyles from '@mui/material/GlobalStyles';
-import { lightGreen, grey } from '@mui/material/colors';
+import { grey } from '@mui/material/colors';
 import TextField from '@mui/material/TextField';
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
@@ -18,10 +18,10 @@ const theme = createTheme({
       primary: "#e6e3e3"
     },
     primary: {
-      light: lightGreen[300],
-      main: lightGreen[500],
-      dark: lightGreen[700],
-      darker: lightGreen[900],
+      light: "#93B1A6",
+      main: "#5C8374",
+      dark: "#183D3D",
+      darker: "#040D12",
     },
     secondary: {
       light: grey[300],
@@ -38,9 +38,9 @@ const CustomButton = styled(Button)(({ theme }) => ({
   borderColor: theme.palette.text.primary,
 
   '&:hover': {
-    backgroundColor: theme.palette.secondary.dark,
-    borderColor: theme.palette.primary.dark,
-    color: theme.palette.primary.dark,
+    backgroundColor: theme.palette.primary.light,
+    borderColor: theme.palette.primary.darker,
+    color: theme.palette.primary.darker,
   },
 }));
 
@@ -106,23 +106,23 @@ function ChatInterface() {
         overflowY: 'auto',
         padding: '10px',
         border: '1px solid #ccc',
-        boxSizing: 'border-box' // Ensures padding and border are included in the width
+        boxSizing: 'border-box'
       }}>
         {messages.map((message, index) => (
           <div
             key={index}
             style={{
               display: 'flex',
-              flexDirection: message.sender === 'AI' ? 'row' : 'row-reverse', // Arrange sender and text side by side
-              margin: '10px 0',  // Only vertical margin, no horizontal margin
-              alignItems: 'center', // Align items vertically centered
+              flexDirection: message.sender === 'AI' ? 'row' : 'row-reverse',
+              margin: '10px 0',
+              alignItems: 'center',
               textAlign: message.sender === 'AI' ? 'left' : 'right',
             }}>
             <FontAwesomeIcon style={{ margin: '0 10px', whiteSpace: 'nowrap' }} icon={message.sender === 'AI' ? faRobot : faUser} className="fa-fw" />
             <div style={{
-              maxWidth: '70%', // Limits message width for readability
+              maxWidth: '70%',
               width: 'auto',
-              backgroundColor: message.sender === 'AI' ? theme.palette.secondary.dark : theme.palette.primary.dark,
+              backgroundColor: message.sender === 'AI' ? theme.palette.secondary.darker : theme.palette.primary.dark,
               padding: '10px 20px',
               borderRadius: '10px',
               border: '1px solid #ccc',
@@ -153,7 +153,7 @@ function ChatInterface() {
           onKeyDown={handleKeyPress}
           placeholder="Type your message..."
         />
-        <CustomButton variant="outlined" onClick={sendMessage} style={{ marginLeft: '10px', padding: '50px 20px' }}>
+        <CustomButton variant="outlined" onClick={sendMessage} style={{ fontFamily: 'gs-regular', marginLeft: '10px', padding: '50px 20px' }}>
           Send
           <FontAwesomeIcon icon={faPaperPlane} className="fa-fw" />
         </CustomButton>
@@ -230,7 +230,7 @@ function DeviceManagement() {
             >
               {/* Device name and location */}
               <div >
-                <strong>{device.name}</strong>
+                <strong style={{ fontFamily: 'gs-regular' }} >{device.name}</strong>
                 <div style={{ fontSize: '0.9em', color: '#555', textIndent: '20px', margin: '5px' }}>Location: {device.location}</div>
                 <div style={{ fontSize: '0.9em', color: '#555', textIndent: '20px', margin: '5px' }}>Type: {device.type}</div>
               </div>
@@ -245,7 +245,7 @@ function DeviceManagement() {
       </div>
       {/* Form to add a new device */}
       <div style={{ height: '30%', border: '1px solid #ccc', position: 'relative', padding: '20px' }}>
-        <h3>Add New Device</h3>
+        <h3 style={{ fontFamily: 'gs-regular' }}>Add New Device</h3>
         <form onSubmit={addDevice} style={{ display: 'grid', gridRowGap: '10px', height: '85%', gridTemplateColumns: '1fr 1fr', gridTemplateRows: 'auto auto auto 1fr', marginRight: '15px' }}>
           <div style={{ gridColumn: '1 / 0' }}>
             <CustomTextField id="outlined-basic" label="Name" variant="outlined"
@@ -268,7 +268,7 @@ function DeviceManagement() {
               style={{ width: '90%' }}
             />
           </div>
-          <CustomButton variant="outlined" type="submit" style={{ position: 'absolute', bottom: '20px', right: '20px', padding: '10px 30px' }} >Add Device</CustomButton>
+          <CustomButton variant="outlined" type="submit" style={{ fontFamily: 'gs-regular', position: 'absolute', bottom: '20px', right: '20px', padding: '10px 30px' }} >Add Device</CustomButton>
         </form>
       </div>
     </div>
@@ -280,8 +280,8 @@ export default function Home() {
 
   return (
     <ThemeProvider theme={theme}>
-            {/* CssBaseline resets CSS and applies theme background */}
-            <CssBaseline />
+      {/* CssBaseline resets CSS and applies theme background */}
+      <CssBaseline />
       {/* Apply the background to html and body globally */}
       <GlobalStyles
         styles={{
@@ -292,13 +292,13 @@ export default function Home() {
       <div style={{ display: 'flex', height: '90vh' }}>
         {/* Left 2/3 of the screen */}
         <div style={{ width: '60%', padding: '20px', boxSizing: 'border-box' }}>
-          <h2>Smart Home Devices</h2>
+          <h2 style={{ fontFamily: 'lemon-milk', }}>Smart Home Devices</h2>
           <DeviceManagement />
         </div>
 
         {/* Right 1/3 of the screen */}
         <div style={{ width: '40%', padding: '20px', boxSizing: 'border-box', borderLeft: '1px solid #ccc' }}>
-          <h2>AI Assistant</h2>
+          <h2 style={{ fontFamily: 'lemon-milk', }}>AI Assistant</h2>
           <ChatInterface />
         </div>
       </div>
