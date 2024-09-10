@@ -1,6 +1,80 @@
 import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPaperPlane, faTrash, faPen } from '@fortawesome/free-solid-svg-icons'
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import GlobalStyles from '@mui/material/GlobalStyles';
+import { grey } from '@mui/material/colors';
+import TextField from '@mui/material/TextField';
+import { styled } from '@mui/material/styles';
+import Button from '@mui/material/Button';
+import { faPaperPlane, faTrash, faPen, faUser, faRobot } from '@fortawesome/free-solid-svg-icons'
+
+const theme = createTheme({
+  palette: {
+    background: {
+      default: "#121212"
+    },
+    text: {
+      primary: "#e6e3e3"
+    },
+    primary: {
+      light: "#93B1A6",
+      main: "#5C8374",
+      dark: "#183D3D",
+      darker: "#040D12",
+    },
+    secondary: {
+      light: grey[300],
+      main: grey[500],
+      dark: grey[700],
+      darker: grey[900],
+    }
+  },
+});
+
+
+const CustomButton = styled(Button)(({ theme }) => ({
+  color: theme.palette.text.primary,
+  borderColor: theme.palette.text.primary,
+
+  '&:hover': {
+    backgroundColor: theme.palette.primary.light,
+    borderColor: theme.palette.primary.darker,
+    color: theme.palette.primary.darker,
+  },
+}));
+
+
+const CustomTextField = styled(TextField)(({ theme }) => ({
+  '& .MuiInputBase-input': {
+    color: theme.palette.text.primary,
+  },
+  '& .MuiOutlinedInput-root': {
+    borderColor: theme.palette.text.primary,
+    '&:hover .MuiOutlinedInput-notchedOutline': {
+      borderColor: theme.palette.primary.dark,
+    },
+  },
+  '& .MuiInputLabel-root': {
+    color: theme.palette.text.primary, // Default label color
+  },
+  '& .MuiInputLabel-root.Mui-focused': {
+    color: theme.palette.primary.light, // Label color when focused
+  },
+  '& .MuiOutlinedInput-notchedOutline': {
+    borderColor: theme.palette.text.primary,
+  },
+  '&:hover .MuiInputBase-input': {
+    color: theme.palette.primary.light,
+  },
+  '& .MuiInputBase-input:focus': {
+    color: theme.palette.primary.light,
+  },
+  '& .MuiOutlinedInput-notchedOutline': {
+    borderColor: theme.palette.text.primary,
+  },
+}));
+
 
 
 function ChatInterface() {
@@ -11,7 +85,8 @@ function ChatInterface() {
     if (inputText.trim()) {
       setMessages([...messages, { sender: 'User', text: inputText }]);
       // Call AI API and append AI's response
-      setMessages([...messages, { sender: 'User', text: inputText }, { sender: 'AI', text: 'AI response placeholder' }]);
+      const response = 'AI response placeholder';
+      setMessages([...messages, { sender: 'User', text: inputText }, { sender: 'AI', text: response }]);
       setInputText(''); // Clear the input field
     }
   };
@@ -24,19 +99,43 @@ function ChatInterface() {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', padding: '10px' }}>
       {/* Chat history */}
-      <div style={{ flex: 1, overflowY: 'auto', padding: '10px', border: '1px solid #ccc', marginBottom: '10px', overflowY: 'scroll', }}>
+      <div style={{
+        flex: 1,
+        overflowY: 'auto',
+        padding: '10px',
+        border: '1px solid #ccc',
+        boxSizing: 'border-box'
+      }}>
         {messages.map((message, index) => (
-          <div key={index} style={{ marginBottom: '10px', textAlign: message.sender === 'AI' ? 'left' : 'right' }}>
-            <strong>{message.sender}:</strong> {message.text}
+          <div
+            key={index}
+            style={{
+              display: 'flex',
+              flexDirection: message.sender === 'AI' ? 'row' : 'row-reverse',
+              margin: '10px 0',
+              alignItems: 'center',
+              textAlign: message.sender === 'AI' ? 'left' : 'right',
+            }}>
+            <FontAwesomeIcon style={{ margin: '0 10px', whiteSpace: 'nowrap' }} icon={message.sender === 'AI' ? faRobot : faUser} className="fa-fw" />
+            <div style={{
+              maxWidth: '70%',
+              width: 'auto',
+              backgroundColor: message.sender === 'AI' ? theme.palette.secondary.darker : theme.palette.primary.dark,
+              padding: '10px 20px',
+              borderRadius: '10px',
+              border: '1px solid #ccc',
+
+            }}>
+              <p style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{message.text}</p>
+            </div>
           </div>
         ))}
       </div>
-
       {/* Input area */}
       <div style={{
-        display: 'flex', alignItems: 'center', borderTop: '1px solid #ccc', padding: '10px'
+        display: 'flex', alignItems: 'center', borderTop: '1px solid #ccc', paddingTop: '10px'
       }}>
         < textarea
           style={{
@@ -45,6 +144,8 @@ function ChatInterface() {
             padding: '10px',
             overflowY: 'scroll',
             height: '100px',
+            backgroundColor: theme.palette.background.default,
+            color: theme.palette.text.primary,
           }}
           rows={1}
           value={inputText}
@@ -52,10 +153,10 @@ function ChatInterface() {
           onKeyDown={handleKeyPress}
           placeholder="Type your message..."
         />
-        <button onClick={sendMessage} style={{ marginLeft: '10px', padding: '10px 20px' }}>
+        <CustomButton variant="outlined" onClick={sendMessage} style={{ fontFamily: 'gs-regular', marginLeft: '10px', padding: '50px 20px' }}>
           Send
           <FontAwesomeIcon icon={faPaperPlane} className="fa-fw" />
-        </button>
+        </CustomButton>
       </div>
     </div >
   );
@@ -63,10 +164,10 @@ function ChatInterface() {
 
 function DeviceManagement() {
 
-  // State for storing the list of smart home devices
+
   const [devices, setDevices] = useState([]);
-  // State for storing new device name and location
   const [newDeviceName, setNewDeviceName] = useState('');
+  const [newDeviceType, setNewDeviceType] = useState('');
   const [newDeviceLocation, setNewDeviceLocation] = useState('');
 
   useEffect(() => {
@@ -101,16 +202,17 @@ function DeviceManagement() {
     const device = devices[index];
     const newName = prompt("Edit device name:", device.name);
     const newLocation = prompt("Edit device location:", device.location);
-    if (newName && newLocation) {
+    const newType = prompt("Edit device type:", device.type);
+    if (newName && newLocation && newType) {
       const updatedDevices = [...devices];
-      updatedDevices[index] = { name: newName, location: newLocation };
+      updatedDevices[index] = { name: newName, location: newLocation, type: newType };
       setDevices(updatedDevices);
     }
   };
 
   return (
-    <>
-      <div style={{ height: '60%', marginBottom: '20px', border: '1px solid #ccc', paddingTop: '30px'}}>
+    < div style={{ height: '100%', padding: '10px' }}>
+      <div style={{ height: '60%', marginBottom: '20px', border: '1px solid #ccc', paddingTop: '30px', overflowY: 'scroll' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
           {devices.map((device, index) => (
             <div
@@ -124,18 +226,18 @@ function DeviceManagement() {
                 padding: '10px',
                 width: '40vw',
                 boxSizing: 'border-box',
-                backgroundColor: '#f9f9f9',
               }}
             >
               {/* Device name and location */}
-              <div>
-                <strong>{device.name}</strong>
-                <div style={{ fontSize: '0.9em', color: '#555', textIndent: '20px' }}>Location: {device.location}</div>
+              <div >
+                <strong style={{ fontFamily: 'gs-regular' }} >{device.name}</strong>
+                <div style={{ fontSize: '0.9em', color: '#555', textIndent: '20px', margin: '5px' }}>Location: {device.location}</div>
+                <div style={{ fontSize: '0.9em', color: '#555', textIndent: '20px', margin: '5px' }}>Type: {device.type}</div>
               </div>
               {/* Edit and Delete buttons */}
               <div style={{ display: 'flex', flexDirection: 'column', marginLeft: 'auto' }}>
-                <button onClick={() => editDevice(index)} style={{ margin:'5px', padding: '5px' }}><FontAwesomeIcon icon={faPen} className="fa-fw" /></button>
-                <button onClick={() => deleteDevice(index)} style={{ margin:'5px', padding: '5px' }}><FontAwesomeIcon icon={faTrash} className="fa-fw" /></button>
+                <CustomButton variant="outlined" onClick={() => editDevice(index)} style={{ margin: '5px', padding: '5px' }}><FontAwesomeIcon icon={faPen} className="fa-fw" /></CustomButton>
+                <CustomButton variant="outlined" onClick={() => deleteDevice(index)} style={{ margin: '5px', padding: '5px' }}><FontAwesomeIcon icon={faTrash} className="fa-fw" /></CustomButton>
               </div>
             </div>
           ))}
@@ -143,57 +245,63 @@ function DeviceManagement() {
       </div>
       {/* Form to add a new device */}
       <div style={{ height: '30%', border: '1px solid #ccc', position: 'relative', padding: '20px' }}>
-        <h3>Add New Device</h3>
-        <form onSubmit={addDevice} style={{ display: 'flex', flexDirection: 'column', height: '90%' }}>
-          <div style={{ marginBottom: '5px' }}>
-            <label>
-              Name:
-              <input
-                type="text"
-                value={newDeviceName}
-                onChange={(e) => setNewDeviceName(e.target.value)}
-                style={{ display: 'block', width: '30%', padding: '5px' }}
-              />
-            </label>
+        <h3 style={{ fontFamily: 'gs-regular' }}>Add New Device</h3>
+        <form onSubmit={addDevice} style={{ display: 'grid', gridRowGap: '10px', height: '85%', gridTemplateColumns: '1fr 1fr', gridTemplateRows: 'auto auto auto 1fr', marginRight: '15px' }}>
+          <div style={{ gridColumn: '1 / 0' }}>
+            <CustomTextField id="outlined-basic" label="Name" variant="outlined"
+              value={newDeviceName}
+              onChange={(e) => setNewDeviceName(e.target.value)}
+              style={{ width: '90%' }}
+            />
           </div>
-          <div style={{ marginBottom: '5px' }}>
-            <label>
-              Location:
-              <input
-                type="text"
-                value={newDeviceLocation}
-                onChange={(e) => setNewDeviceLocation(e.target.value)}
-                style={{ display: 'block', width: '30%', padding: '5px' }}
-              />
-            </label>
+          <div style={{ gridColumn: '1 / 2' }}>
+            <CustomTextField id="outlined-basic" label="Location" variant="outlined"
+              value={newDeviceLocation}
+              onChange={(e) => setNewDeviceLocation(e.target.value)}
+              style={{ width: '90%' }}
+            />
           </div>
-          <button type="submit" style={{ alignSelf: 'flex-end', padding: '10px 20px' }}>
-            Add Device
-          </button>
+          <div style={{ gridColumn: '2 / 3' }}>
+
+            <CustomTextField id="outlined-basic" label="Type" variant="outlined" value={newDeviceType}
+              onChange={(e) => setNewDeviceType(e.target.value)}
+              style={{ width: '90%' }}
+            />
+          </div>
+          <CustomButton variant="outlined" type="submit" style={{ fontFamily: 'gs-regular', position: 'absolute', bottom: '20px', right: '20px', padding: '10px 30px' }} >Add Device</CustomButton>
         </form>
       </div>
-
-    </>
+    </div>
   );
 }
 
 
 export default function Home() {
 
-
   return (
-    <div style={{ display: 'flex', height: '90vh' }}>
-      {/* Left 2/3 of the screen */}
-      <div style={{ width: '66%', padding: '20px', boxSizing: 'border-box' }}>
-        <h2>Smart Home Devices</h2>
-        <DeviceManagement />
-      </div>
+    <ThemeProvider theme={theme}>
+      {/* CssBaseline resets CSS and applies theme background */}
+      <CssBaseline />
+      {/* Apply the background to html and body globally */}
+      <GlobalStyles
+        styles={{
+          body: { backgroundColor: theme.palette.background.default },
+          html: { backgroundColor: theme.palette.background.default },
+        }}
+      />
+      <div style={{ display: 'flex', height: '90vh' }}>
+        {/* Left 2/3 of the screen */}
+        <div style={{ width: '60%', padding: '20px', boxSizing: 'border-box' }}>
+          <h2 style={{ fontFamily: 'lemon-milk', }}>Smart Home Devices</h2>
+          <DeviceManagement />
+        </div>
 
-      {/* Right 1/3 of the screen */}
-      <div style={{ width: '34%', padding: '20px', boxSizing: 'border-box', borderLeft: '1px solid #ccc' }}>
-        <h2>AI Assistant</h2>
-        <ChatInterface />
+        {/* Right 1/3 of the screen */}
+        <div style={{ width: '40%', padding: '20px', boxSizing: 'border-box', borderLeft: '1px solid #ccc' }}>
+          <h2 style={{ fontFamily: 'lemon-milk', }}>AI Assistant</h2>
+          <ChatInterface />
+        </div>
       </div>
-    </div>
+    </ThemeProvider>
   );
 }
