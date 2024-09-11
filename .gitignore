@@ -70,3 +70,11 @@ out/
 ../.vs
 
 .env
+
+
+### Node.js ###
+node_modules/
+.next/
+
+## Mac
+.DS_Store
