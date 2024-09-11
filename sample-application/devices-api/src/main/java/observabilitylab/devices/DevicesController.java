@@ -2,6 +2,7 @@ package observabilitylab.devices;
 
 import java.util.List;
 import observabilitylab.devices.model.Device;
+import observabilitylab.devices.model.DeviceJob;
 import observabilitylab.devices.model.UpdateDevice;
 
 import org.slf4j.Logger;
@@ -28,6 +29,8 @@ public class DevicesController {
 
     @Autowired
     private DevicesRepository repository;
+    @Autowired
+    private JobsRepository jobsRepository;
 
     @GetMapping
     public ResponseEntity<List<Device>> getDevices() {
@@ -104,6 +107,31 @@ public class DevicesController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Device with id %s not found".formatted(id));
         }
         repository.deleteDeviceById(id);
+    }
+
+    @PostMapping("/jobs")
+    @ResponseStatus(HttpStatus.CREATED)
+    public String createJob(@RequestBody String deviceId) {
+        logger.info("Create job for device with id %s".formatted(deviceId));
+        Device device = repository.getDeviceById(deviceId);
+        if (device == null) {
+            logger.warn("Device with id %s not found".formatted(deviceId));
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Device with id %s not found".formatted(deviceId));
+        }
+        DeviceJob deviceJob = jobsRepository.save(new DeviceJob(deviceId));
+        return deviceJob.getId();
+    }
+
+    @GetMapping("/jobs/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public DeviceJob getJobById(@PathVariable("id") String id) {
+        logger.info("GET job with id %s".formatted(id));
+        DeviceJob deviceJob = jobsRepository.getDeviceJobById(id);
+        if (deviceJob == null) {
+            logger.warn("Job with id %s not found".formatted(id));
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Job with id %s not found".formatted(id));
+        }
+        return deviceJob;
     }
 
 }
