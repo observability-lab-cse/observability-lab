@@ -1,10 +1,18 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // README at: https://github.com/devcontainers/templates/tree/main/src/dotnet
 {
-	"name": "C# (.NET)",
-	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"image": "mcr.microsoft.com/devcontainers/dotnet:0-6.0",
-	"features": {
+    "name": "C# (.NET)",
+    // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
+    "image": "mcr.microsoft.com/devcontainers/dotnet:0-6.0",
+    "mounts": [
+        // Put Azure CLI user data in a volume so users only have to login once
+        {
+            "type": "volume",
+            "source": "${devcontainerId}-azclidata",
+            "target": "/home/vscode/.azure"
+        }
+    ],
+    "features": {
         "azure-cli": "latest",
         "ghcr.io/devcontainers/features/java:1": {
             "version": "17",
