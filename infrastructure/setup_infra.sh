@@ -1,3 +1,4 @@
+#!/bin/bash
 
 # For project-name use only alphanumeric characters
 create_resource_group() {
@@ -5,10 +6,10 @@ create_resource_group() {
     az group create \
     --location "$ENV_LOCATION" \
     --name "$ENV_RESOURCE_GROUP_NAME"
-    
+
     echo ""
 }
-create_infrastructure(){
+create_infrastructure() {
     echo "- Create all needed resources in resource group $ENV_RESOURCE_GROUP_NAME"
     az deployment group create \
     --resource-group "$ENV_RESOURCE_GROUP_NAME" \
@@ -19,7 +20,7 @@ create_infrastructure(){
 }
 
 
-create_observability_infrastructure(){
+create_observability_infrastructure() {
     echo "- Create all observability related resources in resource group $ENV_RESOURCE_GROUP_NAME"
     az deployment group create \
     --resource-group "$ENV_RESOURCE_GROUP_NAME" \
@@ -28,7 +29,8 @@ create_observability_infrastructure(){
 
     echo ""
 }
-connect_cluster(){
+
+connect_cluster() {
     AKS_NAME=$(az aks list -g "$ENV_RESOURCE_GROUP_NAME" --query "[0].name" -o tsv)
     echo "- Connect to cluster $AKS_NAME"
 
@@ -46,30 +48,41 @@ delete_infrastructure(){
     az group delete \
     --name "$ENV_RESOURCE_GROUP_NAME" \
     --yes
-    
+
     echo "- Delete AKS context"
     kubectl config delete-context "$AKS_NAME"
     echo ""
 }
 
+load_env_file() {
+    ENV_FILE="${1:-.env}"
+
+    # remove Windows line endings
+    sed -i -e "s/\r//" "${ENV_FILE}"
+
+    # export all variavles in the env file
+    set -o allexport
+    # shellcheck disable=SC1090,SC1091
+    source "${ENV_FILE}"
+    set +o allexport
+}
+
 run_main() {
-    
-    # .env included in root of repo
-    # shellcheck disable=SC1091
-    source .env
-    
+    # load .env included in root of repo
+    load_env_file
+
     if [[ "$1" == "--create" ]] || [[ "$1" == "-c" ]]; then
         echo "--- Creating infrastructure ---"
         create_resource_group
         create_infrastructure
         connect_cluster
         exit 0
-        
+
     elif [[ "$1" == "--delete" ]] || [[ "$1" == "-d" ]]; then
         echo "--- Deleting infrastructure ---"
         delete_infrastructure
         exit 0
-    
+
     elif [[ "$1" == "--create-obs" ]] || [[ "$1" == "-d" ]]; then
         echo "--- Creating observability infrastructure ---"
         create_observability_infrastructure
