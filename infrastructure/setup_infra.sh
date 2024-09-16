@@ -57,8 +57,9 @@ delete_infrastructure(){
 load_env_file() {
     ENV_FILE="${1:-.env}"
 
-    # remove Windows line endings
-    sed -i -e "s/\r//" "${ENV_FILE}"
+    # remove Windows line endings, ensuring -i compat with GNU+MacOS sed
+    sed -i.bak -e "s/\r//" "${ENV_FILE}"
+    rm -f "${ENV_FILE}.bak"
 
     # export all variavles in the env file
     set -o allexport
