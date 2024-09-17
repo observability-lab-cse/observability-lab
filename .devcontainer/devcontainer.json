@@ -36,5 +36,5 @@
             ]
         }
     },
-      "postCreateCommand": "./.devcontainer/postCreateCommand.sh"
+      "postCreateCommand": "/bin/bash .devcontainer/postCreateCommand.sh"
 }
