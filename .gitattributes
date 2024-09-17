@@ -3,6 +3,7 @@
 *.env text eol=lf
 *.sln text eol=crlf
 *.sh text eol=lf
+Dockerfile text eol=lf
 
 gradlew text eol=lf
 
