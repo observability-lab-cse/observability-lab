@@ -1,12 +1,13 @@
 from typing import Union
 
+from device_assistant.chat_models import ChatRequest
 from fastapi import FastAPI
-from pydantic import BaseModel
+
+from chat import chat
 
 app = FastAPI()
 
-class ChatRequest(BaseModel):
-    q: str
+
 
 
 @app.get("/")
@@ -19,4 +20,9 @@ def health():
 
 @app.post("/chat")
 def post_chat(chat_request: ChatRequest):
-    return {"q": chat_request.q}
+    result = chat(chat_request)
+    return result
+
+if __name__ == "__main__" :
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)

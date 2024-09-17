@@ -8,6 +8,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.11,<3.12"
 pydantic = "^2.7.4"
+requests = "^2.32.3"
 openai = "^1.46.0"
 fastapi = {extras = ["standard"], version = "^0.114.2"}
 
