@@ -1,4 +1,4 @@
-FROM eclipse-temurin:17 as builder
+FROM eclipse-temurin:17 AS builder
 
 RUN mkdir /app
 COPY . /app
