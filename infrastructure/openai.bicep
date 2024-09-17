@@ -1,4 +1,4 @@
-@description('Azure Open AI name (<name>-<resourceGroupName>)')
+@description('Azure Open AI name.')
 param aiServiceName string
 
 @description('Location for all resources.')
