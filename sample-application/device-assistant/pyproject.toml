@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "device-assistant"
 version = "0.1.0"
-description = ""
+description = "Device Assistant"
 authors = ["Observability workshop <ikulakowska@microsoft.com>"]
 readme = "README.md"
 
