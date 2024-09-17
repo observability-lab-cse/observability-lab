@@ -59,6 +59,14 @@ module eventHub './event_hub.bicep' = {
   }
 }
 
+module openai './openai.bicep' = {
+  name: 'openai_deployment'
+  params: {
+    aiServiceName: 'aiservice-${projectName}'
+    location: location
+  }
+}
+
 output acrName string = acr.outputs.acrName
 output clusterName string = k8s.outputs.clusterName
 output aksKeyVaultSecretProviderClientId string = k8s.outputs.clusterKeyVaultSecretProviderClientId
