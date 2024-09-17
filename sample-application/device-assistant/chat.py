@@ -3,8 +3,8 @@ import requests
 from device_assistant.chat_models import ChatRequest
 
 # Configuration
-API_KEY = os.getenv('API_KEY') #"5e94e2d64ed6465ba67b5b462889f281"
-ENDPOINT = os.getenv('ENDPOINT') #"https://azoi-cloudguru-swed.openai.azure.com/openai/deployments/osama-gpt4o/chat/completions?api-version=2024-02-15-preview"
+API_KEY = os.getenv('API_KEY') 
+ENDPOINT = os.getenv('ENDPOINT')
 Prompt = "You are an AI assistant that helps people find information."
 
 def chat(chat_request: ChatRequest):
