@@ -41,6 +41,16 @@ spec:
                 fieldRef:
                   apiVersion: v1
                   fieldPath: metadata.labels['app']
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: application-secrets
+                  key: OpenAIKey
+            - name: OPENAI_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: application-secrets
+                  key: OpenAIEndpoint
           readinessProbe:
             httpGet:
               path: /health

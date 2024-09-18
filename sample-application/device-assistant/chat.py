@@ -3,14 +3,14 @@ import requests
 from device_assistant.chat_models import ChatRequest
 
 # Configuration
-API_KEY = os.getenv('API_KEY') 
-ENDPOINT = os.getenv('ENDPOINT')
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY') 
+OPENAI_ENDPOINT = os.getenv('OPENAI_ENDPOINT')
 Prompt = "You are an AI assistant that helps people find information."
 
 def chat(chat_request: ChatRequest):
     headers = {
         "Content-Type": "application/json",
-        "api-key": API_KEY,
+        "api-key": OPENAI_API_KEY,
     }
 
 # Payload for the request
@@ -42,7 +42,7 @@ def chat(chat_request: ChatRequest):
 
 # Send request
     try:
-        response = requests.post(ENDPOINT, headers=headers, json=payload)
+        response = requests.post(f"{OPENAI_ENDPOINT}/chat/completions?api-version=2024-02-15-preview", headers=headers, json=payload)
         response.raise_for_status()  # Will raise an HTTPError if the HTTP request returned an unsuccessful status code
     except requests.RequestException as e:
         raise SystemExit(f"Failed to make the request. Error: {e}")

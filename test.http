@@ -1,0 +1,27 @@
+@deviceHostname = http://4.174.202.2:8080
+@chatHostname = http://4.174.201.219:8000
+@deviceName = device-tjv-2
+@deviceId = da9ca510-0b4c-4c8c-8194-5da4f30f5b95
+
+###
+
+GET {{deviceHostname}}/devices HTTP/1.1
+content-type: application/json
+
+###
+
+POST {{deviceHostname}}/devices HTTP/1.1
+
+{{deviceName}}
+
+###
+
+DELETE {{deviceHostname}}/devices/{{deviceId}} HTTP/1.1
+
+###
+
+POST {{chatHostname}}/chat HTTP/1.1
+
+{
+    "q": "Hello World"
+}

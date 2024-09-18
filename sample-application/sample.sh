@@ -85,16 +85,12 @@ push_images() {
 
 
 deploy_device_services() {
-    echo "- DEPLOY modules: Devices Assistant, API and Devices Manager"
+    echo "- DEPLOY modules: API and Devices Manager"
     AKS_NAME=$(az aks list -g "$ENV_RESOURCE_GROUP_NAME" --query "[0].name" -o tsv)
     az aks get-credentials \
     --resource-group "$ENV_RESOURCE_GROUP_NAME" \
     --name "$AKS_NAME" \
     --overwrite-existing
-
-    cat k8s-files/device-assistant-deployment.yaml | \
-    sed -e "s/\${project-name}/$ENV_PROJECT_NAME/" | \
-    kubectl apply -f  -
 
     cat k8s-files/devices-api-deployment.yaml | \
     sed -e "s/\${project-name}/$ENV_PROJECT_NAME/" | \
@@ -135,6 +131,27 @@ deploy_secret_store() {
     sed -e "s/\${project-name}/$ENV_PROJECT_NAME/" \
         -e "s/\${clusterKeyVaultSecretProviderClientId}/$CLUSTER_CLIENT_ID/" \
         -e "s/\${keyVaultTenantId}/$KEY_VAULT_TENANT_ID/" | \
+    kubectl apply -f  -
+}
+
+deploy_ai() {
+    echo "- DEPLOY secret store provider (with AI)"
+    AKS_NAME=$(az aks list -g "$ENV_RESOURCE_GROUP_NAME" --query "[0].name" -o tsv)
+    az aks get-credentials \
+    --resource-group "$ENV_RESOURCE_GROUP_NAME" \
+    --name "$AKS_NAME" \
+    --overwrite-existing
+
+    CLUSTER_CLIENT_ID=$(az deployment group show -g "$ENV_RESOURCE_GROUP_NAME" -n k8s_deployment --query properties.outputs.clusterKeyVaultSecretProviderClientId.value -o tsv)
+    KEY_VAULT_TENANT_ID=$(az deployment group show -g "$ENV_RESOURCE_GROUP_NAME" -n key_vault_deployment --query properties.outputs.kvTenantId.value -o tsv)
+    cat k8s-files/secret-store-ai.yaml | \
+    sed -e "s/\${project-name}/$ENV_PROJECT_NAME/" \
+        -e "s/\${clusterKeyVaultSecretProviderClientId}/$CLUSTER_CLIENT_ID/" \
+        -e "s/\${keyVaultTenantId}/$KEY_VAULT_TENANT_ID/" | \
+    kubectl apply -f  -
+
+    cat k8s-files/device-assistant-deployment.yaml | \
+    sed -e "s/\${project-name}/$ENV_PROJECT_NAME/" | \
     kubectl apply -f  -
 }
 
@@ -226,6 +243,10 @@ run_main() {
         echo "--- Deploy to AKS Cluster ---"
         deploy_secret_store
         exit 0
+        elif [[ "$1" == "--deploy_ai" ]]; then
+        echo "--- Deploy AI components to AKS Cluster ---"
+        deploy_ai
+        exit 0
         elif [[ "$1" == "--deploy_otel_collector" ]]; then
         echo "--- Deploy to AKS Cluster ---"
         deploy_otel_collector
@@ -240,7 +261,7 @@ run_main() {
         exit 0
 
     else
-        echo "Usage: $0 [--push | -p] | [--acr_build_push] | [--deploy | -d] | [--deploy_secret_store] | [--deploy_otel_collector] | [--deploy_opentelemetry_operator_with_collector] | [--deploy_devices_data_simulator]"
+        echo "Usage: $0 [--push | -p] | [--acr_build_push] | [--deploy | -d] | [--deploy_secret_store] | [--deploy_ai] | [--deploy_otel_collector] | [--deploy_opentelemetry_operator_with_collector] | [--deploy_devices_data_simulator]"
         exit 1
     fi
 }
