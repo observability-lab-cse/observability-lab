@@ -13,9 +13,17 @@ provision-obs:
 	@echo "Creating Observability Infrastructure"
 	@bash ./infrastructure/setup_infra.sh --create-obs
 
+provision-ai:
+	@echo "Creating AI Infrastructure"
+	@bash ./infrastructure/setup_infra.sh --create-ai
+
 delete:
 	@echo "Delete Infrastructure"
 	@bash ./infrastructure/setup_infra.sh --delete
+
+acr_build_push:
+	@echo "Build and push application"
+	@bash ./sample-application/sample.sh --acr_build_push
 
 push:
 	@echo "Build and push application"

@@ -1,48 +1,100 @@
 #!/bin/bash
+DEVICE_ASSISTANT_IMAGE_NAME="device-assistant"
 DEVICE_API_IMAGE_NAME="devices-api"
 DEVICE_MANAGER_IMAGE_NAME="devices-state-manager"
 TAG="latest"
+TARGET_PLATFORM=linux/amd64
 
 
 # For project-name use only alphanumeric characters
 build_images() {
     echo "- BUILD module images"
-    cd ./sample-application/devices-api || { echo "Directory not found" && exit "2"; }
-    echo "Image Tag: $DEVICE_API_IMAGE_NAME:$TAG"
-    docker build -t "$DEVICE_API_IMAGE_NAME":"$TAG" .
+
+    pushd "./sample-application/device-assistant" > /dev/null || { echo "Directory not found" && exit "2"; }
+    echo "Image: ${DEVICE_ASSISTANT_IMAGE_NAME}:${TAG}"
+    docker build -t "${DEVICE_ASSISTANT_IMAGE_NAME}:${TAG}" --platform "$TARGET_PLATFORM" .
     echo ""
-    cd ../devices-state-manager/DevicesStateManager || { echo "Directory not found" && exit "2"; }
-    echo "Image Tag: $DEVICE_MANAGER_IMAGE_NAME:$TAG"
-    docker build -t "$DEVICE_MANAGER_IMAGE_NAME":"$TAG" .
-    echo "Image Tag: $DEVICE_MANAGER_IMAGE_NAME:no-auto-instrumentation"
-    docker build -f Dockerfile.no-auto-instrumentation -t "$DEVICE_MANAGER_IMAGE_NAME":no-auto-instrumentation .
+    popd > /dev/null
+
+    pushd "./sample-application/devices-api" > /dev/null || { echo "Directory not found" && exit "2"; }
+    echo "Image: ${DEVICE_API_IMAGE_NAME}:${TAG}"
+    docker build -t "${DEVICE_API_IMAGE_NAME}:${TAG}" --platform "$TARGET_PLATFORM" .
     echo ""
-    cd ../../..
+    popd > /dev/null
+
+    pushd "./sample-application/devices-state-manager/DevicesStateManager" > /dev/null || { echo "Directory not found" && exit "2"; }
+    echo "Image: ${DEVICE_MANAGER_IMAGE_NAME}:${TAG}"
+    docker build -t "${DEVICE_MANAGER_IMAGE_NAME}:${TAG}" --platform "$TARGET_PLATFORM" .
+    echo ""
+
+    echo "Image: ${DEVICE_MANAGER_IMAGE_NAME}:no-auto-instrumentation"
+    docker build -f Dockerfile.no-auto-instrumentation -t "${DEVICE_MANAGER_IMAGE_NAME}:no-auto-instrumentation" --platform "$TARGET_PLATFORM" .
+    echo ""
+    popd > /dev/null
 }
 
-push_images(){
+
+# For project-name use only alphanumeric characters
+build_images_acr() {
+    echo "- BUILD module images"
+    ACR_NAME=$(az acr list -g "$ENV_RESOURCE_GROUP_NAME" --query "[0].name" -o tsv)
+
+    pushd "./sample-application/device-assistant" > /dev/null || { echo "Directory not found" && exit "2"; }
+    echo "Image: ${DEVICE_ASSISTANT_IMAGE_NAME}:${TAG}"
+    az acr build --registry "$ACR_NAME" --image  "${DEVICE_ASSISTANT_IMAGE_NAME}:${TAG}" .
+    echo ""
+    popd > /dev/null
+
+    pushd "./sample-application/devices-api" > /dev/null || { echo "Directory not found" && exit "2"; }
+    echo "Image: ${DEVICE_API_IMAGE_NAME}:${TAG}"
+    docker build -t "${DEVICE_API_IMAGE_NAME}:${TAG}" --platform "$TARGET_PLATFORM" .
+    echo ""
+    popd > /dev/null
+
+    pushd "./sample-application/devices-state-manager/DevicesStateManager" > /dev/null || { echo "Directory not found" && exit "2"; }
+    echo "Image: ${DEVICE_MANAGER_IMAGE_NAME}:${TAG}"
+    az acr build --registry "$ACR_NAME" --image  "${DEVICE_MANAGER_IMAGE_NAME}:${TAG}" .
+    echo ""
+
+    echo "Image: ${DEVICE_MANAGER_IMAGE_NAME}:no-auto-instrumentation"
+    az acr build --registry $ACR_NAME --image "${DEVICE_MANAGER_IMAGE_NAME}:no-auto-instrumentation" --file "Dockerfile.no-auto-instrumentation"
+    echo ""
+    popd > /dev/null
+}
+
+push_images() {
     echo "- PUSH module images to ACR"
     ACR_NAME=$(az acr list -g "$ENV_RESOURCE_GROUP_NAME" --query "[0].name" -o tsv)
-    
-    az acr login --name  "$ACR_NAME".azurecr.io 
-    docker tag "$DEVICE_API_IMAGE_NAME" "$ACR_NAME".azurecr.io/"$DEVICE_API_IMAGE_NAME"
-    docker push "$ACR_NAME".azurecr.io/"$DEVICE_API_IMAGE_NAME":"$TAG"
+
+    az acr login --name  "$ACR_NAME".azurecr.io
+
+    for image in "$DEVICE_ASSISTANT_IMAGE_NAME" "$DEVICE_API_IMAGE_NAME" "$DEVICE_MANAGER_IMAGE_NAME";do
+        echo "Image: ${image}:${TAG}"
+        docker tag "${image}:${TAG}" "${ACR_NAME}.azurecr.io/${image}:${TAG}"
+        docker push "${ACR_NAME}.azurecr.io/${image}:${TAG}"
+    done
+
     docker tag "$DEVICE_MANAGER_IMAGE_NAME":"$TAG" "$ACR_NAME".azurecr.io/"$DEVICE_MANAGER_IMAGE_NAME":"$TAG"
     docker push "$ACR_NAME".azurecr.io/"$DEVICE_MANAGER_IMAGE_NAME":"$TAG"
-    docker tag "$DEVICE_MANAGER_IMAGE_NAME":no-auto-instrumentation "$ACR_NAME".azurecr.io/"$DEVICE_MANAGER_IMAGE_NAME":no-auto-instrumentation
-    docker push "$ACR_NAME".azurecr.io/"$DEVICE_MANAGER_IMAGE_NAME":no-auto-instrumentation
+
+    docker tag "${DEVICE_MANAGER_IMAGE_NAME}:no-auto-instrumentation" "${ACR_NAME}.azurecr.io/${DEVICE_MANAGER_IMAGE_NAME}:no-auto-instrumentation"
+    docker push "${ACR_NAME}.azurecr.io/${DEVICE_MANAGER_IMAGE_NAME}:no-auto-instrumentation"
+
     echo ""
 }
 
 
-deploy(){
-
-    echo "- DEPLOY modules: Devices API and Devices Manager"
+deploy_device_services() {
+    echo "- DEPLOY modules: Devices Assistant, API and Devices Manager"
     AKS_NAME=$(az aks list -g "$ENV_RESOURCE_GROUP_NAME" --query "[0].name" -o tsv)
     az aks get-credentials \
     --resource-group "$ENV_RESOURCE_GROUP_NAME" \
     --name "$AKS_NAME" \
     --overwrite-existing
+
+    cat k8s-files/device-assistant-deployment.yaml | \
+    sed -e "s/\${project-name}/$ENV_PROJECT_NAME/" | \
+    kubectl apply -f  -
 
     cat k8s-files/devices-api-deployment.yaml | \
     sed -e "s/\${project-name}/$ENV_PROJECT_NAME/" | \
@@ -69,8 +121,7 @@ deploy(){
     echo "Devices API URL http://$DEVICES_API_IP:8080"
 }
 
-deploy_secret_store(){
-
+deploy_secret_store() {
     echo "- DEPLOY secret store provider"
     AKS_NAME=$(az aks list -g "$ENV_RESOURCE_GROUP_NAME" --query "[0].name" -o tsv)
     az aks get-credentials \
@@ -87,7 +138,7 @@ deploy_secret_store(){
     kubectl apply -f  -
 }
 
-deploy_otel_collector(){
+deploy_otel_collector() {
     echo "- DEPLOY Open Telemetry Collector"
     AKS_NAME=$(az aks list -g "$ENV_RESOURCE_GROUP_NAME" --query "[0].name" -o tsv)
     az aks get-credentials \
@@ -102,7 +153,7 @@ deploy_otel_collector(){
     echo ""
 }
 
-deploy_opentelemetry_operator_with_collector(){
+deploy_opentelemetry_operator_with_collector() {
     echo "- DEPLOY Open Telemetry Operator with Collector"
     AKS_NAME=$(az aks list -g "$ENV_RESOURCE_GROUP_NAME" --query "[0].name" -o tsv)
     az aks get-credentials \
@@ -133,7 +184,7 @@ deploy_opentelemetry_operator_with_collector(){
     echo ""
 }
 
-deploy_devices_data_simulator(){
+deploy_devices_data_simulator() {
     echo "- DEPLOY Devices Data Simulator"
     AKS_NAME=$(az aks list -g "$ENV_RESOURCE_GROUP_NAME" --query "[0].name" -o tsv)
     az aks get-credentials \
@@ -152,39 +203,44 @@ deploy_devices_data_simulator(){
 }
 
 run_main() {
-    
+
     # .env included in root of repo
     # shellcheck disable=SC1091
     source .env
-    
+
     if [[ "$1" == "--push" ]] || [[ "$1" == "-p" ]]; then
         echo "--- Build and Push Images ---"
         build_images
         push_images
         exit 0
+        elif [[ "$1" == "--acr_build_push" ]]; then
+        echo "--- Build and Push Images ---"
+        build_images_acr
+        push_images
+        exit 0
         elif [[ "$1" == "--deploy" ]] || [[ "$1" == "-d" ]]; then
-        echo "--- Deploy to AKS Cluster  ---"
-        deploy
+        echo "--- Deploy to AKS Cluster ---"
+        deploy_device_services
         exit 0
         elif [[ "$1" == "--deploy_secret_store" ]]; then
-        echo "--- Deploy to AKS Cluster  ---"
+        echo "--- Deploy to AKS Cluster ---"
         deploy_secret_store
         exit 0
         elif [[ "$1" == "--deploy_otel_collector" ]]; then
-        echo "--- Deploy to AKS Cluster  ---"
+        echo "--- Deploy to AKS Cluster ---"
         deploy_otel_collector
         exit 0
         elif [[ "$1" == "--deploy_opentelemetry_operator_with_collector" ]]; then
-        echo "--- Deploy to AKS Cluster  ---"
+        echo "--- Deploy to AKS Cluster ---"
         deploy_opentelemetry_operator_with_collector
         exit 0
         elif [[ "$1" == "--deploy_devices_data_simulator" ]]; then
-        echo "--- Deploy to AKS Cluster  ---"
+        echo "--- Deploy to AKS Cluster ---"
         deploy_devices_data_simulator
         exit 0
-        
+
     else
-        echo "Usage: $0 [--create | -c] | [--delete | -d]"
+        echo "Usage: $0 [--push | -p] | [--acr_build_push] | [--deploy | -d] | [--deploy_secret_store] | [--deploy_otel_collector] | [--deploy_opentelemetry_operator_with_collector] | [--deploy_devices_data_simulator]"
         exit 1
     fi
 }

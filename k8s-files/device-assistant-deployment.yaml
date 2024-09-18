@@ -1,0 +1,72 @@
+kind: Deployment
+apiVersion: apps/v1
+
+metadata:
+  name: device-assistant
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: device-assistant
+  template:
+    metadata:
+      labels:
+        app: device-assistant
+    spec:
+      containers:
+        - name: device-assistant
+          image: acr${project-name}.azurecr.io/device-assistant:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 150m
+              memory: 512Mi
+          volumeMounts:
+            - name: secrets-store-inline
+              mountPath: "/mnt/secrets-store"
+              readOnly: true
+          env:
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: "http://opentelemetrycollector:4317"
+            - name: OTEL_LOGS_EXPORTER
+              value: otlp
+            - name: OTEL_SERVICE_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.labels['app']
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            periodSeconds: 20
+            initialDelaySeconds: 20
+            failureThreshold: 15
+      volumes:
+        - name: secrets-store-inline
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "kvprovider"
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: device-assistant-service
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 8000
+    targetPort: 8000
+  selector:
+    app: device-assistant

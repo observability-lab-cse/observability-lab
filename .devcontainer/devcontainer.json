@@ -10,6 +10,18 @@
             "type": "volume",
             "source": "${devcontainerId}-azclidata",
             "target": "/home/vscode/.azure"
+        },
+        // Put node modules into volume for better performance
+        {
+            "type": "volume",
+            "source": "${devcontainerId}-frontend-npm",
+            "target": "${containerWorkspaceFolder}/frontend/node_modules"
+        },
+        // Put Python environment into volume for better performance
+        {
+            "type": "volume",
+            "source": "${devcontainerId}-pyenv",
+            "target": "${containerWorkspaceFolder}/.venv"
         }
     ],
     "features": {
@@ -20,7 +32,7 @@
             "installGradle": "true"
         },
         "ghcr.io/devcontainers/features/node:1": {
-            "version": "22.6.0",
+            "version": "22.6.0"
         },
         "ghcr.io/devcontainers/features/docker-in-docker:2": {},
         "kubectl-helm-minikube": {
@@ -38,9 +50,28 @@
     "customizations": {
         "vscode": {
             "extensions": [
+                // Deployment
                 "ms-azuretools.vscode-docker",
+                "ms-kubernetes-tools.vscode-kubernetes-tools",
+                // Markdown
+                "streetsidesoftware.code-spell-checker",
+                "yzhang.markdown-all-in-one",
+                "DavidAnson.vscode-markdownlint",
+                "bierner.markdown-preview-github-styles",
+                "shd101wyy.markdown-preview-enhanced",
+                // Python
                 "ms-python.python",
-                "ms-python.vscode-pylance"
+                "ms-python.vscode-pylance",
+                "charliermarsh.ruff",
+                // Java
+                "vscjava.vscode-java-pack",
+                // C#
+                "ms-dotnettools.csdevkit",
+                // Other
+                "ms-azuretools.vscode-bicep",
+                "redhat.vscode-yaml",
+                "ms-vscode.makefile-tools",
+                "IronGeek.vscode-env"
             ]
         }
     },
