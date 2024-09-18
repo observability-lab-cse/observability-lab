@@ -240,7 +240,7 @@ run_main() {
         exit 0
 
     else
-        echo "Usage: $0 [--push | -p] | [--deploy | -d] | [--deploy_secret_store] | [--deploy_otel_collector] | [--deploy_opentelemetry_operator_with_collector] | [--deploy_devices_data_simulator]"
+        echo "Usage: $0 [--push | -p] | [--acr_build_push] | [--deploy | -d] | [--deploy_secret_store] | [--deploy_otel_collector] | [--deploy_opentelemetry_operator_with_collector] | [--deploy_devices_data_simulator]"
         exit 1
     fi
 }
