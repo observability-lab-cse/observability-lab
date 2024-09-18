@@ -30,7 +30,7 @@ def chat(chat_request: ChatRequest):
           "content": [
             {
               "type": "text",
-              "text": chat_request.q
+              "text": chat_request.question
             }
           ]
         }
