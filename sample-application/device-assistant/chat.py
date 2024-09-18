@@ -3,8 +3,8 @@ import requests
 from device_assistant.chat_models import ChatRequest
 
 # Configuration
-API_KEY = os.getenv('API_KEY') 
-ENDPOINT = os.getenv('ENDPOINT')
+API_KEY = os.getenv('OPENAI_API_KEY') 
+ENDPOINT = os.getenv('OPENAI_ENDPOINT')
 Prompt = "You are an AI assistant that helps people find information."
 
 def chat(chat_request: ChatRequest):
@@ -13,34 +13,34 @@ def chat(chat_request: ChatRequest):
         "api-key": API_KEY,
     }
 
-# Payload for the request
+    # Payload for the request
     payload = {
-  "messages": [
-    {
-      "role": "system",
-      "content": [
+      "messages": [
         {
-          "type": "text",
-          "text": Prompt
-        }
-      ]
-    },
-    {
-      "role": "user",
-      "content": [
+          "role": "system",
+          "content": [
+            {
+              "type": "text",
+              "text": Prompt
+            }
+          ]
+        },
         {
-          "type": "text",
-          "text": chat_request.q
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": chat_request.q
+            }
+          ]
         }
-      ]
+      ],
+      "temperature": 0.7,
+      "top_p": 0.95,
+      "max_tokens": 800
     }
-  ],
-  "temperature": 0.7,
-  "top_p": 0.95,
-  "max_tokens": 800
-}
 
-# Send request
+    # Send request
     try:
         response = requests.post(ENDPOINT, headers=headers, json=payload)
         response.raise_for_status()  # Will raise an HTTPError if the HTTP request returned an unsuccessful status code
