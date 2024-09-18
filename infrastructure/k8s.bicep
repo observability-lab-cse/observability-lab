@@ -20,11 +20,17 @@ param agentCount int = 2
 @description('The size of the Virtual Machine.')
 param agentVMSize string = 'Standard_B2ms'
 
+@description('ManagedIdentity id to be used for role assignment')
+param managedIdentityId string
+
 resource aks 'Microsoft.ContainerService/managedClusters@2022-07-01' = {
   name: clusterName
   location: location
   identity: {
-    type: 'SystemAssigned'
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      managedIdentityId: {}
+    }
   }
   properties: {
     dnsPrefix: dnsPrefix

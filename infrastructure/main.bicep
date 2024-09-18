@@ -10,7 +10,12 @@ module k8s './k8s.bicep' = {
     location: location
     clusterName: 'aks-${projectName}'
     dnsPrefix: projectName
+    managedIdentityId: cosmosDb.outputs.managedIdentityId
   }
+
+  dependsOn:[
+    cosmosDb
+  ]
 }
 
 module acr './acr.bicep' = {
