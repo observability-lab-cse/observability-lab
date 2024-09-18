@@ -76,7 +76,10 @@
             "settings": {
                 "python.terminal.activateEnvironment": true,
                 "python.defaultInterpreterPath": "${containerWorkspaceFolder}/sample-application/device-assistant/.venv/bin/python"
-            }
+            },
+            "dotnetAcquisitionExtension.existingDotnetPath": ["/usr/bin/dotnet"]
+
+
         }
     },
       "postCreateCommand": "/bin/bash .devcontainer/postCreateCommand.sh"
