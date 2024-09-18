@@ -15,6 +15,24 @@ build_images() {
     echo "Image Tag: $DEVICE_MANAGER_IMAGE_NAME:$TAG"
     docker build -t "$DEVICE_MANAGER_IMAGE_NAME":"$TAG" .
     echo "Image Tag: $DEVICE_MANAGER_IMAGE_NAME:no-auto-instrumentation"
+    az acr build --registry $ACR_NAME --image "$DEVICE_MANAGER_IMAGE_NAME":no-auto-instrumentation --file Dockerfile.no-auto-instrumentation
+    echo ""
+    cd ../../..
+}
+
+
+# For project-name use only alphanumeric characters
+build_images_acr() {
+    echo "- BUILD module images"
+    ACR_NAME=$(az acr list -g "$ENV_RESOURCE_GROUP_NAME" --query "[0].name" -o tsv)
+    cd ./sample-application/devices-api || { echo "Directory not found" && exit "2"; }
+    echo "Image Tag: $DEVICE_API_IMAGE_NAME:$TAG"
+    az acr build --registry "$ACR_NAME" --image  "$DEVICE_API_IMAGE_NAME:$TAG" .
+    echo ""
+    cd ../devices-state-manager/DevicesStateManager || { echo "Directory not found" && exit "2"; }
+    echo "Image Tag: $DEVICE_MANAGER_IMAGE_NAME:$TAG"
+    az acr build --registry "$ACR_NAME" --image  "$DEVICE_MANAGER_IMAGE_NAME":"$TAG" .
+    echo "Image Tag: $DEVICE_MANAGER_IMAGE_NAME:no-auto-instrumentation"
     docker build -f Dockerfile.no-auto-instrumentation -t "$DEVICE_MANAGER_IMAGE_NAME":no-auto-instrumentation .
     echo ""
     cd ../../..
@@ -160,6 +178,11 @@ run_main() {
     if [[ "$1" == "--push" ]] || [[ "$1" == "-p" ]]; then
         echo "--- Build and Push Images ---"
         build_images
+        push_images
+        exit 0
+        elif [[ "$1" == "--acr_build_push" ]]; then
+        echo "--- Build and Push Images ---"
+        build_images_acr
         push_images
         exit 0
         elif [[ "$1" == "--deploy" ]] || [[ "$1" == "-d" ]]; then
