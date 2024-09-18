@@ -13,6 +13,10 @@ provision-obs:
 	@echo "Creating Observability Infrastructure"
 	@bash ./infrastructure/setup_infra.sh --create-obs
 
+provision-ai:
+	@echo "Creating AI Infrastructure"
+	@bash ./infrastructure/setup_infra.sh --create-ai
+
 delete:
 	@echo "Delete Infrastructure"
 	@bash ./infrastructure/setup_infra.sh --delete

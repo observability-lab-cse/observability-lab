@@ -1,16 +1,16 @@
-@description('Azure Open AI name.')
-param aiServiceName string
+@description('Unique project name used to compose resource names. Valid characters include alphanumeric values only')
+param projectName string
 
-@description('Location for all resources.')
-param location string
+@description('The location where the resource is created.')
+param location string = 'eastus'
 
 @allowed([
   'S0'
 ])
 param sku string = 'S0'
 
-resource account 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
-  name: aiServiceName
+resource openAi 'Microsoft.CognitiveServices/accounts@2024-04-01-preview' = {
+  name: 'openai-${projectName}'
   location: location
   identity: {
     type: 'SystemAssigned'
@@ -27,3 +27,23 @@ resource account 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
     disableLocalAuth: true
   }
 }
+
+resource gpt3_5 'Microsoft.CognitiveServices/accounts/deployments@2024-04-01-preview' = {
+  parent: openAi
+  name: '${projectName}GPT35'
+  sku: {
+    name: 'Standard'
+    capacity: 120
+  }
+  properties: {
+    model: {
+      format: 'OpenAI'
+      name: 'gpt-35-turbo'
+      version: '0301'
+    }
+    versionUpgradeOption: 'OnceNewDefaultVersionAvailable'
+    currentCapacity: 120
+    raiPolicyName: 'Microsoft.Default'
+  }
+}
+
