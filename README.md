@@ -21,6 +21,12 @@ az account set --subscription <name or ID of your subscription>
 make
 ```
 
+To add Azure OpenAI services to your existing deployment run:
+
+```bash
+make provision-ai
+```
+
 Connect to the Devices API (URL is specified in the output of the previous command, though it takes a couple of minutes until the API is fully operational), and create a couple of devices using the `POST` method.
 
 Once devices are created, you can start the Devices Data Simulator, which will simulate generation of the temperature for each device.
