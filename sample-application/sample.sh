@@ -180,7 +180,7 @@ run_main() {
         build_images
         push_images
         exit 0
-        elif [[ "$1" == "--acr_build_push" ]] || [[ "$1" == "-d" ]]; then
+        elif [[ "$1" == "--acr_build_push" ]]; then
         echo "--- Build and Push Images ---"
         build_images_acr
         push_images
