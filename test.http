@@ -23,5 +23,5 @@ DELETE {{deviceHostname}}/devices/{{deviceId}} HTTP/1.1
 POST {{chatHostname}}/chat HTTP/1.1
 
 {
-    "q": "Hello World"
+    "question": "Hello World"
 }
