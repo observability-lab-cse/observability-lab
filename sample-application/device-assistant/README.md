@@ -15,4 +15,6 @@ OPENAI_API_ENDPOINT: The endpoint for OpenAI's API.
 Running the Assistant
 Once you've set up your .env file, you can run the assistant using the following command:
 
+```sh
+cd sample-application/device-assistant/
 poetry run python main.py
