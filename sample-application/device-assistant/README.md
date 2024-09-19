@@ -6,10 +6,9 @@ If you would like to run this assistant with your own open ai model, In the root
 
 Rename the .env.sample file to .env:
 
-OPENAI_API_KEY=your-openai-api-key
-OPENAI_API_ENDPOINT=your-openai-api-endpoint
-OPENAI_API_KEY: Your OpenAI API key.
-OPENAI_API_ENDPOINT: The endpoint for OpenAI's API.
+```txt
+OPENAI_API_KEY=<your-openai-api-key>
+OPENAI_API_ENDPOINT=<your-openai-api-endpoint>
 
 
 Running the Assistant
