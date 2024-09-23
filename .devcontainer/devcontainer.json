@@ -21,7 +21,7 @@
         {
             "type": "volume",
             "source": "${devcontainerId}-pyenv",
-            "target": "${containerWorkspaceFolder}/.venv"
+            "target": "${containerWorkspaceFolder}/sample-application/device-assistant/.venv"
         }
     ],
     "features": {
@@ -72,7 +72,14 @@
                 "redhat.vscode-yaml",
                 "ms-vscode.makefile-tools",
                 "IronGeek.vscode-env"
-            ]
+            ],
+            "settings": {
+                "python.terminal.activateEnvironment": true,
+                "python.defaultInterpreterPath": "${containerWorkspaceFolder}/sample-application/device-assistant/.venv/bin/python"
+            },
+            "dotnetAcquisitionExtension.existingDotnetPath": ["/usr/bin/dotnet"]
+
+
         }
     },
       "postCreateCommand": "/bin/bash .devcontainer/postCreateCommand.sh"
