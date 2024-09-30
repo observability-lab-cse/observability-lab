@@ -5,6 +5,8 @@ SHELL = /bin/bash
 
 all: provision push deploy_secret_store deploy-otel-collector deploy
 
+all-ai: provision-ai deploy-ai
+
 provision:
 	@echo "Creating Infrastructure"
 	@bash ./infrastructure/setup_infra.sh --create
@@ -32,6 +34,10 @@ push:
 deploy_secret_store:
 	@echo "Deploy secret store provider"
 	@bash ./sample-application/sample.sh --deploy_secret_store
+
+deploy-ai:
+	@echo "Deploy AI components to AKS"
+	@bash ./sample-application/sample.sh --deploy_ai
 
 deploy:
 	@echo "Deploy application to AKS"

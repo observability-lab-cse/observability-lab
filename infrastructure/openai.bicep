@@ -47,3 +47,22 @@ resource gpt3_5 'Microsoft.CognitiveServices/accounts/deployments@2024-04-01-pre
   }
 }
 
+resource keyVault 'Microsoft.KeyVault/vaults@2021-11-01-preview' existing = {
+  name: 'kv-${projectName}'
+  
+  resource openAIKey 'secrets' = {
+    name: 'OpenAIKey'
+    properties: {
+      value: listKeys(resourceId('Microsoft.CognitiveServices/accounts', openAi.name), '2021-04-30').key1
+    }
+  }
+  
+  resource openAIEndpoint 'secrets' = {
+    name: 'OpenAIEndpoint'
+    properties: {
+      value: 'https://${openAi.name}.openai.azure.com/openai/deployments/${gpt3_5.name}'
+    }
+  }
+}
+
+
