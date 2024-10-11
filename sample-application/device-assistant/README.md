@@ -16,5 +16,6 @@ Once you've set up your `.env` file, you can run the assistant using the followi
 
 ```sh
 cd sample-application/device-assistant/
+poetry install
 poetry run python main.py
 ```
