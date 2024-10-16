@@ -1,8 +1,8 @@
-# Device Assistant with OpenAI Model
+# Device Assistant with OpenAI
 
 This project integrates a device assistant powered by OpenAI. To run the assistant, you will need to set up your OpenAI API credentials.
 
-If you would like to run this assistant with your own OpenAI model, In the root directory of the project, there is a `.env.sample` file that contains environment variables required to run the assistant.
+If you would like to run this assistant with your own OpenAI instance, you can use the example [`.env.sample`](./.env.sample) file that contains environment variables required to run the assistant.
 
 Rename the `.env.sample` file to `.env`:
 
@@ -16,5 +16,6 @@ Once you've set up your `.env` file, you can run the assistant using the followi
 
 ```sh
 cd sample-application/device-assistant/
+poetry install
 poetry run python main.py
 ```

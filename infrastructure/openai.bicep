@@ -24,7 +24,7 @@ resource openAi 'Microsoft.CognitiveServices/accounts@2024-04-01-preview' = {
     networkAcls: {
       defaultAction: 'Deny'
     }
-    disableLocalAuth: true
+    disableLocalAuth: false
   }
 }
 
