@@ -14,8 +14,6 @@ build_images() {
     cd ../devices-state-manager/DevicesStateManager || { echo "Directory not found" && exit "2"; }
     echo "Image Tag: $DEVICE_MANAGER_IMAGE_NAME:$TAG"
     docker build -t "$DEVICE_MANAGER_IMAGE_NAME":"$TAG" .
-    echo "Image Tag: $DEVICE_MANAGER_IMAGE_NAME:no-auto-instrumentation"
-    docker build -f Dockerfile.no-auto-instrumentation -t "$DEVICE_MANAGER_IMAGE_NAME":no-auto-instrumentation .
     echo ""
     cd ../../..
 }
@@ -29,8 +27,6 @@ push_images(){
     docker push "$ACR_NAME".azurecr.io/"$DEVICE_API_IMAGE_NAME":"$TAG"
     docker tag "$DEVICE_MANAGER_IMAGE_NAME":"$TAG" "$ACR_NAME".azurecr.io/"$DEVICE_MANAGER_IMAGE_NAME":"$TAG"
     docker push "$ACR_NAME".azurecr.io/"$DEVICE_MANAGER_IMAGE_NAME":"$TAG"
-    docker tag "$DEVICE_MANAGER_IMAGE_NAME":no-auto-instrumentation "$ACR_NAME".azurecr.io/"$DEVICE_MANAGER_IMAGE_NAME":no-auto-instrumentation
-    docker push "$ACR_NAME".azurecr.io/"$DEVICE_MANAGER_IMAGE_NAME":no-auto-instrumentation
     echo ""
 }
 
