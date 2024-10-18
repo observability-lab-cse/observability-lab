@@ -16,8 +16,7 @@ ENV_PROJECT_NAME=              # project name that will be used for all created 
 To provision infrastructure, deploy applications and the Open Telemetry Collector to the cluster, run the following commands:
 
 ```bash
-az login
-az account set --subscription <name or ID of your subscription>
+az login --tenant <tenant ID>   // when prompted, select the desired Azure subscription
 make
 ```
 
