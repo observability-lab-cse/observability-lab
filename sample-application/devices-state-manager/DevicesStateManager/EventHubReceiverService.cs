@@ -4,14 +4,12 @@ using System.Text.Json;
 using Azure.Messaging.EventHubs.Processor;
 using Azure.Messaging.EventHubs;
 using Azure.Storage.Blobs;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Hosting;
 using System.Diagnostics.Metrics;
 using System.Diagnostics;
 
 namespace DevicesStateManager
 {
-    class EventHubReceiverService: IHostedService
+    public class EventHubReceiverService: IHostedService
     {
         private readonly BlobContainerClient _storageClient;
         private readonly EventProcessorClient _processor;
